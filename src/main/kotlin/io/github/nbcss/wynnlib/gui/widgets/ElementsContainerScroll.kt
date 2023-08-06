@@ -6,16 +6,18 @@ import io.github.nbcss.wynnlib.render.TextureData
 import net.minecraft.client.gui.Element
 import net.minecraft.client.util.math.MatrixStack
 
-open class ElementsContainerScroll(background: TextureData?,
-                                   screen: TooltipScreen,
-                                   x: Int,
-                                   y: Int,
-                                   width: Int,
-                                   height: Int,
-                                   private var elements: MutableList<ScrollElement> = mutableListOf(),
-                                   private var contentHeight: Int = 0,
-                                   scrollDelay: Long = 200L,
-                                   scrollUnit: Double = 32.0):
+open class ElementsContainerScroll(
+    background: TextureData?,
+    screen: TooltipScreen,
+    x: Int,
+    y: Int,
+    width: Int,
+    height: Int,
+    private var elements: MutableList<ScrollElement> = mutableListOf(),
+    private var contentHeight: Int = 0,
+    scrollDelay: Long = 200L,
+    scrollUnit: Double = 32.0
+) :
     AbstractElementScroll(background, screen, x, y, width, height, scrollDelay, scrollUnit) {
 
     fun setElements(elements: MutableList<ScrollElement>) {

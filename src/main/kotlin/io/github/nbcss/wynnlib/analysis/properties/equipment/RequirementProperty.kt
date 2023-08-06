@@ -7,7 +7,7 @@ import io.github.nbcss.wynnlib.utils.Symbol
 import net.minecraft.text.Text
 import java.util.regex.Pattern
 
-class RequirementProperty: AnalysisProperty {
+class RequirementProperty : AnalysisProperty {
     companion object {
         private val LEVEL_PATTERN = Pattern.compile(" Combat Lv\\. Min: (\\d+)")
         private val CHARACTER_PATTERN = Pattern.compile(" Class Req: (.+)")
@@ -15,6 +15,7 @@ class RequirementProperty: AnalysisProperty {
         private val SKILL_PATTERN = Pattern.compile(" (.+) Min: (\\d+)")
         const val KEY = "REQUIREMENT"
     }
+
     private val reqMap: MutableMap<Skill, Int> = mutableMapOf()
     private var reqFlagMap: MutableMap<Skill, Boolean> = mutableMapOf()
     private var level: Int = 0

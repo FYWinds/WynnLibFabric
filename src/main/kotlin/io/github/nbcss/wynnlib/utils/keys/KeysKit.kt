@@ -9,23 +9,32 @@ object KeysKit {
     }
 
     fun isShiftDown(): Boolean {
-        return InputUtil.isKeyPressed(MinecraftClient.getInstance().window.handle,
-            InputUtil.GLFW_KEY_LEFT_SHIFT) || InputUtil.isKeyPressed(
+        return InputUtil.isKeyPressed(
             MinecraftClient.getInstance().window.handle,
-            InputUtil.GLFW_KEY_RIGHT_SHIFT)
+            InputUtil.GLFW_KEY_LEFT_SHIFT
+        ) || InputUtil.isKeyPressed(
+            MinecraftClient.getInstance().window.handle,
+            InputUtil.GLFW_KEY_RIGHT_SHIFT
+        )
     }
 
     fun isAltDown(): Boolean {
-        return InputUtil.isKeyPressed(MinecraftClient.getInstance().window.handle,
-            InputUtil.GLFW_KEY_LEFT_ALT) || InputUtil.isKeyPressed(
+        return InputUtil.isKeyPressed(
             MinecraftClient.getInstance().window.handle,
-            InputUtil.GLFW_KEY_RIGHT_ALT)
+            InputUtil.GLFW_KEY_LEFT_ALT
+        ) || InputUtil.isKeyPressed(
+            MinecraftClient.getInstance().window.handle,
+            InputUtil.GLFW_KEY_RIGHT_ALT
+        )
     }
 
     fun isCtrlDown(): Boolean {
-        return InputUtil.isKeyPressed(MinecraftClient.getInstance().window.handle,
-            InputUtil.GLFW_KEY_LEFT_CONTROL) || InputUtil.isKeyPressed(
+        return InputUtil.isKeyPressed(
             MinecraftClient.getInstance().window.handle,
-            InputUtil.GLFW_KEY_RIGHT_CONTROL)
+            InputUtil.GLFW_KEY_LEFT_CONTROL
+        ) || InputUtil.isKeyPressed(
+            MinecraftClient.getInstance().window.handle,
+            InputUtil.GLFW_KEY_RIGHT_CONTROL
+        )
     }
 }

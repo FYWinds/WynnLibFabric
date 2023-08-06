@@ -14,14 +14,15 @@ import io.github.nbcss.wynnlib.utils.Symbol
 import io.github.nbcss.wynnlib.utils.colorOf
 import io.github.nbcss.wynnlib.utils.removeDecimal
 import io.github.nbcss.wynnlib.utils.signed
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 
-class MageLightweaverProperty(ability: Ability,
-                              private val orbs: LightweaverOrb):
+class MageLightweaverProperty(
+    ability: Ability,
+    private val orbs: LightweaverOrb
+) :
     AbilityProperty(ability), SetupProperty, OverviewProvider {
-    companion object: Type<MageLightweaverProperty> {
+    companion object : Type<MageLightweaverProperty> {
         private const val HEAL_KEY = "heal"
         private const val TIME_KEY = "time_limit"
         private const val DURATION = "duration"
@@ -34,6 +35,7 @@ class MageLightweaverProperty(ability: Ability,
             val maxOrbs = if (json.has(MAX_KEY)) json[MAX_KEY].asInt else 0
             return MageLightweaverProperty(ability, LightweaverOrb(heal, time, duration, maxOrbs))
         }
+
         override fun getKey(): String = "lightweaver"
     }
 
@@ -48,25 +50,29 @@ class MageLightweaverProperty(ability: Ability,
 
     override fun getOverviewTip(): Text {
         return Symbol.ALTER_HITS.asText().append(" ").append(
-            LiteralText("${getOrbs().maxOrbs}").formatted(Formatting.WHITE)
+            Text.literal("${getOrbs().maxOrbs}").formatted(Formatting.WHITE)
         )
     }
 
     override fun getTooltip(provider: PropertyProvider): List<Text> {
         val name = Translations.TOOLTIP_ABILITY_MAGE_LIGHTWEAVER_ORBS.translate().string
-        return listOf(Symbol.ALTER_HITS.asText().append(" ")
-            .append(Translations.TOOLTIP_ABILITY_MAX.formatted(Formatting.GRAY).append(" (${name}): "))
-            .append(LiteralText("${getOrbs().maxOrbs}").formatted(Formatting.WHITE)))
+        return listOf(
+            Symbol.ALTER_HITS.asText().append(" ")
+                .append(Translations.TOOLTIP_ABILITY_MAX.formatted(Formatting.GRAY).append(" (${name}): "))
+                .append(Text.literal("${getOrbs().maxOrbs}").formatted(Formatting.WHITE))
+        )
     }
 
     override fun setup(entry: PropertyEntry) {
         entry.setProperty(getKey(), this)
     }
 
-    class Modifier(ability: Ability,
-                   private val modifier: LightweaverOrb):
+    class Modifier(
+        ability: Ability,
+        private val modifier: LightweaverOrb
+    ) :
         AbilityProperty(ability), ModifiableProperty {
-        companion object: Type<Modifier> {
+        companion object : Type<Modifier> {
             override fun create(ability: Ability, data: JsonElement): Modifier {
                 val json = data.asJsonObject
                 val heal = if (json.has(HEAL_KEY)) json[HEAL_KEY].asDouble else 0.0
@@ -75,6 +81,7 @@ class MageLightweaverProperty(ability: Ability,
                 val maxOrbs = if (json.has(MAX_KEY)) json[MAX_KEY].asInt else 0
                 return Modifier(ability, LightweaverOrb(heal, time, duration, maxOrbs))
             }
+
             override fun getKey(): String = "lightweaver_modifier"
         }
 
@@ -96,16 +103,20 @@ class MageLightweaverProperty(ability: Ability,
 
         override fun getTooltip(provider: PropertyProvider): List<Text> {
             val name = Translations.TOOLTIP_ABILITY_MAGE_LIGHTWEAVER_ORBS.translate().string
-            return listOf(Symbol.ALTER_HITS.asText().append(" ")
-                .append(Translations.TOOLTIP_ABILITY_MAX.formatted(Formatting.GRAY).append(" (${name}): "))
-                .append(LiteralText(signed(modifier.maxOrbs)).formatted(colorOf(modifier.maxOrbs))))
+            return listOf(
+                Symbol.ALTER_HITS.asText().append(" ")
+                    .append(Translations.TOOLTIP_ABILITY_MAX.formatted(Formatting.GRAY).append(" (${name}): "))
+                    .append(Text.literal(signed(modifier.maxOrbs)).formatted(colorOf(modifier.maxOrbs)))
+            )
         }
     }
 
-    data class LightweaverOrb(val heal: Double,
-                              val time: Double,
-                              val duration: Double,
-                              val maxOrbs: Int){
+    data class LightweaverOrb(
+        val heal: Double,
+        val time: Double,
+        val duration: Double,
+        val maxOrbs: Int
+    ) {
         fun upgrade(modifier: LightweaverOrb): LightweaverOrb {
             val heal = this.heal + modifier.heal
             val time = this.time + modifier.time

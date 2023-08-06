@@ -11,7 +11,7 @@ object ItemModifier {
         val compound = nbt.getCompound(KEY) ?: return null
         return if (compound.contains(key)) {
             compound.getInt(key)
-        }else{
+        } else {
             null
         }
     }
@@ -29,7 +29,7 @@ object ItemModifier {
         val compound = nbt.getCompound(KEY) ?: return null
         return if (compound.contains(key)) {
             compound.getDouble(key)
-        }else{
+        } else {
             null
         }
     }
@@ -47,7 +47,7 @@ object ItemModifier {
         val compound = nbt.getCompound(KEY) ?: return null
         return if (compound.contains(key)) {
             f.apply(compound.get(key)!!)
-        }else{
+        } else {
             null
         }
     }

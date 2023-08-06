@@ -21,19 +21,23 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 
-abstract class ATreeScrollWidget(screen: TooltipScreen, x: Int, y: Int,
-                                 sliderX: Int, sliderY: Int) :
+abstract class ATreeScrollWidget(
+    screen: TooltipScreen, x: Int, y: Int,
+    sliderX: Int, sliderY: Int
+) :
     ScrollPaneWidget(SCROLL, screen, x, y, WIDTH, HEIGHT) {
     companion object {
         private val SCROLL: TextureData = TextureData(
             Identifier("wynnlib", "textures/gui/ability_tree_scroll.png"),
-            0, 0, 222, 384)
+            0, 0, 222, 384
+        )
         private val TEXTURE = Identifier("wynnlib", "textures/gui/ability_ui.png")
         private val SLIDER_TEXTURE = TextureData(TEXTURE, 246, 0)
         private const val WIDTH = 222
         private const val HEIGHT = 138
         private const val NODE_SIZE = 24
     }
+
     private val slider = VerticalSliderWidget(sliderX, sliderY, 9, HEIGHT, 30, SLIDER_TEXTURE) {
         setScrollPosition(getMaxPosition() * it)
     }
@@ -75,19 +79,19 @@ abstract class ATreeScrollWidget(screen: TooltipScreen, x: Int, y: Int,
         if (button == 1 && dependency != null) {
             playSound(SoundEvents.ENTITY_ITEM_PICKUP)
             focusOnAbility(dependency)
-        }else{
+        } else {
             playSound(SoundEvents.ENTITY_SHULKER_HURT_CLOSED)
         }
         return true
     }
 
-    fun drawOuterEdge(matrices: MatrixStack, from: IntPos, to: IntPos, color: Int, reroute: Boolean){
+    fun drawOuterEdge(matrices: MatrixStack, from: IntPos, to: IntPos, color: Int, reroute: Boolean) {
         RenderSystem.enableDepthTest()
-        if (from.x != to.x){
+        if (from.x != to.x) {
             val posY = if (reroute) to.y else from.y
             fill(matrices, from.x, posY - 2, to.x, posY + 2, color)
         }
-        if (from.y != to.y){
+        if (from.y != to.y) {
             val fromY = from.y + if (from.x == to.x || reroute) 0 else -2
             val toY = to.y + if (from.x != to.x && reroute) 2 else 0
             val posX = if (reroute) from.x else to.x
@@ -95,12 +99,12 @@ abstract class ATreeScrollWidget(screen: TooltipScreen, x: Int, y: Int,
         }
     }
 
-    fun drawInnerEdge(matrices: MatrixStack, from: IntPos, to: IntPos, color: Int, reroute: Boolean){
-        if (from.x != to.x){
+    fun drawInnerEdge(matrices: MatrixStack, from: IntPos, to: IntPos, color: Int, reroute: Boolean) {
+        if (from.x != to.x) {
             val posY = if (reroute) to.y else from.y
             fill(matrices, from.x, posY - 1, to.x, posY + 1, color)
         }
-        if (from.y != to.y){
+        if (from.y != to.y) {
             val fromY = from.y + if (from.x == to.x || reroute) 0 else -1
             val toY = to.y + if (from.x != to.x && reroute) 1 else 0
             val posX = if (reroute) from.x else to.x
@@ -108,7 +112,7 @@ abstract class ATreeScrollWidget(screen: TooltipScreen, x: Int, y: Int,
         }
     }
 
-    fun renderEdges(abilities: List<Ability>, matrices: MatrixStack, color: AlphaColor, inner: Boolean){
+    fun renderEdges(abilities: List<Ability>, matrices: MatrixStack, color: AlphaColor, inner: Boolean) {
         abilities.forEach {
             val to = toScreenPosition(it.getHeight(), it.getPosition())
             it.getPredecessors().forEach { node ->
@@ -117,7 +121,7 @@ abstract class ATreeScrollWidget(screen: TooltipScreen, x: Int, y: Int,
                 val reroute = getAbilityTree().getAbilityFromPosition(height, it.getPosition()) != null
                 if (inner) {
                     drawInnerEdge(matrices, from, to, color.code(), reroute)
-                }else{
+                } else {
                     drawOuterEdge(matrices, from, to, color.code(), reroute)
                 }
             }
@@ -125,7 +129,7 @@ abstract class ATreeScrollWidget(screen: TooltipScreen, x: Int, y: Int,
     }
 
     fun renderArchetypeOutline(matrices: MatrixStack, ability: Ability, x: Int, y: Int) {
-        if (ability.getTier().getLevel() != 0){
+        if (ability.getTier().getLevel() != 0) {
             ability.getArchetype()?.let { arch ->
                 val color = Color.fromFormatting(arch.getFormatting())
                 val itemX = x - 15
@@ -150,7 +154,7 @@ abstract class ATreeScrollWidget(screen: TooltipScreen, x: Int, y: Int,
     override fun onContentClick(mouseX: Double, mouseY: Double, button: Int): Boolean {
         for (ability in getAbilityTree().getAbilities()) {
             val node = toScreenPosition(ability.getHeight(), ability.getPosition())
-            if (isOverNode(node, mouseX.toInt(), mouseY.toInt())){
+            if (isOverNode(node, mouseX.toInt(), mouseY.toInt())) {
                 return onClickNode(ability, button)
             }
         }

@@ -9,9 +9,11 @@ import io.github.nbcss.wynnlib.abilities.properties.ModifiableProperty
 import io.github.nbcss.wynnlib.abilities.properties.SetupProperty
 import io.github.nbcss.wynnlib.utils.removeDecimal
 
-class CorruptedProperty(ability: Ability,
-                        private val info: Info): AbilityProperty(ability), SetupProperty {
-    companion object: Type<CorruptedProperty> {
+class CorruptedProperty(
+    ability: Ability,
+    private val info: Info
+) : AbilityProperty(ability), SetupProperty {
+    companion object : Type<CorruptedProperty> {
         private const val CONVERT_KEY: String = "rate"
         private const val DAMAGE_BOOST_KEY: String = "damage_boost"
         private const val DAMAGE_BOOST_MAX_KEY: String = "max_boost"
@@ -22,6 +24,7 @@ class CorruptedProperty(ability: Ability,
             val maxBoost = if (json.has(DAMAGE_BOOST_MAX_KEY)) json[DAMAGE_BOOST_MAX_KEY].asDouble else 0.0
             return CorruptedProperty(ability, Info(convert, boost, maxBoost))
         }
+
         override fun getKey(): String = "corrupted"
     }
 
@@ -37,10 +40,12 @@ class CorruptedProperty(ability: Ability,
         entry.setProperty(getKey(), this)
     }
 
-    class Modifier(ability: Ability,
-                   private val modifier: Info):
+    class Modifier(
+        ability: Ability,
+        private val modifier: Info
+    ) :
         AbilityProperty(ability), ModifiableProperty {
-        companion object: Type<Modifier> {
+        companion object : Type<Modifier> {
             override fun create(ability: Ability, data: JsonElement): Modifier {
                 val json = data.asJsonObject
                 val convert = if (json.has(CONVERT_KEY)) json[CONVERT_KEY].asDouble else 0.0
@@ -48,6 +53,7 @@ class CorruptedProperty(ability: Ability,
                 val maxBoost = if (json.has(DAMAGE_BOOST_MAX_KEY)) json[DAMAGE_BOOST_MAX_KEY].asDouble else 0.0
                 return Modifier(ability, Info(convert, boost, maxBoost))
             }
+
             override fun getKey(): String = "corrupted_modifier"
         }
 
@@ -67,13 +73,17 @@ class CorruptedProperty(ability: Ability,
         }
     }
 
-    data class Info(val convertRate: Double,
-                    val damageBonus: Double,
-                    val damageBonusMax: Double) {
+    data class Info(
+        val convertRate: Double,
+        val damageBonus: Double,
+        val damageBonusMax: Double
+    ) {
         fun upgrade(modifier: Info): Info {
-            return Info(convertRate + modifier.convertRate,
+            return Info(
+                convertRate + modifier.convertRate,
                 damageBonus + modifier.damageBonus,
-                damageBonusMax + modifier.damageBonusMax)
+                damageBonusMax + modifier.damageBonusMax
+            )
         }
     }
 }

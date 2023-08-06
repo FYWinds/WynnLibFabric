@@ -11,7 +11,6 @@ import net.minecraft.item.ItemStack
 import net.minecraft.network.packet.c2s.play.ClickSlotC2SPacket
 import net.minecraft.screen.slot.SlotActionType
 import net.minecraft.sound.SoundEvent
-import net.minecraft.text.LiteralText
 import net.minecraft.text.StringVisitable
 import net.minecraft.text.Style
 import net.minecraft.text.Text
@@ -39,17 +38,17 @@ fun writeClipboard(text: String) {
 fun readClipboard(): String? {
     return try {
         client.keyboard.clipboard
-    }catch (e: Exception){
+    } catch (e: Exception) {
         null
     }
 }
 
 fun signed(value: Int): String {
-    return if(value <= 0) value.toString() else "+$value"
+    return if (value <= 0) value.toString() else "+$value"
 }
 
 fun signed(value: Double): String {
-    return if(value <= 0.0) value.toString() else "+$value"
+    return if (value <= 0.0) value.toString() else "+$value"
 }
 
 fun round(value: Double): Double {
@@ -99,7 +98,7 @@ fun playSound(sound: SoundEvent, pitch: Float = 1.0f) {
 fun asRange(text: String): IRange = try {
     val array = text.split("-")
     SimpleIRange(array[0].toInt(), array[1].toInt())
-}catch (e: Exception){
+} catch (e: Exception) {
     SimpleIRange(0, 0)
 }
 
@@ -118,7 +117,7 @@ fun asColor(text: String): Int {
 
 fun tierOf(tier: Int): String {
     if (tier <= 0) return ""
-    return when (tier){
+    return when (tier) {
         1 -> "I"
         2 -> "II"
         3 -> "III"
@@ -136,10 +135,10 @@ fun tierOf(tier: Int): String {
 fun formattingLines(text: String, prefix: String, length: Int = 200): List<Text> {
     val lines: MutableList<Text> = ArrayList()
     text.split("//").forEach {
-        if(it == "") {
-            lines.add(LiteralText.EMPTY)
-        }else{
-            wrapLines(LiteralText(parseStyle(it, prefix)), length).forEach { line -> lines.add(line) }
+        if (it == "") {
+            lines.add(Text.empty())
+        } else {
+            wrapLines(Text.literal(parseStyle(it, prefix)), length).forEach { line -> lines.add(line) }
         }
     }
     return lines
@@ -173,8 +172,8 @@ fun replaceProperty(text: String, prefix: Char, provider: Function<String, Strin
 }
 
 fun wrapLines(text: Text, length: Int = 200): List<Text> {
-    val visitor = StringVisitable.StyledVisitor<Text>{ style, asString ->
-        Optional.of(LiteralText(asString).setStyle(style))
+    val visitor = StringVisitable.StyledVisitor<Text> { style, asString ->
+        Optional.of(Text.literal(asString).setStyle(style))
     }
     return client.textRenderer.textHandler
         .wrapLines(text, length, Style.EMPTY)
@@ -182,8 +181,10 @@ fun wrapLines(text: Text, length: Int = 200): List<Text> {
         .toList()
 }
 
-private val formattingChars: Set<Char> = setOf('0', '1', '2', '3', '4', '5', '6', '7',
-    '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'k', 'l', 'm', 'n', 'o', 'r')
+private val formattingChars: Set<Char> = setOf(
+    '0', '1', '2', '3', '4', '5', '6', '7',
+    '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'k', 'l', 'm', 'n', 'o', 'r'
+)
 
 fun parseStyle(text: String, style: String): String {
     val buffer = StringBuilder(style)
@@ -223,15 +224,16 @@ fun clickSlot(slotId: Int, button: Int, actionType: SlotActionType) {
             int2ObjectMap[j] = itemStack2.copy()
         }
     }
-    val packet = ClickSlotC2SPacket(handler.syncId, handler.revision,
+    val packet = ClickSlotC2SPacket(
+        handler.syncId, handler.revision,
         slotId, button, actionType,
-        handler.cursorStack.copy(), int2ObjectMap)
+        handler.cursorStack.copy(), int2ObjectMap
+    )
     MinecraftClient.getInstance().networkHandler!!.sendPacket(packet)
 }
 
 fun <K, V> getKey(map: Map<K, V>, target: V): K? {
-    for ((key, value) in map)
-    {
+    for ((key, value) in map) {
         if (target == value) {
             return key
         }

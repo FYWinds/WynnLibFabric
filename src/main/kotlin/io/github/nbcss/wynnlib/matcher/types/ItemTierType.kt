@@ -9,10 +9,11 @@ import io.github.nbcss.wynnlib.utils.Color
 import io.github.nbcss.wynnlib.utils.JsonGetter
 import net.minecraft.text.Text
 
-class ItemTierType(val tier: Tier): AbstractMatcherType(Color.fromFormatting(tier.formatting)), ProtectableType {
+class ItemTierType(val tier: Tier) : AbstractMatcherType(Color.fromFormatting(tier.formatting)), ProtectableType {
     companion object {
         fun keyOf(tier: Tier): String = "ITEM_TIER_" + tier.name
     }
+
     private var protected: Boolean = tier == Tier.MYTHIC
 
     override fun getKey(): String {

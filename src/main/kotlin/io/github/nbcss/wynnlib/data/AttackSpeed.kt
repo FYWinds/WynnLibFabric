@@ -4,8 +4,10 @@ import io.github.nbcss.wynnlib.i18n.Translatable
 import io.github.nbcss.wynnlib.utils.Keyed
 import java.util.*
 
-enum class AttackSpeed(val displayName: String,
-                       val speedModifier: Double): Keyed, Translatable {
+enum class AttackSpeed(
+    val displayName: String,
+    val speedModifier: Double
+) : Keyed, Translatable {
     SUPER_SLOW("Super Slow Attack Speed", 0.51),
     VERY_SLOW("Very Slow Attack Speed", 0.83),
     SLOW("Slow Attack Speed", 1.5),

@@ -1,6 +1,5 @@
 package io.github.nbcss.wynnlib.analysis.transformers
 
-import io.github.nbcss.wynnlib.Settings
 import io.github.nbcss.wynnlib.analysis.TooltipTransformer
 import io.github.nbcss.wynnlib.analysis.TransformableItem
 import io.github.nbcss.wynnlib.analysis.properties.AnalysisProperty
@@ -8,11 +7,11 @@ import io.github.nbcss.wynnlib.analysis.properties.PriceProperty
 import io.github.nbcss.wynnlib.analysis.properties.equipment.*
 import io.github.nbcss.wynnlib.data.*
 import io.github.nbcss.wynnlib.items.equipments.MajorIdContainer
-import io.github.nbcss.wynnlib.items.identity.TooltipProvider
 import io.github.nbcss.wynnlib.items.equipments.RolledEquipment
 import io.github.nbcss.wynnlib.items.equipments.Weapon
 import io.github.nbcss.wynnlib.items.equipments.Wearable
 import io.github.nbcss.wynnlib.items.equipments.regular.RegularEquipment
+import io.github.nbcss.wynnlib.items.identity.TooltipProvider
 import io.github.nbcss.wynnlib.matcher.MatcherType
 import io.github.nbcss.wynnlib.registry.AbilityRegistry
 import io.github.nbcss.wynnlib.utils.Color
@@ -22,13 +21,14 @@ import io.github.nbcss.wynnlib.utils.range.SimpleIRange
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.item.TooltipContext
 import net.minecraft.item.ItemStack
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 
-class EquipmentTransformer(private val parent: RegularEquipment,
-                           private val stack: ItemStack):
+class EquipmentTransformer(
+    private val parent: RegularEquipment,
+    private val stack: ItemStack
+) :
     TooltipTransformer, RolledEquipment, MajorIdContainer.Holder {
-    companion object: TooltipTransformer.Factory {
+    companion object : TooltipTransformer.Factory {
         const val KEY = "EQUIPMENT"
 
         override fun create(stack: ItemStack, item: TransformableItem): TooltipTransformer? {
@@ -37,8 +37,10 @@ class EquipmentTransformer(private val parent: RegularEquipment,
             }
             return null
         }
+
         override fun getKey(): String = KEY
     }
+
     private val propertyMap: MutableMap<String, AnalysisProperty> = mutableMapOf(
         pairs = listOf(
             RequirementProperty(),
@@ -51,11 +53,12 @@ class EquipmentTransformer(private val parent: RegularEquipment,
             PriceProperty(),
         ).map { it.getKey() to it }.toTypedArray()
     )
+
     init {
         val category = parent.getCategory()
         if (category is Weapon) {
             propertyMap["CATEGORY"] = WeaponProperty(this)
-        }else if (category is Wearable) {
+        } else if (category is Wearable) {
             propertyMap["CATEGORY"] = WearableProperty(this)
         }
     }
@@ -81,7 +84,7 @@ class EquipmentTransformer(private val parent: RegularEquipment,
             stack.getTooltip(MinecraftClient.getInstance().player, TooltipContext.Default.NORMAL)
         getPriceTooltip()?.let {
             val mutableTooltip = tooltip.toMutableList()
-            mutableTooltip.add(LiteralText.EMPTY)
+            mutableTooltip.add(Text.empty())
             mutableTooltip.addAll(it)
             return mutableTooltip
         }
@@ -180,12 +183,12 @@ class EquipmentTransformer(private val parent: RegularEquipment,
 
     override fun asWeapon(): Weapon? {
         val category = propertyMap["CATEGORY"]
-        return if(category is Weapon) category else null
+        return if (category is Weapon) category else null
     }
 
     override fun asWearable(): Wearable? {
         val category = propertyMap["CATEGORY"]
-        return if(category is Wearable) category else null
+        return if (category is Wearable) category else null
     }
 
     override fun getKey(): String {

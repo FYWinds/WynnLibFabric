@@ -16,12 +16,13 @@ import io.github.nbcss.wynnlib.utils.round
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 
-class CooldownProperty(ability: Ability, private val cooldown: Double):
+class CooldownProperty(ability: Ability, private val cooldown: Double) :
     AbilityProperty(ability), SetupProperty, OverviewProvider {
-    companion object: Type<CooldownProperty> {
+    companion object : Type<CooldownProperty> {
         override fun create(ability: Ability, data: JsonElement): CooldownProperty {
             return CooldownProperty(ability, data.asDouble)
         }
+
         override fun getKey(): String = "cooldown"
     }
 
@@ -42,17 +43,20 @@ class CooldownProperty(ability: Ability, private val cooldown: Double):
     }
 
     override fun getTooltip(provider: PropertyProvider): List<Text> {
-        return listOf(Symbol.COOLDOWN.asText().append(" ")
-            .append(Translations.TOOLTIP_ABILITY_COOLDOWN.formatted(Formatting.GRAY).append(": "))
-            .append(Translations.TOOLTIP_SUFFIX_S.formatted(Formatting.WHITE, null, removeDecimal(cooldown))))
+        return listOf(
+            Symbol.COOLDOWN.asText().append(" ")
+                .append(Translations.TOOLTIP_ABILITY_COOLDOWN.formatted(Formatting.GRAY).append(": "))
+                .append(Translations.TOOLTIP_SUFFIX_S.formatted(Formatting.WHITE, null, removeDecimal(cooldown)))
+        )
     }
 
-    class Modifier(ability: Ability, private val modifier: Double):
+    class Modifier(ability: Ability, private val modifier: Double) :
         AbilityProperty(ability), ModifiableProperty {
-        companion object: Type<Modifier> {
+        companion object : Type<Modifier> {
             override fun create(ability: Ability, data: JsonElement): Modifier {
                 return Modifier(ability, data.asDouble)
             }
+
             override fun getKey(): String = "cooldown_modifier"
         }
 
@@ -72,11 +76,15 @@ class CooldownProperty(ability: Ability, private val cooldown: Double):
 
         override fun getTooltip(provider: PropertyProvider): List<Text> {
             val color = if (modifier < 0) Formatting.GREEN else Formatting.RED
-            val value = Translations.TOOLTIP_SUFFIX_S.formatted(color, null,
-                (if (modifier > 0) "+" else "") + removeDecimal(modifier))
-            return listOf(Symbol.COOLDOWN.asText().append(" ")
-                .append(Translations.TOOLTIP_ABILITY_COOLDOWN.formatted(Formatting.GRAY).append(": "))
-                .append(value))
+            val value = Translations.TOOLTIP_SUFFIX_S.formatted(
+                color, null,
+                (if (modifier > 0) "+" else "") + removeDecimal(modifier)
+            )
+            return listOf(
+                Symbol.COOLDOWN.asText().append(" ")
+                    .append(Translations.TOOLTIP_ABILITY_COOLDOWN.formatted(Formatting.GRAY).append(": "))
+                    .append(value)
+            )
         }
     }
 }

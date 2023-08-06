@@ -12,17 +12,19 @@ import io.github.nbcss.wynnlib.i18n.Translations
 import io.github.nbcss.wynnlib.utils.Symbol
 import io.github.nbcss.wynnlib.utils.colorOf
 import io.github.nbcss.wynnlib.utils.signed
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 
-class SmokeBombProperty(ability: Ability,
-                        private val bombs: Int):
+class SmokeBombProperty(
+    ability: Ability,
+    private val bombs: Int
+) :
     AbilityProperty(ability), SetupProperty {
-    companion object: Type<SmokeBombProperty> {
+    companion object : Type<SmokeBombProperty> {
         override fun create(ability: Ability, data: JsonElement): SmokeBombProperty {
             return SmokeBombProperty(ability, data.asInt)
         }
+
         override fun getKey(): String = "smoke_bombs"
     }
 
@@ -37,18 +39,23 @@ class SmokeBombProperty(ability: Ability,
     }
 
     override fun getTooltip(provider: PropertyProvider): List<Text> {
-        return listOf(Symbol.ALTER_HITS.asText().append(" ")
-            .append(Translations.TOOLTIP_ABILITY_ASSASSIN_SMOKE_BOMBS.formatted(Formatting.GRAY).append(": "))
-            .append(LiteralText(bombs.toString()).formatted(Formatting.WHITE)))
+        return listOf(
+            Symbol.ALTER_HITS.asText().append(" ")
+                .append(Translations.TOOLTIP_ABILITY_ASSASSIN_SMOKE_BOMBS.formatted(Formatting.GRAY).append(": "))
+                .append(Text.literal(bombs.toString()).formatted(Formatting.WHITE))
+        )
     }
 
-    class Modifier(ability: Ability,
-                   private val modifier: Int):
+    class Modifier(
+        ability: Ability,
+        private val modifier: Int
+    ) :
         AbilityProperty(ability), ModifiableProperty {
-        companion object: Type<Modifier> {
+        companion object : Type<Modifier> {
             override fun create(ability: Ability, data: JsonElement): Modifier {
                 return Modifier(ability, data.asInt)
             }
+
             override fun getKey(): String = "smoke_bombs_modifier"
         }
 
@@ -66,9 +73,11 @@ class SmokeBombProperty(ability: Ability,
         }
 
         override fun getTooltip(provider: PropertyProvider): List<Text> {
-            return listOf(Symbol.ALTER_HITS.asText().append(" ")
-                .append(Translations.TOOLTIP_ABILITY_ASSASSIN_SMOKE_BOMBS.formatted(Formatting.GRAY).append(": "))
-                .append(LiteralText(signed(modifier)).formatted(colorOf(modifier))))
+            return listOf(
+                Symbol.ALTER_HITS.asText().append(" ")
+                    .append(Translations.TOOLTIP_ABILITY_ASSASSIN_SMOKE_BOMBS.formatted(Formatting.GRAY).append(": "))
+                    .append(Text.literal(signed(modifier)).formatted(colorOf(modifier)))
+            )
         }
     }
 }

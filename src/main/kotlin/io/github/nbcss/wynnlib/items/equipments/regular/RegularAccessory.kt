@@ -5,11 +5,9 @@ import io.github.nbcss.wynnlib.data.EquipmentType
 import io.github.nbcss.wynnlib.items.*
 import io.github.nbcss.wynnlib.utils.ItemFactory
 import net.minecraft.item.ItemStack
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 
-class RegularAccessory(parent: RegularEquipment, json: JsonObject)
-    : RegularWearable(parent, json) {
+class RegularAccessory(parent: RegularEquipment, json: JsonObject) : RegularWearable(parent, json) {
     private val type: EquipmentType
     private val texture: ItemStack
 
@@ -33,21 +31,21 @@ class RegularAccessory(parent: RegularEquipment, json: JsonObject)
     override fun getTooltip(): List<Text> {
         val tooltip: MutableList<Text> = ArrayList()
         tooltip.add(parent.getDisplayText())
-        tooltip.add(LiteralText.EMPTY)
+        tooltip.add(Text.empty())
         val defense = getDefenseTooltip()
-        if (defense.isNotEmpty()){
+        if (defense.isNotEmpty()) {
             tooltip.addAll(defense)
-            tooltip.add(LiteralText.EMPTY)
+            tooltip.add(Text.empty())
         }
         addRequirements(parent, tooltip)
-        tooltip.add(LiteralText.EMPTY)
+        tooltip.add(Text.empty())
         //append empty line if success add any id into the tooltip
-        if (addIdentifications(parent , tooltip))
-            tooltip.add(LiteralText.EMPTY)
+        if (addIdentifications(parent, tooltip))
+            tooltip.add(Text.empty())
         if (addMajorIds(parent, tooltip))
-            tooltip.add(LiteralText.EMPTY)
+            tooltip.add(Text.empty())
         //accessory should not have powder slot but let's add it just in case
-        if(parent.getPowderSlot() > 0)
+        if (parent.getPowderSlot() > 0)
             addPowderSlots(parent, tooltip)
         addItemSuffix(parent, tooltip)
         addRestriction(parent, tooltip)

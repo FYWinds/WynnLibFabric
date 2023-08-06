@@ -4,10 +4,12 @@ import io.github.nbcss.wynnlib.timer.*
 import java.util.regex.Pattern
 import kotlin.math.max
 
-class TypedStatusTimer(private val type: StatusType,
-                       values: List<Double>,
-                       entry: StatusEntry,
-                       startTime: Long):
+class TypedStatusTimer(
+    private val type: StatusType,
+    values: List<Double>,
+    entry: StatusEntry,
+    startTime: Long
+) :
     AbstractFooterEntryTimer(entry, startTime) {
     private val maxDuration: Double? = entry.duration?.plus(1)?.toDouble()
     private var currentValues: List<Double> = values.toMutableList()

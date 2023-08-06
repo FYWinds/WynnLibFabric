@@ -10,15 +10,18 @@ import net.minecraft.util.math.MathHelper
 import java.util.function.Consumer
 import kotlin.math.roundToInt
 
-open class VerticalSliderWidget(x: Int,
-                                y: Int,
-                                width: Int,
-                                height: Int,
-                                private val barHeight: Int,
-                                private val texture: TextureData,
-                                private val onUpdate: Consumer<Double>? = null):
+open class VerticalSliderWidget(
+    x: Int,
+    y: Int,
+    width: Int,
+    height: Int,
+    private val barHeight: Int,
+    private val texture: TextureData,
+    private val onUpdate: Consumer<Double>? = null
+) :
     ClickableWidget(x, y, width, height, null) {
     private var slider: Double = 0.0
+
     //last click data when start dragging: (slider Y, mouse Y)
     private var dragging: Pair<Int, Double>? = null
 
@@ -37,7 +40,8 @@ open class VerticalSliderWidget(x: Int,
     override fun render(matrices: MatrixStack?, mouseX: Int, mouseY: Int, delta: Float) {
         if (this.visible) {
             RenderSystem.enableDepthTest()
-            RenderKit.renderTexture(matrices,
+            RenderKit.renderTexture(
+                matrices,
                 texture.texture,
                 x, getSliderY(),
                 texture.u,
@@ -70,13 +74,13 @@ open class VerticalSliderWidget(x: Int,
     }
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
-        if (this.active && this.visible && button == 0 && dragging == null && mouseX >= x && mouseX <= x + width){
+        if (this.active && this.visible && button == 0 && dragging == null && mouseX >= x && mouseX <= x + width) {
             val sliderY = getSliderY()
             if (mouseY >= sliderY && mouseY <= sliderY + barHeight) {
                 //keep current slider value and mouse y of click point
                 dragging = sliderY to mouseY
                 return true
-            }else if (mouseY >= y && mouseY <= y + height) {
+            } else if (mouseY >= y && mouseY <= y + height) {
                 setSlider((mouseY - barHeight / 2 - y) / (height - barHeight))
                 onUpdate?.accept(slider)
                 dragging = getSliderY() to mouseY

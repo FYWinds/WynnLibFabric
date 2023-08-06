@@ -3,7 +3,7 @@ package io.github.nbcss.wynnlib.registry
 import com.google.gson.JsonObject
 import io.github.nbcss.wynnlib.abilities.builder.TreeBuildData
 
-object AbilityBuildStorage: SavingStorage<TreeBuildData>() {
+object AbilityBuildStorage : SavingStorage<TreeBuildData>() {
     private const val PATH = "config/WynnLib/AbilityBuilds.json"
 
     override fun read(data: JsonObject): TreeBuildData? {

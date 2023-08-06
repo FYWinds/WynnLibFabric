@@ -11,11 +11,12 @@ import net.minecraft.client.item.TooltipContext
 import net.minecraft.util.math.MathHelper
 import java.util.regex.Pattern
 
-object DurabilityRender: EventHandler<RenderItemOverrideEvent> {
+object DurabilityRender : EventHandler<RenderItemOverrideEvent> {
     private val pattern = Pattern.compile("\\[(\\d+)/(\\d+) Durability]")
     private val client = MinecraftClient.getInstance()
     private const val key = "crafted_durability"
-    object LoadListener: EventHandler<ItemLoadEvent> {
+
+    object LoadListener : EventHandler<ItemLoadEvent> {
         override fun handle(event: ItemLoadEvent) {
             val tooltip = event.item.getTooltip(client.player, TooltipContext.Default.NORMAL)
             val durability = tooltip.asSequence().filter { it.asString() == "" && it.siblings.isNotEmpty() }
@@ -31,7 +32,7 @@ object DurabilityRender: EventHandler<RenderItemOverrideEvent> {
                     }
                     value
                 }
-            if (durability != null){
+            if (durability != null) {
                 ItemModifier.putDouble(event.item, key, durability)
             }
         }

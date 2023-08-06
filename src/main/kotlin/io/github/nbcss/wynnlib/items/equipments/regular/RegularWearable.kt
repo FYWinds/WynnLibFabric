@@ -7,13 +7,13 @@ import io.github.nbcss.wynnlib.items.equipments.Wearable
 import io.github.nbcss.wynnlib.utils.range.IRange
 import io.github.nbcss.wynnlib.utils.range.SimpleIRange
 
-abstract class RegularWearable(protected val parent: RegularEquipment, json: JsonObject)
-    : Wearable, EquipmentCategory {
+abstract class RegularWearable(protected val parent: RegularEquipment, json: JsonObject) : Wearable, EquipmentCategory {
     private val health: Int
     private val elemDefence: MutableMap<Element, Int> = linkedMapOf()
+
     init {
-        health = if(json.has("health")) json.get("health").asInt else 0
-        Element.values().forEach{elemDefence[it] = json.get(it.defenceName).asInt }
+        health = if (json.has("health")) json.get("health").asInt else 0
+        Element.values().forEach { elemDefence[it] = json.get(it.defenceName).asInt }
     }
 
     override fun getHealth(): IRange = SimpleIRange(health, health)

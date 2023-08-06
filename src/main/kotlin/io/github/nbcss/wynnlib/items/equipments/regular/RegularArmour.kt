@@ -3,14 +3,13 @@ package io.github.nbcss.wynnlib.items.equipments.regular
 import com.google.gson.JsonObject
 import io.github.nbcss.wynnlib.data.EquipmentType
 import io.github.nbcss.wynnlib.items.*
-import io.github.nbcss.wynnlib.utils.*
+import io.github.nbcss.wynnlib.utils.ItemFactory
+import io.github.nbcss.wynnlib.utils.asColor
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NbtCompound
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 
-class RegularArmour(parent: RegularEquipment, json: JsonObject)
-    : RegularWearable(parent, json) {
+class RegularArmour(parent: RegularEquipment, json: JsonObject) : RegularWearable(parent, json) {
     private val type: EquipmentType
     private val texture: ItemStack
 
@@ -30,7 +29,7 @@ class RegularArmour(parent: RegularEquipment, json: JsonObject)
             val tag: NbtCompound = copy.orCreateNbt
             if (json.has("armorColor")) {
                 val color: Int = asColor(json.get("armorColor").asString)
-                if (color != -1){
+                if (color != -1) {
                     if (material.equals("leather", ignoreCase = true)) {
                         val display = if (tag.contains("display")) tag.getCompound("display") else NbtCompound()
                         display.putInt("color", color)
@@ -53,19 +52,19 @@ class RegularArmour(parent: RegularEquipment, json: JsonObject)
     override fun getTooltip(): List<Text> {
         val tooltip: MutableList<Text> = ArrayList()
         tooltip.add(parent.getDisplayText())
-        tooltip.add(LiteralText.EMPTY)
+        tooltip.add(Text.empty())
         val defense = getDefenseTooltip()
-        if (defense.isNotEmpty()){
+        if (defense.isNotEmpty()) {
             tooltip.addAll(defense)
-            tooltip.add(LiteralText.EMPTY)
+            tooltip.add(Text.empty())
         }
         addRequirements(parent, tooltip)
-        tooltip.add(LiteralText.EMPTY)
+        tooltip.add(Text.empty())
         //append empty line if success add any id into the tooltip
-        if (addIdentifications(parent , tooltip))
-            tooltip.add(LiteralText.EMPTY)
+        if (addIdentifications(parent, tooltip))
+            tooltip.add(Text.empty())
         if (addMajorIds(parent, tooltip))
-            tooltip.add(LiteralText.EMPTY)
+            tooltip.add(Text.empty())
         addPowderSlots(parent, tooltip)
         addItemSuffix(parent, tooltip)
         addRestriction(parent, tooltip)

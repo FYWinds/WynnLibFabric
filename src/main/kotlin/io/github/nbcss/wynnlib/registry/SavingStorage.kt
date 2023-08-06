@@ -7,7 +7,7 @@ import io.github.nbcss.wynnlib.utils.Keyed
 import io.github.nbcss.wynnlib.utils.Scheduler
 import kotlin.concurrent.thread
 
-abstract class SavingStorage<T: Keyed>: Storage<T>(), Keyed {
+abstract class SavingStorage<T : Keyed> : Storage<T>(), Keyed {
     private var dirty: Boolean = false
     private var saving: Boolean = false
 
@@ -18,7 +18,7 @@ abstract class SavingStorage<T: Keyed>: Storage<T>(), Keyed {
         FileUtils.readFile(getSavePath())?.let {
             reload(it)
         }
-        Scheduler.registerTask("SAVE_${getKey()}", 20){
+        Scheduler.registerTask("SAVE_${getKey()}", 20) {
             save()
         }
     }

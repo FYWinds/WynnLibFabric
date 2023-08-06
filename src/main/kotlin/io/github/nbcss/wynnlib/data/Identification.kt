@@ -13,37 +13,38 @@ import io.github.nbcss.wynnlib.utils.id.IDFormatting
 import io.github.nbcss.wynnlib.utils.id.IDRange
 import io.github.nbcss.wynnlib.utils.parseStyle
 import io.github.nbcss.wynnlib.utils.range.IRange
-import net.minecraft.text.LiteralText
 import net.minecraft.text.MutableText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import java.util.regex.Pattern
 
-data class Identification(val id: String,               //id used in translation key
-                          val apiId: String,            //id used in equipment api data
-                          val name: String,             //name used in ingredient api data
-                          val displayName: String,      //display name in game
-                          val suffix: String,           //value suffix (e.g. %)
-                          val group: IdentificationGroup,
-                          val inverted: Boolean,        //whether the id bonus is inverted (e.g. -cost)
-                          val range: IDRange,           //the range mode used by the id
-                          val idFormatting: IDFormatting,
-                          val hidden: Boolean,          //whether this id is not available on item
-                          ): Keyed, Translatable {
+data class Identification(
+    val id: String,               //id used in translation key
+    val apiId: String,            //id used in equipment api data
+    val name: String,             //name used in ingredient api data
+    val displayName: String,      //display name in game
+    val suffix: String,           //value suffix (e.g. %)
+    val group: IdentificationGroup,
+    val inverted: Boolean,        //whether the id bonus is inverted (e.g. -cost)
+    val range: IDRange,           //the range mode used by the id
+    val idFormatting: IDFormatting,
+    val hidden: Boolean,          //whether this id is not available on item
+) : Keyed, Translatable {
     constructor(json: JsonObject) : this(
         json.get("id").asString,
         json.get("apiId").asString,
         json.get("name").asString,
         json.get("displayName").asString,
         json.get("suffix").asString,
-        if(json.has("group")) IdentificationGroup.fromName(json.get("group").asString) else
+        if (json.has("group")) IdentificationGroup.fromName(json.get("group").asString) else
             IdentificationGroup.MISC,
         JsonGetter.getOr(json, "inverted", false),
         JsonGetter.getOr(json, "range", IDRange.BASE) { IDRange.fromName(it.asString) },
         JsonGetter.getOr(json, "formatting", IDFormatting.BASE) { IDFormatting.fromName(it.asString) },
-        JsonGetter.getOr(json, "hidden", false),)
+        JsonGetter.getOr(json, "hidden", false),
+    )
 
-    companion object: Registry<Identification>() {
+    companion object : Registry<Identification>() {
         private const val RESOURCE = "assets/wynnlib/data/Identifications.json"
         private val PLACEHOLDER = Pattern.compile("\\$\\{(.+?)}")
         private val SPELL_PLACEHOLDER = Pattern.compile("\\{(sp\\d)}")
@@ -114,7 +115,7 @@ data class Identification(val id: String,               //id used in translation
             val value = item.getIdProperty(key) ?: key
             string = string.replace("\${$key}", value)
         }
-        return LiteralText(parseStyle(string, style.toString())).formatted(style)
+        return Text.literal(parseStyle(string, style.toString())).formatted(style)
     }
 
     fun formatting(item: IdentificationHolder, range: IRange): List<Text> {

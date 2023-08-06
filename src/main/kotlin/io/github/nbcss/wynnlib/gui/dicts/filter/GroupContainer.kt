@@ -4,7 +4,7 @@ import io.github.nbcss.wynnlib.gui.widgets.scrollable.ScrollListEntry
 import io.github.nbcss.wynnlib.items.BaseItem
 import net.minecraft.client.util.math.MatrixStack
 
-class GroupContainer<T: BaseItem> (val group: CriteriaGroup<T>): ScrollListEntry {
+class GroupContainer<T : BaseItem>(val group: CriteriaGroup<T>) : ScrollListEntry {
     private var top: Int = 0
 
     override fun updateTop(entryTop: Int) {

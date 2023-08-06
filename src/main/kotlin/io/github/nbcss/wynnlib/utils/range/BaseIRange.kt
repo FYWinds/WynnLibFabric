@@ -1,11 +1,12 @@
 package io.github.nbcss.wynnlib.utils.range
 
 import io.github.nbcss.wynnlib.data.Identification
-import kotlin.math.*
 
-class BaseIRange(private val id: Identification,
-                 private val identified: Boolean,
-                 private val base: Int): IRange {
+class BaseIRange(
+    private val id: Identification,
+    private val identified: Boolean,
+    private val base: Int
+) : IRange {
 
     fun base(): Int = base
 
@@ -18,7 +19,7 @@ class BaseIRange(private val id: Identification,
     }
 
     override fun lower(): Int {
-        return when{
+        return when {
             identified -> base
             id.inverted -> id.range.getUpper(base)
             else -> id.range.getLower(base)

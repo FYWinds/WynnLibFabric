@@ -12,16 +12,18 @@ import io.github.nbcss.wynnlib.abilities.properties.SetupProperty
 import io.github.nbcss.wynnlib.i18n.Translations
 import io.github.nbcss.wynnlib.utils.Symbol
 import io.github.nbcss.wynnlib.utils.signed
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 
-open class DamageBonusProperty(ability: Ability,
-                               protected val bonus: Int): AbilityProperty(ability) {
-    companion object: Type<DamageBonusProperty> {
+open class DamageBonusProperty(
+    ability: Ability,
+    protected val bonus: Int
+) : AbilityProperty(ability) {
+    companion object : Type<DamageBonusProperty> {
         override fun create(ability: Ability, data: JsonElement): DamageBonusProperty {
             return DamageBonusProperty(ability, data.asInt)
         }
+
         override fun getKey(): String = "damage_bonus"
     }
 
@@ -37,20 +39,23 @@ open class DamageBonusProperty(ability: Ability,
         if (bonus == 0)
             return emptyList()
         val color = if (bonus < 0) Formatting.RED else Formatting.WHITE
-        val value = LiteralText(signed(bonus) + getSuffix()).formatted(color)
+        val value = Text.literal(signed(bonus) + getSuffix()).formatted(color)
         getDamageBonusLabel()?.let {
             value.append(it)
         }
-        return listOf(Symbol.DAMAGE.asText().append(" ")
-            .append(Translations.TOOLTIP_ABILITY_DAMAGE_BONUS.formatted(Formatting.GRAY).append(": "))
-            .append(value))
+        return listOf(
+            Symbol.DAMAGE.asText().append(" ")
+                .append(Translations.TOOLTIP_ABILITY_DAMAGE_BONUS.formatted(Formatting.GRAY).append(": "))
+                .append(value)
+        )
     }
 
-    class Raw(ability: Ability, bonus: Int): DamageBonusProperty(ability, bonus) {
-        companion object: Type<Raw> {
+    class Raw(ability: Ability, bonus: Int) : DamageBonusProperty(ability, bonus) {
+        companion object : Type<Raw> {
             override fun create(ability: Ability, data: JsonElement): Raw {
                 return Raw(ability, data.asInt)
             }
+
             override fun getKey(): String = "raw_damage_bonus"
         }
 
@@ -59,18 +64,19 @@ open class DamageBonusProperty(ability: Ability,
         }
 
         override fun getDamageBonusLabel(): Text? {
-            return LiteralText(" (").formatted(Formatting.GRAY)
+            return Text.literal(" (").formatted(Formatting.GRAY)
                 .append(Translations.TOOLTIP_ABILITY_BONUS_DAMAGE_RAW.formatted(Formatting.GRAY))
-                .append(LiteralText(")").formatted(Formatting.GRAY))
+                .append(Text.literal(")").formatted(Formatting.GRAY))
         }
     }
 
-    class PerFocus(ability: Ability, bonus: Int):
+    class PerFocus(ability: Ability, bonus: Int) :
         DamageBonusProperty(ability, bonus), SetupProperty, ModifiableProperty, OverviewProvider {
-        companion object: Type<PerFocus> {
+        companion object : Type<PerFocus> {
             override fun create(ability: Ability, data: JsonElement): PerFocus {
                 return PerFocus(ability, data.asInt)
             }
+
             override fun getKey(): String = "focus_damage_bonus"
         }
 
@@ -78,14 +84,14 @@ open class DamageBonusProperty(ability: Ability,
 
         override fun getOverviewTip(): Text {
             return Symbol.DAMAGE.asText().append(" ").append(
-                LiteralText("+$bonus%").formatted(Formatting.WHITE)
+                Text.literal("+$bonus%").formatted(Formatting.WHITE)
             )
         }
 
         override fun getDamageBonusLabel(): Text? {
-            return LiteralText(" (").formatted(Formatting.DARK_GRAY)
+            return Text.literal(" (").formatted(Formatting.DARK_GRAY)
                 .append(Translations.TOOLTIP_ABILITY_BONUS_DAMAGE_FOCUS.formatted(Formatting.DARK_GRAY))
-                .append(LiteralText(")").formatted(Formatting.DARK_GRAY))
+                .append(Text.literal(")").formatted(Formatting.DARK_GRAY))
         }
 
         override fun modify(entry: PropertyEntry) {
@@ -102,12 +108,13 @@ open class DamageBonusProperty(ability: Ability,
         }
     }
 
-    class PerMarked(ability: Ability, bonus: Int):
+    class PerMarked(ability: Ability, bonus: Int) :
         DamageBonusProperty(ability, bonus), SetupProperty, ModifiableProperty, OverviewProvider {
-        companion object: Type<PerMarked> {
+        companion object : Type<PerMarked> {
             override fun create(ability: Ability, data: JsonElement): PerMarked {
                 return PerMarked(ability, data.asInt)
             }
+
             override fun getKey(): String = "marked_damage_bonus"
         }
 
@@ -115,7 +122,7 @@ open class DamageBonusProperty(ability: Ability,
 
         override fun getOverviewTip(): Text {
             return Symbol.DAMAGE.asText().append(" ").append(
-                LiteralText("+$bonus%").formatted(Formatting.WHITE)
+                Text.literal("+$bonus%").formatted(Formatting.WHITE)
             )
         }
 
@@ -124,9 +131,9 @@ open class DamageBonusProperty(ability: Ability,
         }
 
         override fun getDamageBonusLabel(): Text? {
-            return LiteralText(" (").formatted(Formatting.DARK_GRAY)
+            return Text.literal(" (").formatted(Formatting.DARK_GRAY)
                 .append(Translations.TOOLTIP_ABILITY_BONUS_DAMAGE_MARKED.formatted(Formatting.DARK_GRAY))
-                .append(LiteralText(")").formatted(Formatting.DARK_GRAY))
+                .append(Text.literal(")").formatted(Formatting.DARK_GRAY))
         }
 
         override fun modify(entry: PropertyEntry) {

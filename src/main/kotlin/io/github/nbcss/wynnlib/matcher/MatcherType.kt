@@ -13,7 +13,7 @@ import io.github.nbcss.wynnlib.utils.JsonGetter.getOr
 import io.github.nbcss.wynnlib.utils.Keyed
 import net.minecraft.text.Text
 
-interface MatcherType: Keyed, Translatable {
+interface MatcherType : Keyed, Translatable {
 
     fun reload(data: JsonObject)
     fun getData(): JsonObject
@@ -23,6 +23,7 @@ interface MatcherType: Keyed, Translatable {
 
     companion object {
         private val typeMap: MutableMap<String, MatcherType> = linkedMapOf()
+
         init {
             for (tier in Tier.values()) {
                 register(ItemTierType(tier))

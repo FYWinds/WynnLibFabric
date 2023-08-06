@@ -2,26 +2,26 @@ package io.github.nbcss.wynnlib.analysis.properties.equipment
 
 import io.github.nbcss.wynnlib.Settings
 import io.github.nbcss.wynnlib.analysis.calculator.QualityCalculator.Companion.formattingQuality
+import io.github.nbcss.wynnlib.analysis.properties.AnalysisProperty
 import io.github.nbcss.wynnlib.data.AttackSpeed
 import io.github.nbcss.wynnlib.data.Element
 import io.github.nbcss.wynnlib.items.*
-import io.github.nbcss.wynnlib.items.equipments.Weapon
-import io.github.nbcss.wynnlib.analysis.properties.AnalysisProperty
 import io.github.nbcss.wynnlib.items.equipments.MajorIdContainer
 import io.github.nbcss.wynnlib.items.equipments.RolledEquipment
+import io.github.nbcss.wynnlib.items.equipments.Weapon
 import io.github.nbcss.wynnlib.items.identity.TooltipProvider
 import io.github.nbcss.wynnlib.utils.range.IRange
 import io.github.nbcss.wynnlib.utils.range.SimpleIRange
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import java.util.regex.Pattern
 
-class WeaponProperty(private val equipment: RolledEquipment):
+class WeaponProperty(private val equipment: RolledEquipment) :
     Weapon, TooltipProvider, AnalysisProperty {
     companion object {
         private val DAMAGE_PATTERN = Pattern.compile("Neutral Damage: (\\d+)-(\\d+)")
         private val ELEM_DAMAGE_PATTERN = Pattern.compile(" Damage: (\\d+)-(\\d+)")
     }
+
     private var attackSpeed: AttackSpeed? = null
     private var damage: IRange = IRange.ZERO
     private val elemDamage: MutableMap<Element, IRange> = mutableMapOf()
@@ -30,27 +30,27 @@ class WeaponProperty(private val equipment: RolledEquipment):
         tooltip.add(equipment.getDisplayText())
         tooltip.addAll(getDamageTooltip())
         addPowderSpecial(equipment, tooltip)
-        tooltip.add(LiteralText.EMPTY)
+        tooltip.add(Text.empty())
         addRolledRequirements(equipment, tooltip)
-        tooltip.add(LiteralText.EMPTY)
+        tooltip.add(Text.empty())
         val lastSize = tooltip.size
         val quality = addRolledIdentifications(equipment, tooltip)
         if (tooltip.size > lastSize)
-            tooltip.add(LiteralText.EMPTY)
+            tooltip.add(Text.empty())
         if (equipment is MajorIdContainer.Holder && equipment.getMajorIdContainers().isNotEmpty()) {
             if (Settings.getOption(Settings.SettingOption.MAJOR_ID_ANALYZE)) {
                 for (majorId in equipment.getMajorIdContainers()) {
                     tooltip.addAll(majorId.majorId.getTooltip())
                 }
-            }else{
+            } else {
                 for (majorId in equipment.getMajorIdContainers()) {
                     tooltip.addAll(majorId.tooltip)
                 }
             }
-            tooltip.add(LiteralText.EMPTY)
+            tooltip.add(Text.empty())
         }
         if (quality != null)
-            tooltip[0] = LiteralText("")
+            tooltip[0] = Text.literal("")
                 .append(tooltip[0]).append(" ")
                 .append(formattingQuality(quality))
         addRolledPowderSlots(equipment, tooltip)
@@ -90,7 +90,7 @@ class WeaponProperty(private val equipment: RolledEquipment):
                 return 1
             }
         }
-        if (base.siblings.size == 2){
+        if (base.siblings.size == 2) {
             //matches elem damage
             Element.fromDisplayName(base.siblings[0].asString())?.let { elem ->
                 val matcher = ELEM_DAMAGE_PATTERN.matcher(base.siblings[1].asString())

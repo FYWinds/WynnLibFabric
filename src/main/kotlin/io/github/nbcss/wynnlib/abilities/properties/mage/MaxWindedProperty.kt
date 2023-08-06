@@ -13,17 +13,19 @@ import io.github.nbcss.wynnlib.i18n.Translations
 import io.github.nbcss.wynnlib.utils.Symbol
 import io.github.nbcss.wynnlib.utils.colorOf
 import io.github.nbcss.wynnlib.utils.signed
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 
-class MaxWindedProperty(ability: Ability,
-                        private val maxWinded: Int):
+class MaxWindedProperty(
+    ability: Ability,
+    private val maxWinded: Int
+) :
     AbilityProperty(ability), SetupProperty, OverviewProvider {
-    companion object: Type<MaxWindedProperty> {
+    companion object : Type<MaxWindedProperty> {
         override fun create(ability: Ability, data: JsonElement): MaxWindedProperty {
             return MaxWindedProperty(ability, data.asInt)
         }
+
         override fun getKey(): String = "max_winded"
     }
 
@@ -31,7 +33,7 @@ class MaxWindedProperty(ability: Ability,
 
     override fun getOverviewTip(): Text {
         return Symbol.CHARGE.asText().append(" ").append(
-            LiteralText("$maxWinded").formatted(Formatting.WHITE)
+            Text.literal("$maxWinded").formatted(Formatting.WHITE)
         )
     }
 
@@ -45,17 +47,20 @@ class MaxWindedProperty(ability: Ability,
 
     override fun getTooltip(provider: PropertyProvider): List<Text> {
         val max = Translations.TOOLTIP_ABILITY_MAGE_WINDED.translate().string
-        return listOf(Symbol.CHARGE.asText().append(" ")
-            .append(Translations.TOOLTIP_ABILITY_MAX.formatted(Formatting.GRAY).append(" (${max}): "))
-            .append(LiteralText(getMaxWinded().toString()).formatted(Formatting.WHITE)))
+        return listOf(
+            Symbol.CHARGE.asText().append(" ")
+                .append(Translations.TOOLTIP_ABILITY_MAX.formatted(Formatting.GRAY).append(" (${max}): "))
+                .append(Text.literal(getMaxWinded().toString()).formatted(Formatting.WHITE))
+        )
     }
 
-    class Modifier(ability: Ability, private val modifier: Int):
+    class Modifier(ability: Ability, private val modifier: Int) :
         AbilityProperty(ability), ModifiableProperty {
-        companion object: Type<Modifier> {
+        companion object : Type<Modifier> {
             override fun create(ability: Ability, data: JsonElement): Modifier {
                 return Modifier(ability, data.asInt)
             }
+
             override fun getKey(): String = "max_winded_modifier"
         }
 
@@ -74,9 +79,11 @@ class MaxWindedProperty(ability: Ability,
 
         override fun getTooltip(provider: PropertyProvider): List<Text> {
             val max = Translations.TOOLTIP_ABILITY_MAGE_WINDED.translate().string
-            return listOf(Symbol.CHARGE.asText().append(" ")
-                .append(Translations.TOOLTIP_ABILITY_MAX.formatted(Formatting.GRAY).append(" (${max}): "))
-                .append(LiteralText(signed(modifier)).formatted(colorOf(modifier))))
+            return listOf(
+                Symbol.CHARGE.asText().append(" ")
+                    .append(Translations.TOOLTIP_ABILITY_MAX.formatted(Formatting.GRAY).append(" (${max}): "))
+                    .append(Text.literal(signed(modifier)).formatted(colorOf(modifier)))
+            )
         }
     }
 }

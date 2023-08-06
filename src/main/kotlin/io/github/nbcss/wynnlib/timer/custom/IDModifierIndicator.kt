@@ -5,15 +5,16 @@ import io.github.nbcss.wynnlib.i18n.SuffixTranslation
 import io.github.nbcss.wynnlib.timer.BasicTimer
 import io.github.nbcss.wynnlib.timer.StatusEntry
 import io.github.nbcss.wynnlib.utils.colorOf
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import java.util.regex.Pattern
 
-class IDModifierIndicator(private val id: Identification,
-                          private val value: Int,
-                          entry: StatusEntry,
-                          startTime: Long):
+class IDModifierIndicator(
+    private val id: Identification,
+    private val value: Int,
+    entry: StatusEntry,
+    startTime: Long
+) :
     BasicTimer(entry, startTime) {
     companion object {
         private val numberPattern = Pattern.compile("^([+\\-]?\\d+)")
@@ -37,7 +38,7 @@ class IDModifierIndicator(private val id: Identification,
     override fun getDisplayText(): Text {
         val color = colorOf(if (id.inverted) -value else value)
         val bonus = SuffixTranslation.withSuffix(value, id.suffix).formatted(color)
-        return LiteralText(entry.icon).append(" ").append(bonus).append(" ")
+        return Text.literal(entry.icon).append(" ").append(bonus).append(" ")
             .append(id.getDisplayText(Formatting.GRAY))
     }
 }

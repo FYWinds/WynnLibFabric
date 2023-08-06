@@ -14,9 +14,11 @@ object Scheduler {
         taskMap[key] = TaskData(0, interval, task)
     }
 
-    private data class TaskData(val tick: Int,
-                                val interval: Int,
-                                val task: () -> Unit){
+    private data class TaskData(
+        val tick: Int,
+        val interval: Int,
+        val task: () -> Unit
+    ) {
         fun next(): TaskData {
             val nextTick = tick + 1
             if (nextTick > interval) {

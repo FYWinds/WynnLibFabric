@@ -1,7 +1,6 @@
 package io.github.nbcss.wynnlib.items
 
 import com.google.gson.JsonObject
-import io.github.nbcss.wynnlib.Settings
 import io.github.nbcss.wynnlib.data.*
 import io.github.nbcss.wynnlib.i18n.Translations.TOOLTIP_CRAFTING_ING
 import io.github.nbcss.wynnlib.i18n.Translations.TOOLTIP_CRAFTING_LV_REQ
@@ -18,7 +17,6 @@ import io.github.nbcss.wynnlib.utils.*
 import io.github.nbcss.wynnlib.utils.range.IRange
 import io.github.nbcss.wynnlib.utils.range.IngredientIRange
 import net.minecraft.item.ItemStack
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import net.minecraft.util.math.MathHelper
@@ -38,6 +36,7 @@ class Ingredient(json: JsonObject) : Keyed, BaseItem, IdentificationHolder, Conf
     private val durability: Int
     private val duration: Int
     private val charges: Int
+
     init {
         name = json["name"].asString
         displayName = if (json.has("displayName")) json["displayName"].asString else name
@@ -53,14 +52,14 @@ class Ingredient(json: JsonObject) : Keyed, BaseItem, IdentificationHolder, Conf
                 if (value != 0)
                     skillMap[it] = value
             }
-        }else{
+        } else {
             durability = 0
         }
         if (json.has("consumableOnlyIDs")) {
             val consumable = json["consumableOnlyIDs"].asJsonObject
             duration = if (consumable.has("duration")) consumable["duration"].asInt else 0
             charges = if (consumable.has("charges")) consumable["charges"].asInt else 0
-        }else{
+        } else {
             duration = 0
             charges = 0
         }
@@ -70,26 +69,26 @@ class Ingredient(json: JsonObject) : Keyed, BaseItem, IdentificationHolder, Conf
             }
         }
         //Read identifications
-        if(json.has("identifications")){
-            val identifications = json["identifications"].asJsonObject;
+        if (json.has("identifications")) {
+            val identifications = json["identifications"].asJsonObject
             identifications.entrySet().forEach {
                 val id = Identification.fromName(it.key)
-                if (id != null){
+                if (id != null) {
                     val range = it.value.asJsonObject
                     val min = if (range.has("minimum")) range["minimum"].asInt else 0
                     val max = if (range.has("maximum")) range["maximum"].asInt else 0
                     idMap[id] = IngredientIRange(min, max)
-                }else{
+                } else {
                     println("Unknown ID Name: ${it.key}")
                 }
             }
         }
         //Read modifiers
-        if(json.has("ingredientPositionModifiers")){
+        if (json.has("ingredientPositionModifiers")) {
             val modifiers = json["ingredientPositionModifiers"].asJsonObject
             PositionModifier.values().forEach {
                 val value: Int = if (modifiers.has(it.getKey())) modifiers.get(it.getKey()).asInt else 0
-                if (value != 0){
+                if (value != 0) {
                     modifierMap[it] = value
                 }
             }
@@ -126,9 +125,11 @@ class Ingredient(json: JsonObject) : Keyed, BaseItem, IdentificationHolder, Conf
         val lastSize = tooltip.size
         PositionModifier.values().forEach {
             val modifier = getPositionModifier(it)
-            if (modifier != 0){
-                tooltip.add(LiteralText("${signed(modifier)}% ").formatted(colorOf(modifier))
-                    .append(TOOLTIP_ING_EFFECTIVENESS.translate().formatted(Formatting.GRAY)))
+            if (modifier != 0) {
+                tooltip.add(
+                    Text.literal("${signed(modifier)}% ").formatted(colorOf(modifier))
+                        .append(TOOLTIP_ING_EFFECTIVENESS.translate().formatted(Formatting.GRAY))
+                )
                 tooltip.add(it.translate("tooltip").formatted(Formatting.GRAY))
             }
         }
@@ -139,42 +140,46 @@ class Ingredient(json: JsonObject) : Keyed, BaseItem, IdentificationHolder, Conf
         val lastSize = tooltip.size
         //durability & duration
         var added = false
-        val text = LiteralText("")
-        if (durability != 0){
+        val text = Text.literal("")
+        if (durability != 0) {
             val color = colorOf(durability)
-            text.append(LiteralText(signed(durability)).formatted(color)).append(" ")
+            text.append(Text.literal(signed(durability)).formatted(color)).append(" ")
                 .append(TOOLTIP_ING_DURABILITY.translate().formatted(color))
             added = true
         }
-        if (duration != 0){
+        if (duration != 0) {
             if (added) text.append(TOOLTIP_OR.translate().formatted(Formatting.GRAY))
             val color = colorOf(duration)
-            text.append(LiteralText(signed(duration)).formatted(color))
-                .append(LiteralText("s ").formatted(color))
+            text.append(Text.literal(signed(duration)).formatted(color))
+                .append(Text.literal("s ").formatted(color))
                 .append(TOOLTIP_ING_DURATION.translate().formatted(color))
             added = true
         }
-        if(added) tooltip.add(text)
+        if (added) tooltip.add(text)
         //charges
         if (charges != 0) {
             val color = colorOf(charges)
-            tooltip.add(LiteralText(signed(charges)).formatted(color).append(" ")
-                .append(TOOLTIP_ING_CHARGES.translate().formatted(color)))
+            tooltip.add(
+                Text.literal(signed(charges)).formatted(color).append(" ")
+                    .append(TOOLTIP_ING_CHARGES.translate().formatted(color))
+            )
         }
         //skill req modifiers
         Skill.values().forEach {
             val req = getSkillReqModifier(it)
-            if(req != 0){
+            if (req != 0) {
                 val color = colorOf(-req)
-                tooltip.add(LiteralText("${signed(req)} ").formatted(color)
-                    .append(TOOLTIP_SKILL_MODIFIER.translate(null, it.translate().string).formatted(color)))
+                tooltip.add(
+                    Text.literal("${signed(req)} ").formatted(color)
+                        .append(TOOLTIP_SKILL_MODIFIER.translate(null, it.translate().string).formatted(color))
+                )
             }
         }
         return tooltip.size > lastSize
     }
 
     override fun getDisplayText(): Text {
-        return LiteralText(displayName).formatted(Formatting.GRAY).append(LiteralText(tier.suffix))
+        return Text.literal(displayName).formatted(Formatting.GRAY).append(Text.literal(tier.suffix))
     }
 
     override fun getDisplayName(): String = displayName
@@ -193,20 +198,22 @@ class Ingredient(json: JsonObject) : Keyed, BaseItem, IdentificationHolder, Conf
         val tooltip: MutableList<Text> = ArrayList()
         tooltip.add(getDisplayText())
         tooltip.add(TOOLTIP_CRAFTING_ING.translate().formatted(Formatting.DARK_GRAY))
-        tooltip.add(LiteralText.EMPTY)
+        tooltip.add(Text.empty())
         //append empty line if success add any id into the tooltip
         if (addIdentifications(this, tooltip))
-            tooltip.add(LiteralText.EMPTY)
-        if(addPosModifierTooltip(tooltip))
-            tooltip.add(LiteralText.EMPTY)
-        if(addItemModifierTooltip(tooltip))
-            tooltip.add(LiteralText.EMPTY)
-        tooltip.add(TOOLTIP_CRAFTING_LV_REQ.translate().formatted(Formatting.GRAY)
-            .append(LiteralText(": $level").formatted(Formatting.GRAY)))
+            tooltip.add(Text.empty())
+        if (addPosModifierTooltip(tooltip))
+            tooltip.add(Text.empty())
+        if (addItemModifierTooltip(tooltip))
+            tooltip.add(Text.empty())
+        tooltip.add(
+            TOOLTIP_CRAFTING_LV_REQ.translate().formatted(Formatting.GRAY)
+                .append(Text.literal(": $level").formatted(Formatting.GRAY))
+        )
         professions.forEach {
-            tooltip.add(LiteralText(" - ").formatted(Formatting.DARK_GRAY).append(it.getDisplayText()))
+            tooltip.add(Text.literal(" - ").formatted(Formatting.DARK_GRAY).append(it.getDisplayText()))
         }
-        if(isUntradable())
+        if (isUntradable())
             tooltip.add(Restriction.UNTRADABLE.translate().formatted(Formatting.RED))
         return tooltip
     }

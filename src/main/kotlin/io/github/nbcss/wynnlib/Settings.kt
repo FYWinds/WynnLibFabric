@@ -13,8 +13,10 @@ import io.github.nbcss.wynnlib.gui.dicts.MaterialDictScreen
 import io.github.nbcss.wynnlib.gui.dicts.PowderDictScreen
 import io.github.nbcss.wynnlib.i18n.Translatable
 import io.github.nbcss.wynnlib.matcher.MatcherType
-import io.github.nbcss.wynnlib.utils.*
+import io.github.nbcss.wynnlib.utils.FileUtils
 import io.github.nbcss.wynnlib.utils.JsonGetter.getOr
+import io.github.nbcss.wynnlib.utils.Keyed
+import io.github.nbcss.wynnlib.utils.Scheduler
 import net.minecraft.client.MinecraftClient
 import java.security.KeyFactory
 import java.security.interfaces.RSAPrivateKey
@@ -69,18 +71,18 @@ object Settings {
                 indicators[entry.key] = entry.value.asBoolean
             }
             lockedSlots.clear()
-            lockedSlots.addAll(getOr(it, "locked", emptyList()){ i -> i.asInt })
+            lockedSlots.addAll(getOr(it, "locked", emptyList()) { i -> i.asInt })
             keys.clear()
-            keys.addAll(getOr(it, "keys", emptyList()){ i -> i.asString })
+            keys.addAll(getOr(it, "keys", emptyList()) { i -> i.asString })
             validateKeys()
         }
-        Scheduler.registerTask("SAVE_SETTING", 20){
+        Scheduler.registerTask("SAVE_SETTING", 20) {
             save()
         }
     }
 
     private fun save() {
-        if (dirty && !saving){
+        if (dirty && !saving) {
             saving = true
             thread(isDaemon = true) {
                 val data = JsonObject()
@@ -121,7 +123,8 @@ object Settings {
                         isTester = true
                         break
                     }
-                } catch (ignored: Exception) { }
+                } catch (ignored: Exception) {
+                }
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -144,7 +147,8 @@ object Settings {
                 }
                 return true
             }
-        } catch (e: Exception) { }
+        } catch (e: Exception) {
+        }
         return false
     }
 
@@ -153,7 +157,7 @@ object Settings {
     fun setSlotLocked(id: Int, locked: Boolean) {
         if (locked) {
             lockedSlots.add(id)
-        }else{
+        } else {
             lockedSlots.remove(id)
         }
         markDirty()
@@ -185,8 +189,10 @@ object Settings {
         dirty = true
     }
 
-    enum class SettingOption(val id: String,
-                             val defaultValue: Boolean): Keyed, Translatable {
+    enum class SettingOption(
+        val id: String,
+        val defaultValue: Boolean
+    ) : Keyed, Translatable {
         DURABILITY("durability", true),
         EMERALD_POUCH_BAR("emerald_pouch_bar", true),
         CONSUMABLE_CHARGE("consumable_charge", true),
@@ -204,7 +210,7 @@ object Settings {
 
         override fun getTranslationKey(label: String?): String {
             val key = id.lowercase()
-            if (label == "desc"){
+            if (label == "desc") {
                 return "wynnlib.setting_option.desc.$key"
             }
             return "wynnlib.setting_option.name.$key"

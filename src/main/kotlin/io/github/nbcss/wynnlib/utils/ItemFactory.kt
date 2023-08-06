@@ -1,12 +1,12 @@
 package io.github.nbcss.wynnlib.utils
 
 import io.github.nbcss.wynnlib.data.LegacyEntityMap
-import net.minecraft.datafixer.fix.ItemIdFix
 import io.github.nbcss.wynnlib.data.LegacyItemMap
 import io.github.nbcss.wynnlib.mixins.datafixer.ItemInstanceSpawnEggFixAccessor
 import io.github.nbcss.wynnlib.mixins.datafixer.ItemPotionFixAccessor
 import io.github.nbcss.wynnlib.mixins.datafixer.RecipeFixAccessor
 import net.minecraft.datafixer.fix.EntityTheRenameningBlock
+import net.minecraft.datafixer.fix.ItemIdFix
 import net.minecraft.datafixer.fix.ItemInstanceTheFlatteningFix
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
@@ -62,7 +62,7 @@ object ItemFactory {
                 val stack = ItemStack(item, 1)
                 val tag = if (array.size > 2) StringNbtReader.parse(array[2]) else stack.orCreateNbt
                 tag.putBoolean("Unbreakable", true)
-                if (meta > 0){
+                if (meta > 0) {
                     tag.putInt("Damage", meta)
                 }
                 stack.nbt = tag
@@ -85,20 +85,20 @@ object ItemFactory {
      */
     fun fromLegacyId(id: Int, meta: Int): ItemStack {
         var itemName: String = LegacyItemMap.get(id) ?: ItemIdFix.fromId(id)
-        var damage:Int = -1
+        var damage: Int = -1
         var potionType: String? = null
 
-        itemName = EntityTheRenameningBlock.ITEMS[itemName] ?: itemName // I don't know why mojang likes to rename items so much
+        itemName = EntityTheRenameningBlock.ITEMS[itemName]
+            ?: itemName // I don't know why mojang likes to rename items so much
         val flattenedItemString = ItemInstanceTheFlatteningFix.getItem(itemName, meta)
         if (flattenedItemString != null) {
             itemName = flattenedItemString
-        }
-        else if (meta != 0){ // The item 'should' be in the ItemInstanceTheFlatteningFix.DAMAGEABLE_ITEMS
+        } else if (meta != 0) { // The item 'should' be in the ItemInstanceTheFlatteningFix.DAMAGEABLE_ITEMS
             damage = meta
         }
         itemName = RecipeFixAccessor.getRECIPES()[itemName] ?: itemName
 
-        when(itemName){
+        when (itemName) {
             "minecraft:spawn_egg" -> run {
                 if (meta == 0) {
                     return ItemStack(Items.WOLF_SPAWN_EGG)
@@ -108,7 +108,8 @@ object ItemFactory {
                     itemName = ItemInstanceSpawnEggFixAccessor.getEntitySpawnEggs()[entity].toString()
                 }
             }
-            "minecraft:potion", "minecraft:splash_potion", "minecraft:lingering_potion"-> run {
+
+            "minecraft:potion", "minecraft:splash_potion", "minecraft:lingering_potion" -> run {
                 potionType = ItemPotionFixAccessor.getID_TO_POTIONS()[meta]
             }
         }
@@ -128,7 +129,7 @@ object ItemFactory {
             }
             nbt.put("tag", tag)
             val item = ItemStack.fromNbt(nbt)
-            if (item.isEmpty){
+            if (item.isEmpty) {
                 println("Could not find item with id $id and meta $meta")
                 return ERROR_ITEM
             }

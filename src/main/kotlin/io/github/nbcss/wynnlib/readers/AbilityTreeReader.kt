@@ -8,14 +8,17 @@ import net.minecraft.client.item.TooltipContext
 import net.minecraft.screen.slot.SlotActionType
 import java.util.function.Consumer
 
-class AbilityTreeReader(private val character: CharacterClass,
-                        private val callback: Consumer<AbilityTreeReader>): Processor {
+class AbilityTreeReader(
+    private val character: CharacterClass,
+    private val callback: Consumer<AbilityTreeReader>
+) : Processor {
     companion object {
         fun readActiveNodes(character: CharacterClass, callback: Consumer<AbilityTreeReader>) {
             val processor = AbilityTreeReader(character, callback)
             AbilityTreeHandler.setProcessor(processor)
         }
     }
+
     private val fixedAbilities: MutableSet<Ability> = mutableSetOf()
     private val mutableAbilities: MutableSet<Ability> = mutableSetOf()
     private var maxPoints: Int? = null
@@ -45,7 +48,7 @@ class AbilityTreeReader(private val character: CharacterClass,
         val nextPage = lastStacks[slotId]
         if (!nextPage.isEmpty) {
             clickSlot(slotId, 0, SlotActionType.PICKUP)
-        }else{
+        } else {
             val pointStack = lastStacks[58]
             val tooltip = pointStack.getTooltip(MinecraftClient.getInstance().player, TooltipContext.Default.NORMAL)
             maxPoints = tooltip.asSequence()

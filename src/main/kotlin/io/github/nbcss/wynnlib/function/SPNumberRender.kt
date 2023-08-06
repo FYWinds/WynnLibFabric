@@ -16,7 +16,8 @@ object SPNumberRender {
     private val pattern = Pattern.compile("§dUpgrade your §.. (.+)§d skill")
     private val pointPattern = Pattern.compile("^(-?\\d+) point")
     const val key = "skill_point"
-    object Reader: EventHandler<ItemLoadEvent> {
+
+    object Reader : EventHandler<ItemLoadEvent> {
         override fun handle(event: ItemLoadEvent) {
             val matcher = pattern.matcher(event.item.name.asString())
             if (matcher.find()) {
@@ -37,7 +38,7 @@ object SPNumberRender {
         }
     }
 
-    object Render: EventHandler<RenderItemOverrideEvent> {
+    object Render : EventHandler<RenderItemOverrideEvent> {
         override fun handle(event: RenderItemOverrideEvent) {
             if (!Settings.getOption(Settings.SettingOption.SP_VALUE))
                 return

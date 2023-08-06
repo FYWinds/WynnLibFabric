@@ -18,14 +18,12 @@ import io.github.nbcss.wynnlib.i18n.Translations.TOOLTIP_ARCHETYPE_TITLE
 import io.github.nbcss.wynnlib.registry.AbilityRegistry
 import io.github.nbcss.wynnlib.utils.*
 import net.minecraft.item.ItemStack
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import net.minecraft.util.math.MathHelper
 import java.util.function.Supplier
-import kotlin.collections.ArrayList
 
-class Ability(json: JsonObject): Keyed, Translatable, PlaceholderContainer, PropertyProvider {
+class Ability(json: JsonObject) : Keyed, Translatable, PlaceholderContainer, PropertyProvider {
     private val id: String
     private val name: String?
     private val tier: Tier
@@ -45,6 +43,7 @@ class Ability(json: JsonObject): Keyed, Translatable, PlaceholderContainer, Prop
     private val properties: MutableMap<String, AbilityProperty> = linkedMapOf()
     private val metadata: AbilityMetadata?
     private var successors: List<Ability>? = null
+
     //private val effect: AbilityEffect
     init {
         id = json["id"].asString
@@ -60,7 +59,7 @@ class Ability(json: JsonObject): Keyed, Translatable, PlaceholderContainer, Prop
             val loc = json["location"].asString.split(",")
             page = loc[0].toInt()
             slot = loc[1].toInt() * 9 + loc[2].toInt()
-        }else{
+        } else {
             page = 0
             slot = 0
         }
@@ -68,7 +67,7 @@ class Ability(json: JsonObject): Keyed, Translatable, PlaceholderContainer, Prop
             json["dependency"].asString else null
         blocks.addAll(json["blocks"].asJsonArray.map { e -> e.asString })
         predecessors.addAll(json["predecessors"].asJsonArray.map { e -> e.asString })
-        if (json.has("archetype_requirements")){
+        if (json.has("archetype_requirements")) {
             val requirements = json["archetype_requirements"].asJsonObject
             requirements.entrySet().forEach {
                 Archetype.fromName(it.key)?.let { arch -> archetypeReq[arch] = it.value.asInt }
@@ -82,18 +81,18 @@ class Ability(json: JsonObject): Keyed, Translatable, PlaceholderContainer, Prop
             4 -> Tier.TIER_4
             else -> Tier.ofCharacter(character)
         }
-        metadata = if (json.has("metadata") && json["metadata"].isJsonObject){
+        metadata = if (json.has("metadata") && json["metadata"].isJsonObject) {
             AbilityMetadata(this, json["metadata"].asJsonObject)
-        }else{
+        } else {
             null
         }
-        if (json.has("properties")){
+        if (json.has("properties")) {
             json["properties"].asJsonObject.entrySet().forEach {
                 val property = AbilityProperty.fromData(this, it.key, it.value)
                 if (property != null) {
                     properties[it.key] = property
                     property.writePlaceholder(this)
-                }else{
+                } else {
                     println("[Warning] Cannot read ability property ${it.key}")
                 }
             }
@@ -165,8 +164,10 @@ class Ability(json: JsonObject): Keyed, Translatable, PlaceholderContainer, Prop
     }
 
     fun getDescriptionTooltip(): List<Text> {
-        val desc = replaceProperty(replaceProperty(translate("desc").string, '$')
-        { getPlaceholder(it) }, '@') {
+        val desc = replaceProperty(
+            replaceProperty(translate("desc").string, '$')
+            { getPlaceholder(it) }, '@'
+        ) {
             val name = if (it.startsWith(".")) "wynnlib.ability.name${it.lowercase()}" else it
             from(name).translate().string
         }
@@ -177,92 +178,104 @@ class Ability(json: JsonObject): Keyed, Translatable, PlaceholderContainer, Prop
         val tree = AbilityRegistry.fromCharacter(getCharacter())
         val tooltip: MutableList<Text> = ArrayList()
         tooltip.add(translate().formatted(tier.getFormatting()).formatted(Formatting.BOLD))
-        if (getTier().getLevel() == 0){
+        if (getTier().getLevel() == 0) {
             val spell = BoundSpellProperty.from(this)
-            if (spell != null){
+            if (spell != null) {
                 tooltip.add(spell.getSpell().getComboText(getCharacter()))
-            }else if(isMainAttack()){
-                tooltip.add(Translations.TOOLTIP_ABILITY_CLICK_COMBO.translate().formatted(Formatting.GOLD)
-                    .append(": ").append(character.getMainAttackKey().translate()
-                        .formatted(Formatting.LIGHT_PURPLE).formatted(Formatting.BOLD)))
+            } else if (isMainAttack()) {
+                tooltip.add(
+                    Translations.TOOLTIP_ABILITY_CLICK_COMBO.translate().formatted(Formatting.GOLD)
+                        .append(": ").append(
+                            character.getMainAttackKey().translate()
+                                .formatted(Formatting.LIGHT_PURPLE).formatted(Formatting.BOLD)
+                        )
+                )
             }
         }
-        tooltip.add(LiteralText.EMPTY)
+        tooltip.add(Text.empty())
         tooltip.addAll(getDescriptionTooltip())
         //Add effect tooltip
         val propertyTooltip = getPropertiesTooltip()
-        if (propertyTooltip.isNotEmpty()){
-            tooltip.add(LiteralText.EMPTY)
+        if (propertyTooltip.isNotEmpty()) {
+            tooltip.add(Text.empty())
             tooltip.addAll(propertyTooltip)
         }
         //Add blocking abilities
         val incompatibles = getBlockAbilities()
-        if (incompatibles.isNotEmpty()){
-            tooltip.add(LiteralText.EMPTY)
+        if (incompatibles.isNotEmpty()) {
+            tooltip.add(Text.empty())
             tooltip.add(TOOLTIP_ABILITY_BLOCKS.translate().formatted(Formatting.RED))
             incompatibles.forEach {
-                val color = if (build == null || !build.hasAbility(it)){
+                val color = if (build == null || !build.hasAbility(it)) {
                     Formatting.GRAY
-                }else{
+                } else {
                     Formatting.DARK_RED
                 }
-                tooltip.add(LiteralText("- ").formatted(Formatting.RED)
-                    .append(it.translate().formatted(color)))
+                tooltip.add(
+                    Text.literal("- ").formatted(Formatting.RED)
+                        .append(it.translate().formatted(color))
+                )
             }
         }
         if (isMainAttack())
             return tooltip
-        tooltip.add(LiteralText.EMPTY)
-        val apReq = if (build == null || build.hasAbility(this)){
-            LiteralText("")
-        }else if(build.getSpareAbilityPoints() >= getAbilityPointCost()){
+        tooltip.add(Text.empty())
+        val apReq = if (build == null || build.hasAbility(this)) {
+            Text.literal("")
+        } else if (build.getSpareAbilityPoints() >= getAbilityPointCost()) {
             Symbol.TICK.asText().append(" ")
-        }else{
+        } else {
             Symbol.CROSS.asText().append(" ")
         }
         //Requirements
-        tooltip.add(apReq.append(TOOLTIP_ABILITY_POINTS.formatted(Formatting.GRAY))
-            .append(LiteralText(": ").formatted(Formatting.GRAY))
-            .append(LiteralText(getAbilityPointCost().toString()).formatted(Formatting.WHITE)))
-        if (dependency != null){
+        tooltip.add(
+            apReq.append(TOOLTIP_ABILITY_POINTS.formatted(Formatting.GRAY))
+                .append(Text.literal(": ").formatted(Formatting.GRAY))
+                .append(Text.literal(getAbilityPointCost().toString()).formatted(Formatting.WHITE))
+        )
+        if (dependency != null) {
             getAbilityDependency()?.let {
-                val dependencyReq = if (build == null || build.hasAbility(this)){
-                    LiteralText("")
-                }else if(build.hasAbility(it)){
+                val dependencyReq = if (build == null || build.hasAbility(this)) {
+                    Text.literal("")
+                } else if (build.hasAbility(it)) {
                     Symbol.TICK.asText().append(" ")
-                }else{
+                } else {
                     Symbol.CROSS.asText().append(" ")
                 }
-                tooltip.add(dependencyReq.append(TOOLTIP_ABILITY_DEPENDENCY.formatted(Formatting.GRAY))
-                    .append(LiteralText(": ").formatted(Formatting.GRAY))
-                    .append(it.formatted(Formatting.WHITE)))
+                tooltip.add(
+                    dependencyReq.append(TOOLTIP_ABILITY_DEPENDENCY.formatted(Formatting.GRAY))
+                        .append(Text.literal(": ").formatted(Formatting.GRAY))
+                        .append(it.formatted(Formatting.WHITE))
+                )
             }
         }
         tree.getArchetypes().filter { getArchetypeRequirement(it) != 0 }.forEach {
             val requirement = getArchetypeRequirement(it)
-            val archReq = if (build == null || build.hasAbility(this)){
-                LiteralText("")
-            }else if(build.getArchetypePoint(it) >= requirement){
+            val archReq = if (build == null || build.hasAbility(this)) {
+                Text.literal("")
+            } else if (build.getArchetypePoint(it) >= requirement) {
                 Symbol.TICK.asText().append(" ")
-            }else{
+            } else {
                 Symbol.CROSS.asText().append(" ")
             }
-            val points = if (build == null || build.hasAbility(this)){
-                LiteralText(requirement.toString()).formatted(Formatting.WHITE)
-            }else if(build.getArchetypePoint(it) >= requirement){
-                LiteralText(build.getArchetypePoint(it).toString()).formatted(Formatting.WHITE)
-                    .append(LiteralText("/${requirement}").formatted(Formatting.GRAY))
-            }else{
-                LiteralText(build.getArchetypePoint(it).toString()).formatted(Formatting.RED)
-                    .append(LiteralText("/${requirement}").formatted(Formatting.GRAY))
+            val points = if (build == null || build.hasAbility(this)) {
+                Text.literal(requirement.toString()).formatted(Formatting.WHITE)
+            } else if (build.getArchetypePoint(it) >= requirement) {
+                Text.literal(build.getArchetypePoint(it).toString()).formatted(Formatting.WHITE)
+                    .append(Text.literal("/${requirement}").formatted(Formatting.GRAY))
+            } else {
+                Text.literal(build.getArchetypePoint(it).toString()).formatted(Formatting.RED)
+                    .append(Text.literal("/${requirement}").formatted(Formatting.GRAY))
             }
             val title = TOOLTIP_ABILITY_MIN_ARCHETYPE.translate(null, it.translate().string)
-            tooltip.add(archReq.append(title.formatted(Formatting.GRAY))
-                .append(LiteralText(": ").formatted(Formatting.GRAY))
-                .append(points))
+            tooltip.add(
+                archReq.append(title.formatted(Formatting.GRAY))
+                    .append(Text.literal(": ").formatted(Formatting.GRAY))
+                    .append(points)
+            )
         }
         getArchetype()?.let {
-            tooltip.add(LiteralText.EMPTY)
+            tooltip.add(Text.empty())
             val title = TOOLTIP_ARCHETYPE_TITLE.translate(null, it.translate().string)
             tooltip.add(title.formatted(it.getFormatting()).formatted(Formatting.BOLD))
         }
@@ -272,7 +285,7 @@ class Ability(json: JsonObject): Keyed, Translatable, PlaceholderContainer, Prop
     fun updateEntries(container: EntryContainer): Boolean {
         var flag = true
         for (property in properties.values) {
-            if(!property.updateEntries(container)){
+            if (!property.updateEntries(container)) {
                 flag = false
             }
         }
@@ -285,7 +298,7 @@ class Ability(json: JsonObject): Keyed, Translatable, PlaceholderContainer, Prop
 
     override fun getTranslationKey(label: String?): String {
         val key = id.lowercase()
-        if (label == "desc"){
+        if (label == "desc") {
             return "wynnlib.ability.desc.$key"
         }
         return "wynnlib.ability.name.$key"
@@ -306,52 +319,73 @@ class Ability(json: JsonObject): Keyed, Translatable, PlaceholderContainer, Prop
         return getKey()
     }
 
-    enum class Tier(private val level: Int,
-                    private val formatting: Formatting,
-                    private val locked: ItemStack,
-                    private val unlocked: ItemStack,
-                    private val active: ItemStack,
-                    private val blocked: ItemStack? = null) {
-        WARRIOR_SPELL(0, Formatting.GREEN,
+    enum class Tier(
+        private val level: Int,
+        private val formatting: Formatting,
+        private val locked: ItemStack,
+        private val unlocked: ItemStack,
+        private val active: ItemStack,
+        private val blocked: ItemStack? = null
+    ) {
+        WARRIOR_SPELL(
+            0, Formatting.GREEN,
             ItemFactory.fromEncoding("minecraft:stone_axe#61"),
             ItemFactory.fromEncoding("minecraft:stone_axe#62"),
-            ItemFactory.fromEncoding("minecraft:stone_axe#63")),
-        ARCHER_SPELL(0, Formatting.GREEN,
+            ItemFactory.fromEncoding("minecraft:stone_axe#63")
+        ),
+        ARCHER_SPELL(
+            0, Formatting.GREEN,
             ItemFactory.fromEncoding("minecraft:stone_axe#64"),
             ItemFactory.fromEncoding("minecraft:stone_axe#65"),
-            ItemFactory.fromEncoding("minecraft:stone_axe#66")),
-        MAGE_SPELL(0, Formatting.GREEN,
+            ItemFactory.fromEncoding("minecraft:stone_axe#66")
+        ),
+        MAGE_SPELL(
+            0, Formatting.GREEN,
             ItemFactory.fromEncoding("minecraft:stone_axe#70"),
             ItemFactory.fromEncoding("minecraft:stone_axe#71"),
-            ItemFactory.fromEncoding("minecraft:stone_axe#72")),
-        ASSASSIN_SPELL(0, Formatting.GREEN,
+            ItemFactory.fromEncoding("minecraft:stone_axe#72")
+        ),
+        ASSASSIN_SPELL(
+            0, Formatting.GREEN,
             ItemFactory.fromEncoding("minecraft:stone_axe#67"),
             ItemFactory.fromEncoding("minecraft:stone_axe#68"),
-            ItemFactory.fromEncoding("minecraft:stone_axe#69")),
-        SHAMAN_SPELL(0, Formatting.GREEN,
+            ItemFactory.fromEncoding("minecraft:stone_axe#69")
+        ),
+        SHAMAN_SPELL(
+            0, Formatting.GREEN,
             ItemFactory.fromEncoding("minecraft:stone_axe#73"),
             ItemFactory.fromEncoding("minecraft:stone_axe#74"),
-            ItemFactory.fromEncoding("minecraft:stone_axe#75")),
-        TIER_1(1, Formatting.WHITE,
+            ItemFactory.fromEncoding("minecraft:stone_axe#75")
+        ),
+        TIER_1(
+            1, Formatting.WHITE,
             ItemFactory.fromEncoding("minecraft:stone_axe#45"),
             ItemFactory.fromEncoding("minecraft:stone_axe#46"),
             ItemFactory.fromEncoding("minecraft:stone_axe#47"),
-            ItemFactory.fromEncoding("minecraft:stone_axe#48")),
-        TIER_2(2, Formatting.GOLD,
+            ItemFactory.fromEncoding("minecraft:stone_axe#48")
+        ),
+        TIER_2(
+            2, Formatting.GOLD,
             ItemFactory.fromEncoding("minecraft:stone_axe#49"),
             ItemFactory.fromEncoding("minecraft:stone_axe#50"),
             ItemFactory.fromEncoding("minecraft:stone_axe#51"),
-            ItemFactory.fromEncoding("minecraft:stone_axe#52")),
-        TIER_3(3, Formatting.LIGHT_PURPLE,
+            ItemFactory.fromEncoding("minecraft:stone_axe#52")
+        ),
+        TIER_3(
+            3, Formatting.LIGHT_PURPLE,
             ItemFactory.fromEncoding("minecraft:stone_axe#53"),
             ItemFactory.fromEncoding("minecraft:stone_axe#54"),
             ItemFactory.fromEncoding("minecraft:stone_axe#55"),
-            ItemFactory.fromEncoding("minecraft:stone_axe#56")),
-        TIER_4(4, Formatting.RED,
+            ItemFactory.fromEncoding("minecraft:stone_axe#56")
+        ),
+        TIER_4(
+            4, Formatting.RED,
             ItemFactory.fromEncoding("minecraft:stone_axe#57"),
             ItemFactory.fromEncoding("minecraft:stone_axe#58"),
             ItemFactory.fromEncoding("minecraft:stone_axe#59"),
-            ItemFactory.fromEncoding("minecraft:stone_axe#60"));
+            ItemFactory.fromEncoding("minecraft:stone_axe#60")
+        );
+
         companion object {
             fun ofCharacter(character: CharacterClass): Tier {
                 return when (character) {

@@ -13,17 +13,19 @@ import io.github.nbcss.wynnlib.i18n.Translations
 import io.github.nbcss.wynnlib.utils.Symbol
 import io.github.nbcss.wynnlib.utils.colorOf
 import io.github.nbcss.wynnlib.utils.signed
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 
-class ShurikensBounceProperty(ability: Ability,
-                              private val bounce: Int):
+class ShurikensBounceProperty(
+    ability: Ability,
+    private val bounce: Int
+) :
     AbilityProperty(ability), SetupProperty, OverviewProvider {
-    companion object: Type<ShurikensBounceProperty> {
+    companion object : Type<ShurikensBounceProperty> {
         override fun create(ability: Ability, data: JsonElement): ShurikensBounceProperty {
             return ShurikensBounceProperty(ability, data.asInt)
         }
+
         override fun getKey(): String = "shurikens_bounce"
     }
 
@@ -33,7 +35,7 @@ class ShurikensBounceProperty(ability: Ability,
         if (bounce <= 0)
             return null
         return Symbol.ALTER_HITS.asText().append(" ").append(
-            LiteralText("$bounce").formatted(Formatting.WHITE)
+            Text.literal("$bounce").formatted(Formatting.WHITE)
         )
     }
 
@@ -48,18 +50,23 @@ class ShurikensBounceProperty(ability: Ability,
     override fun getTooltip(provider: PropertyProvider): List<Text> {
         if (bounce <= 0)
             return emptyList()
-        return listOf(Symbol.ALTER_HITS.asText().append(" ")
-            .append(Translations.TOOLTIP_ABILITY_ASSASSIN_SHURIKENS_BOUNCE.formatted(Formatting.GRAY).append(": "))
-            .append(LiteralText(bounce.toString()).formatted(Formatting.WHITE)))
+        return listOf(
+            Symbol.ALTER_HITS.asText().append(" ")
+                .append(Translations.TOOLTIP_ABILITY_ASSASSIN_SHURIKENS_BOUNCE.formatted(Formatting.GRAY).append(": "))
+                .append(Text.literal(bounce.toString()).formatted(Formatting.WHITE))
+        )
     }
 
-    class Modifier(ability: Ability,
-                   private val modifier: Int):
+    class Modifier(
+        ability: Ability,
+        private val modifier: Int
+    ) :
         AbilityProperty(ability), ModifiableProperty {
-        companion object: Type<Modifier> {
+        companion object : Type<Modifier> {
             override fun create(ability: Ability, data: JsonElement): Modifier {
                 return Modifier(ability, data.asInt)
             }
+
             override fun getKey(): String = "shurikens_bounce_modifier"
         }
 
@@ -77,9 +84,13 @@ class ShurikensBounceProperty(ability: Ability,
         }
 
         override fun getTooltip(provider: PropertyProvider): List<Text> {
-            return listOf(Symbol.ALTER_HITS.asText().append(" ")
-                .append(Translations.TOOLTIP_ABILITY_ASSASSIN_SHURIKENS_BOUNCE.formatted(Formatting.GRAY).append(": "))
-                .append(LiteralText(signed(modifier)).formatted(colorOf(modifier))))
+            return listOf(
+                Symbol.ALTER_HITS.asText().append(" ")
+                    .append(
+                        Translations.TOOLTIP_ABILITY_ASSASSIN_SHURIKENS_BOUNCE.formatted(Formatting.GRAY).append(": ")
+                    )
+                    .append(Text.literal(signed(modifier)).formatted(colorOf(modifier)))
+            )
         }
     }
 }

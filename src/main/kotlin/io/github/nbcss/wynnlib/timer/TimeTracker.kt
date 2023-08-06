@@ -2,8 +2,10 @@ package io.github.nbcss.wynnlib.timer
 
 import kotlin.math.max
 
-class TimeTracker(private var currentTime: Long,
-                  duration: Int = -1) {
+class TimeTracker(
+    private var currentTime: Long,
+    duration: Int = -1
+) {
     private var endTime: Long = if (duration > 0) toEndTime(currentTime, duration) else 0
 
     private fun toEndTime(time: Long, duration: Int): Long {

@@ -6,11 +6,12 @@ import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.util.Identifier
 
-class TemporaryEffectIndicator(data: JsonObject): StatusType(data) {
-    companion object: Factory {
+class TemporaryEffectIndicator(data: JsonObject) : StatusType(data) {
+    companion object : Factory {
         override fun create(data: JsonObject): StatusType {
             return TemporaryEffectIndicator(data)
         }
+
         override fun getKey(): String = "TEMP_EFFECT"
     }
 

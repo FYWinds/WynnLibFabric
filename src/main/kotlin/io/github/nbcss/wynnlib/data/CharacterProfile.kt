@@ -1,7 +1,6 @@
 package io.github.nbcss.wynnlib.data
 
 import net.minecraft.client.MinecraftClient
-import net.minecraft.util.math.MathHelper
 
 class CharacterProfile {
     companion object {

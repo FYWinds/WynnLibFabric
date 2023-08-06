@@ -20,7 +20,7 @@ object ShieldIndicator {
         return group
     }
 
-    object SpellTrigger: EventHandler<SpellCastEvent> {
+    object SpellTrigger : EventHandler<SpellCastEvent> {
         override fun handle(event: SpellCastEvent) {
             if (event.ability.getName() == "War Scream") {
                 lastTrigger = 1
@@ -28,7 +28,7 @@ object ShieldIndicator {
         }
     }
 
-    object EntitySpawn: EventHandler<ArmourStandUpdateEvent> {
+    object EntitySpawn : EventHandler<ArmourStandUpdateEvent> {
         override fun handle(event: ArmourStandUpdateEvent) {
             val item = event.entity.armorItems.last()
 
@@ -38,9 +38,9 @@ object ShieldIndicator {
                     return
                 val group = if ((id - 1) in shields) {
                     shields[id - 1]!!
-                }else if ((id + 1) in shields) {
+                } else if ((id + 1) in shields) {
                     shields[id + 1]!!
-                }else{
+                } else {
                     newGroup()
                 }
                 group.size += 1
@@ -49,7 +49,7 @@ object ShieldIndicator {
         }
     }
 
-    object Ticker: EventHandler<ClientTickEvent> {
+    object Ticker : EventHandler<ClientTickEvent> {
         override fun handle(event: ClientTickEvent) {
             if (lastTrigger >= 0) {
                 for (group in groups) {

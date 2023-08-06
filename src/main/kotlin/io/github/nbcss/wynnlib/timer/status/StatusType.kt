@@ -14,19 +14,18 @@ import io.github.nbcss.wynnlib.utils.formatTimer
 import io.github.nbcss.wynnlib.utils.removeDecimal
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import net.minecraft.util.Identifier
 import kotlin.math.roundToInt
 
-abstract class StatusType(data: JsonObject): Keyed, Translatable {
+abstract class StatusType(data: JsonObject) : Keyed, Translatable {
     private val id: String = data["id"].asString
     private val icon: String = data["icon"].asString
     private val name: String = data["name"].asString
     private val text: Translatable? = if (!data["text"].isJsonNull) {
         Translatable.from("wynnlib.indicator.${data["text"].asString.lowercase()}")
-    }else{
+    } else {
         null
     }
     private val texture: Identifier? = if (!data["texture"].isJsonNull) {
@@ -43,11 +42,13 @@ abstract class StatusType(data: JsonObject): Keyed, Translatable {
         posX: Int, posY: Int, delta: Float
     )
 
-    fun renderText(matrices: MatrixStack,
-                   timer: TypedStatusTimer,
-                   displayText: Text,
-                   posX: Int, posY: Int) {
-        val text = LiteralText("")
+    fun renderText(
+        matrices: MatrixStack,
+        timer: TypedStatusTimer,
+        displayText: Text,
+        posX: Int, posY: Int
+    ) {
+        val text = Text.literal("")
         val duration: Double? = timer.getDuration()
         if (duration != null) {
             var color = Formatting.GREEN
@@ -56,7 +57,7 @@ abstract class StatusType(data: JsonObject): Keyed, Translatable {
             } else if (duration < 30) {
                 color = Formatting.GOLD
             }
-            text.append(LiteralText(formatTimer((duration * 1000).toLong())).formatted(color))
+            text.append(Text.literal(formatTimer((duration * 1000).toLong())).formatted(color))
                 .append(" ")
         }
         text.append(displayText)
@@ -74,6 +75,7 @@ abstract class StatusType(data: JsonObject): Keyed, Translatable {
                 val displayText = text.formatted(Formatting.GRAY, label = null, args = args)
                 renderText(matrices, timer, displayText, posX, posY)
             }
+
             override fun getDuration(): Double? {
                 return timer.getDuration()
             }
@@ -85,6 +87,7 @@ abstract class StatusType(data: JsonObject): Keyed, Translatable {
             override fun getKey(): String {
                 return id
             }
+
             override fun render(matrices: MatrixStack, textRenderer: TextRenderer, posX: Int, posY: Int, delta: Float) {
                 renderIcon(matrices, textRenderer, timer, texture, posX, posY, delta)
             }
@@ -106,7 +109,7 @@ abstract class StatusType(data: JsonObject): Keyed, Translatable {
         return "wynnlib.indicator.name.${id.lowercase()}"
     }
 
-    companion object: Registry<StatusType>() {
+    companion object : Registry<StatusType>() {
         val ICON_BACKGROUND: Identifier = Identifier("wynnlib", "textures/hud/timer_background.png")
         private const val RESOURCE = "assets/wynnlib/data/Timers.json"
         private const val UNIT_SIZE = 85
@@ -152,7 +155,7 @@ abstract class StatusType(data: JsonObject): Keyed, Translatable {
         }
     }
 
-    interface Factory: Keyed {
+    interface Factory : Keyed {
         fun create(data: JsonObject): StatusType
     }
 }

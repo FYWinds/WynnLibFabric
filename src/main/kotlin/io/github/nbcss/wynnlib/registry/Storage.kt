@@ -4,23 +4,23 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import io.github.nbcss.wynnlib.utils.Keyed
 
-abstract class Storage<T: Keyed> {
+abstract class Storage<T : Keyed> {
     protected val itemMap: MutableMap<String, T> = linkedMapOf()
 
     abstract fun load()
 
     protected abstract fun read(data: JsonObject): T?
 
-    open fun reload(json: JsonObject){
+    open fun reload(json: JsonObject) {
         val array = json["data"].asJsonArray
         reload(array)
     }
 
-    open fun reload(array: JsonArray){
+    open fun reload(array: JsonArray) {
         itemMap.clear()
-        array.forEach{
+        array.forEach {
             val item = read(it.asJsonObject)
-            if (item!= null){
+            if (item != null) {
                 put(item)
             }
         }

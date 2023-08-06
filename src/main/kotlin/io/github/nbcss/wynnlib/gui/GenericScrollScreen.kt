@@ -19,6 +19,7 @@ abstract class GenericScrollScreen(parent: Screen?, title: Text) : HandbookTabSc
         const val SLIDER_WIDTH = 10
         const val BAR_HEIGHT = 30
     }
+
     protected var client: MinecraftClient = MinecraftClient.getInstance()
     protected var slider: VerticalSliderWidget? = null
     protected var scrollX: Int = windowX + 12
@@ -29,8 +30,10 @@ abstract class GenericScrollScreen(parent: Screen?, title: Text) : HandbookTabSc
         super.init()
         scrollX = windowX + 12
         scrollY = windowY + 44
-        slider = VerticalSliderWidget(windowX + 225, windowY + 44,
-            SLIDER_WIDTH, SCROLL_HEIGHT, BAR_HEIGHT, SLIDER_TEXTURE){
+        slider = VerticalSliderWidget(
+            windowX + 225, windowY + 44,
+            SLIDER_WIDTH, SCROLL_HEIGHT, BAR_HEIGHT, SLIDER_TEXTURE
+        ) {
             getScroll()?.let { scroll ->
                 scroll.setScrollPosition(it * scroll.getMaxPosition())
             }

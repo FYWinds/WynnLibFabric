@@ -9,9 +9,11 @@ import net.minecraft.client.item.TooltipContext
 import net.minecraft.screen.slot.SlotActionType
 import java.util.regex.Pattern
 
-class AbilityTreeModifier(private val character: CharacterClass,
-                          private val abilities: List<Ability>,
-                          private val removed: List<Ability>): Processor {
+class AbilityTreeModifier(
+    private val character: CharacterClass,
+    private val abilities: List<Ability>,
+    private val removed: List<Ability>
+) : Processor {
     companion object {
         private val unlockPattern = Pattern.compile("Unlock (.+) ability")
         fun modifyNodes(character: CharacterClass, abilities: List<Ability>, remove: List<Ability>) {
@@ -19,6 +21,7 @@ class AbilityTreeModifier(private val character: CharacterClass,
             AbilityTreeHandler.setProcessor(processor)
         }
     }
+
     private var removeIndex: Int = 0
     private var unlockIndex: Int = 0
     private var dead: Boolean = false
@@ -43,10 +46,10 @@ class AbilityTreeModifier(private val character: CharacterClass,
         if (targetPage < currentPage) {
             //go last page
             clickSlot(57, 0, SlotActionType.PICKUP)
-        }else if (targetPage > currentPage) {
+        } else if (targetPage > currentPage) {
             //go next page
             clickSlot(59, 0, SlotActionType.PICKUP)
-        }else{
+        } else {
             //click slot ! check it is unlocked
             val slotId = ability.getSlot()
             val stack = lastStacks[slotId]
@@ -54,29 +57,31 @@ class AbilityTreeModifier(private val character: CharacterClass,
             if (removeIndex < removed.size) {
                 if (name == ability.getName() &&
                     stack.getTooltip(MinecraftClient.getInstance().player, TooltipContext.Default.NORMAL)
-                        .filter { it.asString() == "" && it.siblings.isNotEmpty()}
+                        .filter { it.asString() == "" && it.siblings.isNotEmpty() }
                         .map { it.siblings[0].asString() }
-                        .any { it == "Right Click to undo" }) {
+                        .any { it == "Right Click to undo" }
+                ) {
                     clickSlot(slotId, 1, SlotActionType.QUICK_MOVE)
-                }else{
+                } else {
                     val unlockMatcher = unlockPattern.matcher(name)
                     if (name == ability.getName() ||
-                        (unlockMatcher.find() && unlockMatcher.group(1) == ability.getName())){
+                        (unlockMatcher.find() && unlockMatcher.group(1) == ability.getName())
+                    ) {
                         removeIndex += 1
                         next()
-                    }else{
+                    } else {
                         dead = true
                         AbilityTreeHandler.clearProcessor()
                     }
                 }
-            }else{
+            } else {
                 val unlockMatcher = unlockPattern.matcher(name)
-                if (unlockMatcher.find() && unlockMatcher.group(1) == ability.getName()){
+                if (unlockMatcher.find() && unlockMatcher.group(1) == ability.getName()) {
                     clickSlot(slotId, 0, SlotActionType.PICKUP)
-                }else if(name == ability.getName()){
+                } else if (name == ability.getName()) {
                     unlockIndex += 1
                     next()
-                }else{
+                } else {
                     println("Incorrect ability name $name; data outdated?")
                     dead = true
                     AbilityTreeHandler.clearProcessor()

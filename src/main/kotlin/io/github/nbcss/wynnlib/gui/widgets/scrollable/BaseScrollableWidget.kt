@@ -1,7 +1,9 @@
 package io.github.nbcss.wynnlib.gui.widgets.scrollable
 
-abstract class BaseScrollableWidget(private val posX: Int,
-                                    private val posY: Int): ScrollElement {
+abstract class BaseScrollableWidget(
+    private val posX: Int,
+    private val posY: Int
+) : ScrollElement {
     private var interactable: Boolean = true
     private var x: Int = -99999
     private var y: Int = -99999

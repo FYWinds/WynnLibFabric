@@ -2,7 +2,7 @@ package io.github.nbcss.wynnlib.data
 
 import io.github.nbcss.wynnlib.i18n.Translatable
 
-enum class MouseKey: Translatable {
+enum class MouseKey : Translatable {
     LEFT, RIGHT;
 
     fun opposite(): MouseKey {

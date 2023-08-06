@@ -5,11 +5,12 @@ import io.github.nbcss.wynnlib.data.Element
 import net.minecraft.text.Text
 import java.util.regex.Pattern
 
-class PowderProperty: AnalysisProperty {
+class PowderProperty : AnalysisProperty {
     companion object {
         private val POWDER_PATTERN = Pattern.compile("\\[\\d+/(\\d+)] Powder Slots")
         const val KEY = "POWDERS"
     }
+
     private var powderSlots: Int = 0
     private val powders: MutableList<Element> = mutableListOf()
 
@@ -24,15 +25,15 @@ class PowderProperty: AnalysisProperty {
         val baseString = base.asString()
         val matcher = if (baseString != "") {
             POWDER_PATTERN.matcher(baseString)
-        }else if(base.siblings.isNotEmpty()){
+        } else if (base.siblings.isNotEmpty()) {
             POWDER_PATTERN.matcher(base.siblings[0].asString())
-        }else{
+        } else {
             return 0
         }
-        if(matcher.find()) {
+        if (matcher.find()) {
             powderSlots = matcher.group(1).toInt()
             powders.clear()
-            for (i in (1 until base.siblings.size - 1)){
+            for (i in (1 until base.siblings.size - 1)) {
                 Element.fromIcon(base.siblings[i].asString().trim())?.let {
                     powders.add(it)
                 }

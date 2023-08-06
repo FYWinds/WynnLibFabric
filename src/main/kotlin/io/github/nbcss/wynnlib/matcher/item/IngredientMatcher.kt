@@ -18,7 +18,7 @@ object IngredientMatcher : ItemMatcher {
         return null
     }
 
-    class SimpleAdaptor(private val item: Ingredient): MatchableItem {
+    class SimpleAdaptor(private val item: Ingredient) : MatchableItem {
         override fun getMatcherType(): MatcherType {
             return MatcherType.fromIngredientTier(item.getTier())
         }

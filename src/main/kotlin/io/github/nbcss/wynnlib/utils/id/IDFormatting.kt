@@ -14,14 +14,16 @@ import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 
 enum class IDFormatting {
-    BASE{
-        override fun formatting(item: IdentificationHolder,
-                                id: Identification, 
-                                range: IRange): List<Text> {
-            if (!range.isZero()){
+    BASE {
+        override fun formatting(
+            item: IdentificationHolder,
+            id: Identification,
+            range: IRange
+        ): List<Text> {
+            if (!range.isZero()) {
                 val color = colorOf(if (id.inverted) -range.lower() else range.lower())
                 val text = SuffixTranslation.withSuffix(range.lower(), id.suffix).formatted(color)
-                if (!range.isConstant()){
+                if (!range.isConstant()) {
                     val nextColor = colorOf(if (id.inverted) -range.upper() else range.upper())
                     val rangeColor = colorOfDark(
                         when {
@@ -38,12 +40,12 @@ enum class IDFormatting {
             return emptyList()
         }
     },
-    TOME{
+    TOME {
         private val effect = Translatable.from("wynnlib.tooltip.tome.effect")
         override fun formatting(item: IdentificationHolder, id: Identification, range: IRange): List<Text> {
-            if (!range.isZero()){
+            if (!range.isZero()) {
                 var rangeText = signed(range.lower())
-                if (!range.isConstant()){
+                if (!range.isConstant()) {
                     rangeText += "-${range.upper()}"
                 }
                 val value = SuffixTranslation.withSuffix(rangeText, id.suffix).string + " " + id.translate().string
@@ -57,9 +59,9 @@ enum class IDFormatting {
     companion object {
         fun fromName(name: String): IDFormatting {
             //only have two cases here so simple match :)
-            return if (name.uppercase() == "TOME"){
+            return if (name.uppercase() == "TOME") {
                 TOME
-            }else{
+            } else {
                 BASE
             }
         }

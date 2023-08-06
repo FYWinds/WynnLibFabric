@@ -16,7 +16,6 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.decoration.ArmorStandEntity
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import net.minecraft.util.math.MathHelper
@@ -24,13 +23,15 @@ import java.util.regex.Pattern
 import kotlin.math.max
 import kotlin.math.roundToInt
 
-class HoundTimerIndicator(private val entity: ArmorStandEntity,
-                          startTime: Long): ITimer, IconIndicator {
+class HoundTimerIndicator(
+    private val entity: ArmorStandEntity,
+    startTime: Long
+) : ITimer, IconIndicator {
     private val duration: Double = AbilityRegistry.get("CALL_OF_THE_HOUND")
-        ?.let{ DurationProperty.from(it) }?.getDuration() ?: 60.0
+        ?.let { DurationProperty.from(it) }?.getDuration() ?: 60.0
     private val timeTracker: TimeTracker = TimeTracker(startTime, duration.toInt())
 
-    companion object: EventHandler<ArmourStandUpdateEvent> {
+    companion object : EventHandler<ArmourStandUpdateEvent> {
         private val HOUND_PATTERN = Pattern.compile("§b(.+)'s?§7 Hound")
         private val TIMER_PATTERN = Pattern.compile("§7(\\d+)s")
         private val client = MinecraftClient.getInstance()
@@ -101,7 +102,7 @@ class HoundTimerIndicator(private val entity: ArmorStandEntity,
         }
         val textX: Int = posX + 14 - textRenderer.getWidth(time) / 2
         val textY = posY + 25
-        val text: Text = LiteralText(time).formatted(Formatting.LIGHT_PURPLE)
+        val text: Text = Text.literal(time).formatted(Formatting.LIGHT_PURPLE)
         RenderKit.renderOutlineText(matrices, text, textX.toFloat(), textY.toFloat())
         RenderKit.renderTexture(
             matrices, icon, posX + 5, posY + 2, 0, 0, 18, 18, 18, 18

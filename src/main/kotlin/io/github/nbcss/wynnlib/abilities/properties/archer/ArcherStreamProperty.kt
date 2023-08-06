@@ -11,17 +11,19 @@ import io.github.nbcss.wynnlib.abilities.properties.SetupProperty
 import io.github.nbcss.wynnlib.i18n.Translations
 import io.github.nbcss.wynnlib.utils.Symbol
 import io.github.nbcss.wynnlib.utils.signed
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 
-class ArcherStreamProperty(ability: Ability,
-                           private val streams: Int):
+class ArcherStreamProperty(
+    ability: Ability,
+    private val streams: Int
+) :
     AbilityProperty(ability), SetupProperty {
-    companion object: Type<ArcherStreamProperty> {
+    companion object : Type<ArcherStreamProperty> {
         override fun create(ability: Ability, data: JsonElement): ArcherStreamProperty {
             return ArcherStreamProperty(ability, data.asInt)
         }
+
         override fun getKey(): String = "archer_stream"
     }
 
@@ -36,20 +38,25 @@ class ArcherStreamProperty(ability: Ability,
     }
 
     override fun getTooltip(provider: PropertyProvider): List<Text> {
-        return listOf(Symbol.ALTER_HITS.asText().append(" ")
-            .append(Translations.TOOLTIP_ABILITY_ARCHER_STREAM.formatted(Formatting.GRAY).append(": "))
-            .append(LiteralText(streams.toString()).formatted(Formatting.WHITE)))
+        return listOf(
+            Symbol.ALTER_HITS.asText().append(" ")
+                .append(Translations.TOOLTIP_ABILITY_ARCHER_STREAM.formatted(Formatting.GRAY).append(": "))
+                .append(Text.literal(streams.toString()).formatted(Formatting.WHITE))
+        )
     }
 
-    class Modifier(ability: Ability, data: JsonElement):
+    class Modifier(ability: Ability, data: JsonElement) :
         AbilityProperty(ability), ModifiableProperty {
-        companion object: Type<Modifier> {
+        companion object : Type<Modifier> {
             override fun create(ability: Ability, data: JsonElement): Modifier {
                 return Modifier(ability, data)
             }
+
             override fun getKey(): String = "archer_stream_modifier"
         }
+
         private val modifier: Int = data.asInt
+
         init {
             ability.putPlaceholder(getKey(), modifier.toString())
         }
@@ -64,9 +71,11 @@ class ArcherStreamProperty(ability: Ability,
         }
 
         override fun getTooltip(provider: PropertyProvider): List<Text> {
-            return listOf(Symbol.ALTER_HITS.asText().append(" ")
-                .append(Translations.TOOLTIP_ABILITY_ARCHER_STREAM.formatted(Formatting.GRAY).append(": "))
-                .append(LiteralText(signed(modifier)).formatted(Formatting.WHITE)))
+            return listOf(
+                Symbol.ALTER_HITS.asText().append(" ")
+                    .append(Translations.TOOLTIP_ABILITY_ARCHER_STREAM.formatted(Formatting.GRAY).append(": "))
+                    .append(Text.literal(signed(modifier)).formatted(Formatting.WHITE))
+            )
         }
     }
 }

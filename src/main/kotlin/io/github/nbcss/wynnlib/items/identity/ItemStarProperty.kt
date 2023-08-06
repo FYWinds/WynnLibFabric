@@ -12,7 +12,7 @@ object ItemStarProperty {
     fun setStarred(item: ConfigurableItem, starred: Boolean) {
         if (starred) {
             ConfigurableItem.Modifier.write(item, STARRED_FIELD, JsonPrimitive(true))
-        }else{
+        } else {
             ConfigurableItem.Modifier.clear(item, STARRED_FIELD)
         }
     }

@@ -16,7 +16,7 @@ object BoxMatcher : ItemMatcher {
             var levelRange: IRange = SimpleIRange(0, 0)
             var tier: Tier? = null
             var type: EquipmentType = EquipmentType.INVALID
-            try{
+            try {
                 tooltip.forEach {
                     if (it.string.contains("Range:")) {
                         levelRange = LV_RANGE_PATTERN.find(it.string)?.let { match ->
@@ -30,7 +30,7 @@ object BoxMatcher : ItemMatcher {
                         type = EquipmentType.fromDisplayName(it.siblings[0].siblings[2].string)
                     }
                 }
-            }catch (e: Exception) {
+            } catch (e: Exception) {
                 return null
             }
             if (type != EquipmentType.INVALID) {

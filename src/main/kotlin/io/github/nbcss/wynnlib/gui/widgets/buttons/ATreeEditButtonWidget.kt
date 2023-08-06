@@ -9,16 +9,19 @@ import io.github.nbcss.wynnlib.registry.AbilityRegistry
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.gui.widget.ButtonWidget
+import net.minecraft.client.gui.widget.ButtonWidget.PressAction
 import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.text.LiteralText
+import net.minecraft.text.Text
 
-class ATreeEditButtonWidget(private val parent: Screen,
-                            private val character: CharacterClass, x: Int, y: Int):
-    ButtonWidget(x, y, 20, 20, LiteralText("#"), PressAction { handlePress(it) }) {
+class ATreeEditButtonWidget(
+    private val parent: Screen,
+    private val character: CharacterClass, x: Int, y: Int
+) :
+    ButtonWidget(x, y, 20, 20, Text.literal("#"), PressAction { handlePress(it) }) {
     companion object {
         private fun handlePress(button: ButtonWidget) {
             if (button is ATreeEditButtonWidget) {
-                AbilityTreeReader.readActiveNodes(button.character){
+                AbilityTreeReader.readActiveNodes(button.character) {
                     val tree = AbilityRegistry.fromCharacter(button.character)
                     val fixed: MutableSet<Ability> = it.getActiveAbilities().toMutableSet()
                     val mutable: MutableSet<Ability> = it.getMutableAbilities().toMutableSet()

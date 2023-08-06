@@ -72,7 +72,8 @@ object Translations {
     val TOOLTIP_ABILITY_MAGE_LIGHTWEAVER_ORBS: Translatable = from("wynnlib.tooltip.ability.mage_lightweaver_orbs")
     val TOOLTIP_ABILITY_MAGE_TIMELOCK_TIP: Translatable = from("wynnlib.tooltip.ability.mage_timelock_absorb")
     val TOOLTIP_ABILITY_ASSASSIN_BLOOM_TIP: Translatable = from("wynnlib.tooltip.ability.assassin_bloom")
-    val TOOLTIP_ABILITY_ASSASSIN_SHURIKENS_BOUNCE: Translatable = from("wynnlib.tooltip.ability.assassin_shurikens_bounce")
+    val TOOLTIP_ABILITY_ASSASSIN_SHURIKENS_BOUNCE: Translatable =
+        from("wynnlib.tooltip.ability.assassin_shurikens_bounce")
     val TOOLTIP_ABILITY_SHAMAN_REGENERATION: Translatable = from("wynnlib.tooltip.ability.shaman_regeneration")
     val TOOLTIP_ABILITY_SHAMAN_BLOOD_TRANSFER: Translatable = from("wynnlib.tooltip.ability.shaman_blood_transfer")
     val TOOLTIP_ABILITY_UNUSABLE: Translatable = from("wynnlib.tooltip.ability.unusable_warning")
@@ -105,6 +106,7 @@ object Translations {
     val INDICATOR_SUFFIX_S: Translatable = from("wynnlib.indicator_suffix.sec")
     val TOOLTIP_SUFFIX_PER_S: Translatable = from("wynnlib.tooltip.suffix.per_s")
     val TOOLTIP_SHIFT_UPGRADE: Translatable = from("wynnlib.tooltip.shift_for_upgrade_description")
+
     //powder spec
     val TOOLTIP_POWDER_SPEC_DURATION: Translatable = from("wynnlib.powder_spec.tooltip.duration")
     val TOOLTIP_POWDER_SPEC_DAMAGE: Translatable = from("wynnlib.powder_spec.tooltip.damage")
@@ -117,6 +119,7 @@ object Translations {
     val SUFFIX_POWDER_SPEC_BLOCKS: Translatable = from("wynnlib.powder_spec.suffix.blocks")
     val SUFFIX_POWDER_SPEC_DAM_PER_MANA: Translatable = from("wynnlib.powder_spec.suffix.damage_per_mana")
     val SUFFIX_POWDER_SPEC_SEC_PER_MANA: Translatable = from("wynnlib.powder_spec.suffix.sec_per_mana")
+
     //ability spec
     val TOOLTIP_ABILITY_ARCHER_STREAM: Translatable = from("wynnlib.gameplay.archer_stream")
     val TOOLTIP_ABILITY_ARCHER_SENTIENT_BOWS: Translatable = from("wynnlib.gameplay.archer_sentient_bows")

@@ -9,13 +9,11 @@ import io.github.nbcss.wynnlib.gui.HandbookTabScreen
 import io.github.nbcss.wynnlib.gui.widgets.ATreeScrollWidget
 import io.github.nbcss.wynnlib.i18n.Translations
 import io.github.nbcss.wynnlib.render.RenderKit
-import io.github.nbcss.wynnlib.render.TextureData
 import io.github.nbcss.wynnlib.utils.*
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.gui.tooltip.TooltipComponent
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.item.ItemStack
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import net.minecraft.util.Identifier
@@ -31,6 +29,7 @@ abstract class AbstractAbilityTreeScreen(parent: Screen?) : HandbookTabScreen(pa
         val LOCKED_OUTER_COLOR: AlphaColor = Color(0x2D2E30).solid()
         val LOCKED_INNER_COLOR: AlphaColor = Color(0x252527).solid()
     }
+
     protected var viewerX: Int = 0
     protected var viewerY: Int = 0
 
@@ -40,18 +39,20 @@ abstract class AbstractAbilityTreeScreen(parent: Screen?) : HandbookTabScreen(pa
 
     abstract fun getViewer(): ATreeScrollWidget?
 
-    fun renderAbilityTooltip(matrices: MatrixStack,
-                             mouseX: Int,
-                             mouseY: Int,
-                             ability: Ability,
-                             tooltip: MutableList<Text> = ability.getTooltip().toMutableList()) {
+    fun renderAbilityTooltip(
+        matrices: MatrixStack,
+        mouseX: Int,
+        mouseY: Int,
+        ability: Ability,
+        tooltip: MutableList<Text> = ability.getTooltip().toMutableList()
+    ) {
         var icon: Identifier? = null
         var upgrade = false
         val metadata = ability.getMetadata()
         if (tooltip.size >= 2) {
-            if(metadata != null) {
+            if (metadata != null) {
                 icon = metadata.getTexture()
-            }else{
+            } else {
                 UpgradeProperty.from(ability)?.let { property ->
                     property.getUpgradingAbility()?.let {
                         icon = it.getMetadata()?.getTexture()
@@ -60,9 +61,9 @@ abstract class AbstractAbilityTreeScreen(parent: Screen?) : HandbookTabScreen(pa
                 }
             }
         }
-        if (icon != null){
-            tooltip[0] = LiteralText("     ").append(tooltip[0])
-            tooltip[1] = LiteralText("     ").append(tooltip[1])
+        if (icon != null) {
+            tooltip[0] = Text.literal("     ").append(tooltip[0])
+            tooltip[1] = Text.literal("     ").append(tooltip[1])
         }
         renderTooltip(matrices, tooltip, mouseX, mouseY + 20)
         if (icon != null) {
@@ -90,11 +91,15 @@ abstract class AbstractAbilityTreeScreen(parent: Screen?) : HandbookTabScreen(pa
             }
             RenderSystem.disableDepthTest()
             RenderSystem.enableBlend()
-            RenderKit.renderTexture(matrices, icon!!, x, y,
-                0, 0, 18, 18, 18, 18)
+            RenderKit.renderTexture(
+                matrices, icon!!, x, y,
+                0, 0, 18, 18, 18, 18
+            )
             if (upgrade) {
-                RenderKit.renderAnimatedTexture(matrices, UPGRADE_TEXTURE,
-                    x, y, 18, 18, 20, 50, 300)
+                RenderKit.renderAnimatedTexture(
+                    matrices, UPGRADE_TEXTURE,
+                    x, y, 18, 18, 20, 50, 300
+                )
             }
             RenderSystem.enableDepthTest()
         }
@@ -102,7 +107,7 @@ abstract class AbstractAbilityTreeScreen(parent: Screen?) : HandbookTabScreen(pa
 
     fun renderArchetypeIcon(matrices: MatrixStack, archetype: Archetype, x: Int, y: Int) {
         val icon = archetype.getTexture()
-        val iconText = LiteralText(archetype.getIconText())
+        val iconText = Text.literal(archetype.getIconText())
             .formatted(Formatting.BOLD).formatted(archetype.getFormatting())
         itemRenderer.renderInGuiWithOverrides(icon, x, y)
         matrices.push()

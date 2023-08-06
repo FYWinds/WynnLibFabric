@@ -26,7 +26,7 @@ object IndicatorManager {
             for (key in keys) {
                 val timer = timerMap[key]!!
                 timer.updateWorldTime(worldTime)
-                if (timer.isExpired()){
+                if (timer.isExpired()) {
                     timerMap.remove(key)
                 }
             }
@@ -38,7 +38,7 @@ object IndicatorManager {
             val keys = timerMap.keys.toList()
             for (key in keys) {
                 val timer = timerMap[key]!!
-                if (timer.onClear(event)){
+                if (timer.onClear(event)) {
                     timerMap.remove(key)
                 }
             }

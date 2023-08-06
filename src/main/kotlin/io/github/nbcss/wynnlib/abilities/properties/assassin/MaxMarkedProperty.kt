@@ -13,17 +13,19 @@ import io.github.nbcss.wynnlib.i18n.Translations
 import io.github.nbcss.wynnlib.utils.Symbol
 import io.github.nbcss.wynnlib.utils.colorOf
 import io.github.nbcss.wynnlib.utils.signed
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 
-class MaxMarkedProperty(ability: Ability,
-                        private val maxMarked: Int):
+class MaxMarkedProperty(
+    ability: Ability,
+    private val maxMarked: Int
+) :
     AbilityProperty(ability), SetupProperty, OverviewProvider {
-    companion object: Type<MaxMarkedProperty> {
+    companion object : Type<MaxMarkedProperty> {
         override fun create(ability: Ability, data: JsonElement): MaxMarkedProperty {
             return MaxMarkedProperty(ability, data.asInt)
         }
+
         override fun getKey(): String = "max_marked"
     }
 
@@ -31,7 +33,7 @@ class MaxMarkedProperty(ability: Ability,
 
     override fun getOverviewTip(): Text {
         return Symbol.CHARGE.asText().append(" ").append(
-            LiteralText("$maxMarked").formatted(Formatting.WHITE)
+            Text.literal("$maxMarked").formatted(Formatting.WHITE)
         )
     }
 
@@ -45,17 +47,20 @@ class MaxMarkedProperty(ability: Ability,
 
     override fun getTooltip(provider: PropertyProvider): List<Text> {
         val marked = Translations.TOOLTIP_ABILITY_ASSASSIN_MARKED.translate().string
-        return listOf(Symbol.CHARGE.asText().append(" ")
-            .append(Translations.TOOLTIP_ABILITY_MAX.formatted(Formatting.GRAY).append(" (${marked}): "))
-            .append(LiteralText(getMaxMarked().toString()).formatted(Formatting.WHITE)))
+        return listOf(
+            Symbol.CHARGE.asText().append(" ")
+                .append(Translations.TOOLTIP_ABILITY_MAX.formatted(Formatting.GRAY).append(" (${marked}): "))
+                .append(Text.literal(getMaxMarked().toString()).formatted(Formatting.WHITE))
+        )
     }
 
-    class Modifier(ability: Ability, private val modifier: Int):
+    class Modifier(ability: Ability, private val modifier: Int) :
         AbilityProperty(ability), ModifiableProperty {
-        companion object: Type<Modifier> {
+        companion object : Type<Modifier> {
             override fun create(ability: Ability, data: JsonElement): Modifier {
                 return Modifier(ability, data.asInt)
             }
+
             override fun getKey(): String = "max_marked_modifier"
         }
 
@@ -74,9 +79,11 @@ class MaxMarkedProperty(ability: Ability,
 
         override fun getTooltip(provider: PropertyProvider): List<Text> {
             val value = Translations.TOOLTIP_ABILITY_ASSASSIN_MARKED.translate().string
-            return listOf(Symbol.CHARGE.asText().append(" ")
-                .append(Translations.TOOLTIP_ABILITY_MAX.formatted(Formatting.GRAY).append(" (${value}): "))
-                .append(LiteralText(signed(modifier)).formatted(colorOf(modifier))))
+            return listOf(
+                Symbol.CHARGE.asText().append(" ")
+                    .append(Translations.TOOLTIP_ABILITY_MAX.formatted(Formatting.GRAY).append(" (${value}): "))
+                    .append(Text.literal(signed(modifier)).formatted(colorOf(modifier)))
+            )
         }
     }
 }

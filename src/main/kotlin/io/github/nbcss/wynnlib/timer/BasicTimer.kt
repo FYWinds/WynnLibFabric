@@ -4,18 +4,19 @@ import io.github.nbcss.wynnlib.render.RenderKit.renderDefaultOutlineText
 import io.github.nbcss.wynnlib.utils.formatTimer
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 
-open class BasicTimer(entry: StatusEntry,
-                      startTime: Long):
+open class BasicTimer(
+    entry: StatusEntry,
+    startTime: Long
+) :
     AbstractFooterEntryTimer(entry, startTime), SideIndicator {
     private var maxDuration: Double? = entry.duration?.toDouble()
 
     open fun getDisplayText(): Text {
-        return LiteralText(entry.icon).append(" ")
-            .append(LiteralText(entry.name).formatted(Formatting.GRAY))
+        return Text.literal(entry.icon).append(" ")
+            .append(Text.literal(entry.name).formatted(Formatting.GRAY))
     }
 
     override fun getDuration(): Double? {
@@ -26,7 +27,7 @@ open class BasicTimer(entry: StatusEntry,
 
     override fun updateEntry(currentEntry: StatusEntry) {
         if (currentEntry.duration != null) {
-            if (timeTracker.updateRemainTime(currentEntry.duration)){
+            if (timeTracker.updateRemainTime(currentEntry.duration)) {
                 maxDuration = entry.duration?.toDouble()?.plus(1)
             }
         }
@@ -39,7 +40,7 @@ open class BasicTimer(entry: StatusEntry,
     override fun asSideIndicator(): SideIndicator = this
 
     override fun render(matrices: MatrixStack, textRenderer: TextRenderer, posX: Int, posY: Int) {
-        val text = LiteralText("")
+        val text = Text.literal("")
         val duration: Double? = getDuration()
         if (duration != null) {
             var color = Formatting.GREEN
@@ -48,7 +49,7 @@ open class BasicTimer(entry: StatusEntry,
             } else if (duration < 30) {
                 color = Formatting.GOLD
             }
-            text.append(LiteralText(formatTimer((duration * 1000).toLong())).formatted(color))
+            text.append(Text.literal(formatTimer((duration * 1000).toLong())).formatted(color))
                 .append(" ")
         }
         text.append(getDisplayText())

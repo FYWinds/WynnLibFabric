@@ -5,26 +5,28 @@ import io.github.nbcss.wynnlib.abilities.builder.EntryContainer
 import io.github.nbcss.wynnlib.abilities.properties.general.ManaCostProperty
 import io.github.nbcss.wynnlib.abilities.properties.info.BoundSpellProperty
 import io.github.nbcss.wynnlib.data.SpellSlot
-import io.github.nbcss.wynnlib.utils.Symbol
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import net.minecraft.util.Identifier
 
-open class SpellEntry(private val spell: SpellSlot,
-                      container: EntryContainer,
-                      root: Ability,
-                      icon: Identifier,
-                      upgradable: Boolean): PropertyEntry(container, root, icon, upgradable) {
-    companion object: Factory {
-        override fun create(container: EntryContainer,
-                            ability: Ability,
-                            texture: Identifier,
-                            upgradable: Boolean): PropertyEntry? {
+open class SpellEntry(
+    private val spell: SpellSlot,
+    container: EntryContainer,
+    root: Ability,
+    icon: Identifier,
+    upgradable: Boolean
+) : PropertyEntry(container, root, icon, upgradable) {
+    companion object : Factory {
+        override fun create(
+            container: EntryContainer,
+            ability: Ability,
+            texture: Identifier,
+            upgradable: Boolean
+        ): PropertyEntry? {
             val property = BoundSpellProperty.from(ability)
-            return if (property != null){
+            return if (property != null) {
                 SpellEntry(property.getSpell(), container, ability, texture, upgradable)
-            }else{
+            } else {
                 null
             }
         }
@@ -36,17 +38,17 @@ open class SpellEntry(private val spell: SpellSlot,
         val tooltip: MutableList<Text> = ArrayList()
         tooltip.add(getDisplayNameText().append(" ${getTierText()}").formatted(Formatting.BOLD))
         tooltip.add(spell.getComboText(getAbility().getCharacter()))
-        tooltip.add(LiteralText.EMPTY)
+        tooltip.add(Text.empty())
         tooltip.addAll(getAbilityDescriptionTooltip(getAbility()))
         //Add effect tooltip
         val propertyTooltip = getPropertiesTooltip()
-        if (propertyTooltip.isNotEmpty()){
-            tooltip.add(LiteralText.EMPTY)
+        if (propertyTooltip.isNotEmpty()) {
+            tooltip.add(Text.empty())
             tooltip.addAll(propertyTooltip)
         }
         val upgradeTooltip = getUpgradeTooltip()
-        if (upgradeTooltip.isNotEmpty()){
-            tooltip.add(LiteralText.EMPTY)
+        if (upgradeTooltip.isNotEmpty()) {
+            tooltip.add(Text.empty())
             tooltip.addAll(upgradeTooltip)
         }
         return tooltip

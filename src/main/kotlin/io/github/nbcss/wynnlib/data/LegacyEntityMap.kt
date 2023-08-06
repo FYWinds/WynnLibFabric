@@ -2,7 +2,7 @@ package io.github.nbcss.wynnlib.data
 
 class LegacyEntityMap {
     // https://github.com/PrismarineJS/minecraft-data/blob/master/data/pc/1.12/entities.json
-    companion object{
+    companion object {
         val LEGACY_ENTITY_MAP: Map<Int, String> = mapOf(
             1 to "minecraft:item",
             2 to "minecraft:xp_orb",
@@ -88,6 +88,7 @@ class LegacyEntityMap {
             120 to "minecraft:villager",
             200 to "minecraft:ender_crystal"
         )
+
         fun get(id: Int): String? {
             return LEGACY_ENTITY_MAP[id]
         }

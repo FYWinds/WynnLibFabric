@@ -2,7 +2,7 @@ package io.github.nbcss.wynnlib.utils
 
 import java.util.*
 
-class Version(private val value: String): Comparable<Version> {
+class Version(private val value: String) : Comparable<Version> {
 
     fun get(): String {
         return value

@@ -10,7 +10,8 @@ import java.util.regex.Pattern
 object ConsumableChargeRender {
     private val pattern = Pattern.compile(" (§[0-9a-f])?\\[(\\d+)/\\d+]À?$")
     const val key = "consumable_charge"
-    object Reader: EventHandler<ItemLoadEvent> {
+
+    object Reader : EventHandler<ItemLoadEvent> {
         override fun handle(event: ItemLoadEvent) {
             val matcher = pattern.matcher(event.item.name.asString())
             if (matcher.find()) {
@@ -20,7 +21,7 @@ object ConsumableChargeRender {
         }
     }
 
-    object Render: EventHandler<RenderItemOverrideEvent> {
+    object Render : EventHandler<RenderItemOverrideEvent> {
         override fun handle(event: RenderItemOverrideEvent) {
             if (!Settings.getOption(Settings.SettingOption.CONSUMABLE_CHARGE))
                 return

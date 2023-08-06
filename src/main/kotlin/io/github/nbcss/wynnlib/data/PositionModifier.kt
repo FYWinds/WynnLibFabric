@@ -4,7 +4,7 @@ import io.github.nbcss.wynnlib.i18n.Translatable
 import io.github.nbcss.wynnlib.utils.Keyed
 import java.util.*
 
-enum class PositionModifier(private val id: String): Keyed, Translatable {
+enum class PositionModifier(private val id: String) : Keyed, Translatable {
     LEFT("left"),
     RIGHT("right"),
     ABOVE("above"),
@@ -16,7 +16,7 @@ enum class PositionModifier(private val id: String): Keyed, Translatable {
 
     override fun getTranslationKey(label: String?): String {
         val key = name.lowercase(Locale.getDefault())
-        if(label == "tooltip"){
+        if (label == "tooltip") {
             return "wynnlib.tooltip.position_modifier.$key"
         }
         return "wynnlib.position_modifier.$key"

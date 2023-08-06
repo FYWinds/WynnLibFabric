@@ -9,11 +9,12 @@ import io.github.nbcss.wynnlib.utils.JsonGetter
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 
-class IngredientTierType(private val tier: Ingredient.Tier):
+class IngredientTierType(private val tier: Ingredient.Tier) :
     AbstractMatcherType(tier.color), ProtectableType {
     companion object {
         fun keyOf(tier: Ingredient.Tier): String = "INGREDIENT_" + tier.name
     }
+
     private var protected: Boolean = false
 
     override fun getDisplayText(): Text {

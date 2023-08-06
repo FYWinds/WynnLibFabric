@@ -4,14 +4,16 @@ import io.github.nbcss.wynnlib.gui.TooltipScreen
 import io.github.nbcss.wynnlib.render.TextureData
 import net.minecraft.client.gui.Element
 
-abstract class AbstractElementScroll(background: TextureData?,
-                                     screen: TooltipScreen,
-                                     x: Int,
-                                     y: Int,
-                                     width: Int,
-                                     height: Int,
-                                     scrollDelay: Long = 200L,
-                                     scrollUnit: Double = 32.0):
+abstract class AbstractElementScroll(
+    background: TextureData?,
+    screen: TooltipScreen,
+    x: Int,
+    y: Int,
+    width: Int,
+    height: Int,
+    scrollDelay: Long = 200L,
+    scrollUnit: Double = 32.0
+) :
     ScrollPaneWidget(background, screen, x, y, width, height, scrollDelay, scrollUnit) {
 
     abstract fun getElements(): List<Element>

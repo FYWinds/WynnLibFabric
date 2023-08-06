@@ -5,8 +5,10 @@ import io.github.nbcss.wynnlib.abilities.AbilityTree
 import io.github.nbcss.wynnlib.abilities.Archetype
 import java.util.*
 
-class TreeBuildContainer(private val data: TreeBuildData,
-                         private val maxPoints: Int = MAX_AP): TreeBuildInfo {
+class TreeBuildContainer(
+    private val data: TreeBuildData,
+    private val maxPoints: Int = MAX_AP
+) : TreeBuildInfo {
     companion object {
         const val MAX_AP = 45
         fun fromAbilities(
@@ -23,8 +25,10 @@ class TreeBuildContainer(private val data: TreeBuildData,
             return TreeBuildContainer(data, maxPoints)
         }
     }
+
     private val orderList: MutableList<Ability> = mutableListOf()
     private val unlockable: MutableSet<Ability> = mutableSetOf()
+
     init {
         validateAbilities()
     }
@@ -77,9 +81,7 @@ class TreeBuildContainer(private val data: TreeBuildData,
         if (ability.getBlockAbilities().any { state.contains(it) })
             return false
         val dependency = ability.getAbilityDependency()
-        if (dependency != null && !state.contains(dependency))
-            return false
-        return true
+        return !(dependency != null && !state.contains(dependency))
     }
 
     private fun stateOf(abilities: Set<Ability>): TreeState {
@@ -94,14 +96,14 @@ class TreeBuildContainer(private val data: TreeBuildData,
             locked.clear()
             while (queue.isNotEmpty()) {
                 val ability = queue.poll()
-                if (ability !in abilities || state.contains(ability)){
+                if (ability !in abilities || state.contains(ability)) {
                     continue    //if not active by user, it must stay inactive
                 }
                 //check whether eligible to activating the node
-                if (canUnlock(ability, state)){
+                if (canUnlock(ability, state)) {
                     state.add(ability)
                     ability.getSuccessors().filter { it in abilities }.forEach { queue.add(it) }
-                }else{
+                } else {
                     locked.add(ability)
                 }
             }
@@ -129,7 +131,7 @@ class TreeBuildContainer(private val data: TreeBuildData,
         unlockable.clear()
         for (ability in data.getActiveAbilities()) {
             for (successor in ability.getSuccessors()) {
-                if (successor !in state.abilities && canUnlock(successor, state)){
+                if (successor !in state.abilities && canUnlock(successor, state)) {
                     unlockable.add(successor)
                 }
             }
@@ -139,10 +141,12 @@ class TreeBuildContainer(private val data: TreeBuildData,
         }
     }
 
-    private data class TreeState(var cost: Int = 0,
-                                 val order: MutableList<Ability> = mutableListOf(),
-                                 val abilities: MutableSet<Ability> = mutableSetOf(),
-                                 val archetypes: MutableMap<Archetype, Int> = EnumMap(Archetype::class.java)) {
+    private data class TreeState(
+        var cost: Int = 0,
+        val order: MutableList<Ability> = mutableListOf(),
+        val abilities: MutableSet<Ability> = mutableSetOf(),
+        val archetypes: MutableMap<Archetype, Int> = EnumMap(Archetype::class.java)
+    ) {
 
         fun add(ability: Ability) {
             if (abilities.add(ability)) {

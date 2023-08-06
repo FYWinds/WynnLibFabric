@@ -2,10 +2,12 @@ package io.github.nbcss.wynnlib.utils
 
 import net.minecraft.util.Formatting
 
-data class Color(val red: Int,
-                 val green: Int,
-                 val blue: Int) {
-    constructor(code: Int): this(code shr 16 and 0xFF, code shr 8 and 0xFF, code and 0xFF)
+data class Color(
+    val red: Int,
+    val green: Int,
+    val blue: Int
+) {
+    constructor(code: Int) : this(code shr 16 and 0xFF, code shr 8 and 0xFF, code and 0xFF)
 
     companion object {
         val BLACK = Color(0x000000)
@@ -26,7 +28,7 @@ data class Color(val red: Int,
         val WHITE = Color(0xFFFFFF)
 
         fun fromFormatting(formatting: Formatting): Color {
-            return when(formatting){
+            return when (formatting) {
                 Formatting.BLACK -> BLACK
                 Formatting.DARK_BLUE -> DARK_BLUE
                 Formatting.DARK_GREEN -> DARK_GREEN
@@ -48,6 +50,7 @@ data class Color(val red: Int,
 
         fun normalize(value: Int): Float = value / 255.0f
     }
+
     /**
      * Get the color code of the color (without alpha).
      *

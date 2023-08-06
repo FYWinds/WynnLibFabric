@@ -13,17 +13,19 @@ import io.github.nbcss.wynnlib.i18n.Translations
 import io.github.nbcss.wynnlib.utils.Symbol
 import io.github.nbcss.wynnlib.utils.colorOf
 import io.github.nbcss.wynnlib.utils.signed
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 
-class ShamanBloodPoolProperty(ability: Ability,
-                              private val size: Int):
+class ShamanBloodPoolProperty(
+    ability: Ability,
+    private val size: Int
+) :
     AbilityProperty(ability), SetupProperty, OverviewProvider {
-    companion object: Type<ShamanBloodPoolProperty> {
+    companion object : Type<ShamanBloodPoolProperty> {
         override fun create(ability: Ability, data: JsonElement): ShamanBloodPoolProperty {
             return ShamanBloodPoolProperty(ability, data.asInt)
         }
+
         override fun getKey(): String = "blood_pool"
     }
 
@@ -39,23 +41,26 @@ class ShamanBloodPoolProperty(ability: Ability,
 
     override fun getOverviewTip(): Text? {
         return Symbol.DARK_HEART.asText().append(" ").append(
-            LiteralText("$size%").formatted(Formatting.WHITE)
+            Text.literal("$size%").formatted(Formatting.WHITE)
         )
     }
 
     override fun getTooltip(provider: PropertyProvider): List<Text> {
         val name = Translations.TOOLTIP_ABILITY_SHAMAN_BLOOD_POOL.translate().string
-        return listOf(Symbol.DARK_HEART.asText().append(" ")
-            .append(Translations.TOOLTIP_ABILITY_MAX.formatted(Formatting.GRAY).append(" (${name}): "))
-            .append(LiteralText("$size%").formatted(Formatting.WHITE)))
+        return listOf(
+            Symbol.DARK_HEART.asText().append(" ")
+                .append(Translations.TOOLTIP_ABILITY_MAX.formatted(Formatting.GRAY).append(" (${name}): "))
+                .append(Text.literal("$size%").formatted(Formatting.WHITE))
+        )
     }
 
-    class Modifier(ability: Ability, private val modifier: Int):
+    class Modifier(ability: Ability, private val modifier: Int) :
         AbilityProperty(ability), ModifiableProperty {
-        companion object: Type<Modifier> {
+        companion object : Type<Modifier> {
             override fun create(ability: Ability, data: JsonElement): Modifier {
                 return Modifier(ability, data.asInt)
             }
+
             override fun getKey(): String = "blood_pool_modifier"
         }
 
@@ -74,9 +79,11 @@ class ShamanBloodPoolProperty(ability: Ability,
 
         override fun getTooltip(provider: PropertyProvider): List<Text> {
             val name = Translations.TOOLTIP_ABILITY_SHAMAN_BLOOD_POOL.translate().string
-            return listOf(Symbol.DARK_HEART.asText().append(" ")
-                .append(Translations.TOOLTIP_ABILITY_MAX.formatted(Formatting.GRAY).append(" (${name}): "))
-                .append(LiteralText("${signed(modifier)}%").formatted(colorOf(modifier))))
+            return listOf(
+                Symbol.DARK_HEART.asText().append(" ")
+                    .append(Translations.TOOLTIP_ABILITY_MAX.formatted(Formatting.GRAY).append(" (${name}): "))
+                    .append(Text.literal("${signed(modifier)}%").formatted(colorOf(modifier)))
+            )
         }
     }
 }

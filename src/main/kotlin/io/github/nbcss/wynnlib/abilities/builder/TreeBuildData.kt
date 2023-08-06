@@ -12,7 +12,6 @@ import io.github.nbcss.wynnlib.registry.AbilityBuildStorage
 import io.github.nbcss.wynnlib.registry.AbilityRegistry
 import io.github.nbcss.wynnlib.utils.*
 import net.minecraft.item.ItemStack
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import java.util.*
@@ -21,14 +20,16 @@ import java.util.*
  * Contain the abilities' data of a tree build, but will not
  * validate whether the given nodes are valid input.
  */
-class TreeBuildData(private val tree: AbilityTree,
-                    private val id: String = UUID.randomUUID().toString()): BaseItem, Keyed {
+class TreeBuildData(
+    private val tree: AbilityTree,
+    private val id: String = UUID.randomUUID().toString()
+) : BaseItem, Keyed {
     companion object {
         val ICON = ItemFactory.fromEncoding("minecraft:stone_axe#83")
         const val VER = '0'
         const val BUFFER = 15
         fun fromData(data: JsonObject): TreeBuildData? {
-            return try{
+            return try {
                 val id = data["id"].asString
                 val character = CharacterClass.fromId(data["class"].asString)!!
                 val tree = AbilityRegistry.fromCharacter(character)
@@ -41,14 +42,14 @@ class TreeBuildData(private val tree: AbilityTree,
                 TreeBuildContainer(build)
                 build.setName(name)
                 build
-            }catch (e: Exception) {
+            } catch (e: Exception) {
                 e.printStackTrace()
                 null
             }
         }
 
         fun fromEncoding(encoding: String): TreeBuildData? {
-            return try{
+            return try {
                 val ver = encoding[3]
                 if (ver == VER) {
                     val character = CharacterClass.fromPrefix(encoding.substring(0..1))!!
@@ -62,7 +63,7 @@ class TreeBuildData(private val tree: AbilityTree,
                     return build
                 }
                 null
-            }catch (e: Exception) {
+            } catch (e: Exception) {
                 null
             }
         }
@@ -84,7 +85,7 @@ class TreeBuildData(private val tree: AbilityTree,
 
     fun setName(name: String) {
         this.name = name
-        if (AbilityBuildStorage.has(getKey())){
+        if (AbilityBuildStorage.has(getKey())) {
             AbilityBuildStorage.markDirty()
         }
     }
@@ -184,12 +185,12 @@ class TreeBuildData(private val tree: AbilityTree,
         encoding = generateEncoding()
         level = if (cost > 0) WynnValues.getAPLevelReq(cost) else 1
         archetype = archetypes.filter { it.value > 0 }.maxByOrNull { it.value }?.key
-        if (AbilityBuildStorage.has(getKey())){
+        if (AbilityBuildStorage.has(getKey())) {
             AbilityBuildStorage.markDirty()
         }
     }
 
-    override fun getDisplayText(): Text = LiteralText(getDisplayName()).formatted(Formatting.DARK_AQUA)
+    override fun getDisplayText(): Text = Text.literal(getDisplayName()).formatted(Formatting.DARK_AQUA)
 
     override fun getDisplayName(): String = if (name != "") name else encoding
 
@@ -217,42 +218,48 @@ class TreeBuildData(private val tree: AbilityTree,
     override fun getTooltip(): List<Text> {
         val tooltip: MutableList<Text> = mutableListOf()
         tooltip.add(getDisplayText())
-        val archetypes = LiteralText("").formatted(Formatting.DARK_GRAY)
+        val archetypes = Text.literal("").formatted(Formatting.DARK_GRAY)
         tree.getArchetypes().forEachIndexed { i, archetype ->
             val point = getArchetypePoint(archetype)
             if (i > 0) archetypes.append("/")
-            archetypes.append(LiteralText("$point").formatted(archetype.getFormatting()))
+            archetypes.append(Text.literal("$point").formatted(archetype.getFormatting()))
         }
         tooltip.add(archetypes)
-        tooltip.add(LiteralText.EMPTY)
+        tooltip.add(Text.empty())
         //tooltip.add(tree.character.formatted(Formatting.GRAY))
         val classReq = tree.character.translate().formatted(Formatting.GRAY)
         val prefix = Translations.TOOLTIP_CLASS_REQ.formatted(Formatting.GRAY)
-        tooltip.add(prefix.append(LiteralText(": ").formatted(Formatting.GRAY)).append(classReq))
+        tooltip.add(prefix.append(Text.literal(": ").formatted(Formatting.GRAY)).append(classReq))
         tooltip.add(
             Translations.TOOLTIP_COMBAT_LV_REQ.formatted(Formatting.GRAY)
-            .append(LiteralText(": $level").formatted(Formatting.GRAY)))
+                .append(Text.literal(": $level").formatted(Formatting.GRAY))
+        )
         tooltip.add(
             Translations.TOOLTIP_ABILITY_POINTS.formatted(Formatting.GRAY)
-            .append(LiteralText(": $cost").formatted(Formatting.GRAY)))
+                .append(Text.literal(": $cost").formatted(Formatting.GRAY))
+        )
         //abilities
         if (abilities.size > 0) {
-            tooltip.add(LiteralText.EMPTY)
+            tooltip.add(Text.empty())
             tooltip.add(
                 Translations.TOOLTIP_ABILITY_LIST.formatted(Formatting.GRAY).append(": ")
-                .append(LiteralText("${abilities.size}").formatted(Formatting.WHITE)))
+                    .append(Text.literal("${abilities.size}").formatted(Formatting.WHITE))
+            )
             abilities.sortedWith { x, y ->
                 val tier = y.getTier().compareTo(x.getTier())
                 return@sortedWith if (tier != 0) tier else
                     x.translate().string.compareTo(y.translate().string)
             }.take(5).forEach {
                 tooltip.add(
-                    LiteralText("- ").formatted(Formatting.GRAY)
-                    .append(it.formatted(it.getTier().getFormatting())))
+                    Text.literal("- ").formatted(Formatting.GRAY)
+                        .append(it.formatted(it.getTier().getFormatting()))
+                )
             }
             if (abilities.size > 5) {
-                tooltip.add(LiteralText("- ").formatted(Formatting.GRAY)
-                    .append(LiteralText("...").formatted(Formatting.DARK_GRAY)))
+                tooltip.add(
+                    Text.literal("- ").formatted(Formatting.GRAY)
+                        .append(Text.literal("...").formatted(Formatting.DARK_GRAY))
+                )
             }
         }
         return tooltip

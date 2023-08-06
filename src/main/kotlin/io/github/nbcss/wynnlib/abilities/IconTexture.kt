@@ -25,6 +25,7 @@ class IconTexture(file: String) {
             return if (name == null) UNKNOWN else iconMap[name.uppercase()] ?: UNKNOWN
         }
     }
+
     private val texture: Identifier = Identifier("wynnlib", "textures/icons/${file.lowercase()}")
 
     fun getTexture(): Identifier = texture

@@ -11,13 +11,17 @@ import net.minecraft.sound.SoundEvents
 import net.minecraft.text.Text
 import net.minecraft.util.Identifier
 
-abstract class HandbookTabScreen(val parent: Screen?,
-                                 title: Text?) : Screen(title),
+abstract class HandbookTabScreen(
+    val parent: Screen?,
+    title: Text?
+) : Screen(title),
     TooltipScreen, ExitButtonWidget.ExitHandler {
     private val background = Identifier("wynnlib", "textures/gui/handbook_tab.png")
+
     companion object {
         const val TAB_SIZE: Int = 7
     }
+
     protected val backgroundWidth = 246
     protected val backgroundHeight = 210
     protected val tabs: MutableList<TabFactory> = ArrayList()
@@ -28,6 +32,7 @@ abstract class HandbookTabScreen(val parent: Screen?,
     protected var windowHeight = backgroundHeight
     protected var windowX = backgroundWidth
     protected var windowY = backgroundHeight
+
     init {
         //setup default tabs
         tabs.addAll(Settings.getHandbookTabs())
@@ -48,15 +53,15 @@ abstract class HandbookTabScreen(val parent: Screen?,
 
     open fun drawBackgroundPre(matrices: MatrixStack?, mouseX: Int, mouseY: Int, delta: Float) {
         val tabIndex = tabPage * TAB_SIZE
-        (0 until TAB_SIZE).filter{tabIndex + it < tabs.size}
-            .filter{!tabs[tabIndex + it].isInstance(this)}
+        (0 until TAB_SIZE).filter { tabIndex + it < tabs.size }
+            .filter { !tabs[tabIndex + it].isInstance(this) }
             .forEach { drawTab(matrices!!, tabs[tabIndex + it], it, mouseX, mouseY) }
     }
 
     open fun drawBackgroundPost(matrices: MatrixStack?, mouseX: Int, mouseY: Int, delta: Float) {
         val tabIndex = tabPage * TAB_SIZE
-        (0 until TAB_SIZE).filter{tabIndex + it < tabs.size}
-            .filter{tabs[tabIndex + it].isInstance(this)}
+        (0 until TAB_SIZE).filter { tabIndex + it < tabs.size }
+            .filter { tabs[tabIndex + it].isInstance(this) }
             .forEach { drawTab(matrices!!, tabs[tabIndex + it], it, mouseX, mouseY) }
     }
 
@@ -87,7 +92,7 @@ abstract class HandbookTabScreen(val parent: Screen?,
         RenderKit.renderTexture(matrices, background, posX, windowY, u, 182, 28, 32)
         itemRenderer.renderInGuiWithOverrides(tab.getTabIcon(), posX + 6, windowY + 9)
         itemRenderer.renderGuiItemOverlay(textRenderer, tab.getTabIcon(), posX + 6, windowY + 9)
-        if(isOverTab(tabIndex, mouseX, mouseY)){
+        if (isOverTab(tabIndex, mouseX, mouseY)) {
             drawTooltip(matrices, tab.getTabTooltip(), mouseX, mouseY)
         }
     }
@@ -102,7 +107,7 @@ abstract class HandbookTabScreen(val parent: Screen?,
     override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
         if (super.keyPressed(keyCode, scanCode, modifiers)) {
             return true
-        }else if (this.client!!.options.inventoryKey.matchesKey(keyCode, scanCode)) {
+        } else if (this.client!!.options.inventoryKey.matchesKey(keyCode, scanCode)) {
             client!!.setScreen(parent)
             return true
         }
@@ -111,8 +116,8 @@ abstract class HandbookTabScreen(val parent: Screen?,
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
         val tabIndex = tabPage * TAB_SIZE
-        (0 until TAB_SIZE).filter{tabIndex + it < tabs.size}
-            .firstOrNull {isOverTab(it, mouseX.toInt(), mouseY.toInt())}?.let {
+        (0 until TAB_SIZE).filter { tabIndex + it < tabs.size }
+            .firstOrNull { isOverTab(it, mouseX.toInt(), mouseY.toInt()) }?.let {
                 val tab = tabs[tabIndex + it]
                 client!!.setScreen(tab.createScreen(parent))
                 playSound(SoundEvents.ITEM_BOOK_PAGE_TURN)
@@ -126,7 +131,7 @@ abstract class HandbookTabScreen(val parent: Screen?,
         super.render(matrices, mouseX, mouseY, delta)
         drawContents(matrices, mouseX, mouseY, delta)
         tooltip?.let { item ->
-            renderOrderedTooltip(matrices, item.tooltip.map{ it.asOrderedText()}, item.x, item.y)
+            renderOrderedTooltip(matrices, item.tooltip.map { it.asOrderedText() }, item.x, item.y)
             RenderSystem.enableDepthTest()
             tooltip = null
         }

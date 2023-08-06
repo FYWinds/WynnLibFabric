@@ -10,17 +10,19 @@ import io.github.nbcss.wynnlib.abilities.properties.ModifiableProperty
 import io.github.nbcss.wynnlib.i18n.Translations
 import io.github.nbcss.wynnlib.utils.Symbol
 import io.github.nbcss.wynnlib.utils.signed
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 
-class MainAttackDamageRawProperty(ability: Ability,
-                                  private val damage: Int):
+class MainAttackDamageRawProperty(
+    ability: Ability,
+    private val damage: Int
+) :
     AbilityProperty(ability), ModifiableProperty {
-    companion object: Type<MainAttackDamageRawProperty> {
+    companion object : Type<MainAttackDamageRawProperty> {
         override fun create(ability: Ability, data: JsonElement): MainAttackDamageRawProperty {
             return MainAttackDamageRawProperty(ability, data.asInt)
         }
+
         override fun getKey(): String = "main_attack_damage_raw"
     }
 
@@ -35,7 +37,7 @@ class MainAttackDamageRawProperty(ability: Ability,
         if (property != null) {
             val value = property.getRawDamage() + getRawDamage()
             entry.setProperty(getKey(), MainAttackDamageRawProperty(property.getAbility(), value))
-        }else{
+        } else {
             entry.setProperty(getKey(), MainAttackDamageRawProperty(entry.getAbility(), getRawDamage()))
         }
     }
@@ -43,8 +45,10 @@ class MainAttackDamageRawProperty(ability: Ability,
     override fun getTooltip(provider: PropertyProvider): List<Text> {
         if (damage == 0)
             return emptyList()
-        return listOf(Symbol.DAMAGE.asText().append(" ")
-            .append(Translations.TOOLTIP_ABILITY_MAIN_ATTACK_DAMAGE.formatted(Formatting.GRAY).append(": "))
-            .append(LiteralText(signed(damage)).formatted(Formatting.WHITE)))
+        return listOf(
+            Symbol.DAMAGE.asText().append(" ")
+                .append(Translations.TOOLTIP_ABILITY_MAIN_ATTACK_DAMAGE.formatted(Formatting.GRAY).append(": "))
+                .append(Text.literal(signed(damage)).formatted(Formatting.WHITE))
+        )
     }
 }

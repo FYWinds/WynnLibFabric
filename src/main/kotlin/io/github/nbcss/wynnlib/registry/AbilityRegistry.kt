@@ -6,12 +6,12 @@ import io.github.nbcss.wynnlib.abilities.Ability
 import io.github.nbcss.wynnlib.abilities.AbilityTree
 import io.github.nbcss.wynnlib.data.CharacterClass
 import java.util.*
-import kotlin.collections.HashSet
 
-object AbilityRegistry: Registry<Ability>() {
+object AbilityRegistry : Registry<Ability>() {
     private const val RESOURCE = "assets/wynnlib/data/Abilities.json"
     private val treeMap: MutableMap<CharacterClass, AbilityTree> = EnumMap(CharacterClass::class.java)
     private val nameMap: MutableMap<String, MutableSet<Ability>> = mutableMapOf()
+
     init {
         CharacterClass.values().forEach { treeMap[it] = AbilityTree(it) }
     }
@@ -20,7 +20,7 @@ object AbilityRegistry: Registry<Ability>() {
 
     override fun read(data: JsonObject): Ability? = try {
         Ability(data)
-    }catch (e: Exception){
+    } catch (e: Exception) {
         e.printStackTrace()
         null
     }
@@ -29,7 +29,7 @@ object AbilityRegistry: Registry<Ability>() {
         super.put(item)
         item.getName()?.let { name ->
             var items = nameMap[name]
-            if (items == null){
+            if (items == null) {
                 items = mutableSetOf()
                 nameMap[name] = items
             }
@@ -37,12 +37,12 @@ object AbilityRegistry: Registry<Ability>() {
         }
     }
 
-    override fun reload(array: JsonArray){
+    override fun reload(array: JsonArray) {
         nameMap.clear()
         super.reload(array)
         //keep a cache map from character to all its ability
         val map: MutableMap<CharacterClass, MutableSet<Ability>> = EnumMap(CharacterClass::class.java)
-        CharacterClass.values().forEach {map[it] = HashSet()}
+        CharacterClass.values().forEach { map[it] = HashSet() }
         itemMap.values.forEach { map[it.getCharacter()]!!.add(it) }
         //update abilities for all ability trees
         CharacterClass.values().forEach { fromCharacter(it).setAbilities(map[it]!!) }

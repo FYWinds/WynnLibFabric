@@ -13,17 +13,19 @@ import io.github.nbcss.wynnlib.i18n.Translations
 import io.github.nbcss.wynnlib.utils.Symbol
 import io.github.nbcss.wynnlib.utils.colorOf
 import io.github.nbcss.wynnlib.utils.signed
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 
-class MaxTrapProperty(ability: Ability,
-                      private val maxTrap: Int):
+class MaxTrapProperty(
+    ability: Ability,
+    private val maxTrap: Int
+) :
     AbilityProperty(ability), SetupProperty, OverviewProvider {
-    companion object: Type<MaxTrapProperty> {
+    companion object : Type<MaxTrapProperty> {
         override fun create(ability: Ability, data: JsonElement): MaxTrapProperty {
             return MaxTrapProperty(ability, data.asInt)
         }
+
         override fun getKey(): String = "max_trap"
     }
 
@@ -31,7 +33,7 @@ class MaxTrapProperty(ability: Ability,
 
     override fun getOverviewTip(): Text {
         return Symbol.CHARGE.asText().append(" ").append(
-            LiteralText("$maxTrap").formatted(Formatting.WHITE)
+            Text.literal("$maxTrap").formatted(Formatting.WHITE)
         )
     }
 
@@ -45,17 +47,20 @@ class MaxTrapProperty(ability: Ability,
 
     override fun getTooltip(provider: PropertyProvider): List<Text> {
         val trap = Translations.TOOLTIP_ABILITY_ARCHER_TRAPS.translate().string
-        return listOf(Symbol.CHARGE.asText().append(" ")
-            .append(Translations.TOOLTIP_ABILITY_MAX.formatted(Formatting.GRAY).append(" (${trap}): "))
-            .append(LiteralText(getMaxTraps().toString()).formatted(Formatting.WHITE)))
+        return listOf(
+            Symbol.CHARGE.asText().append(" ")
+                .append(Translations.TOOLTIP_ABILITY_MAX.formatted(Formatting.GRAY).append(" (${trap}): "))
+                .append(Text.literal(getMaxTraps().toString()).formatted(Formatting.WHITE))
+        )
     }
 
-    class Modifier(ability: Ability, private val modifier: Int):
+    class Modifier(ability: Ability, private val modifier: Int) :
         AbilityProperty(ability), ModifiableProperty {
-        companion object: Type<Modifier> {
+        companion object : Type<Modifier> {
             override fun create(ability: Ability, data: JsonElement): Modifier {
                 return Modifier(ability, data.asInt)
             }
+
             override fun getKey(): String = "max_trap_modifier"
         }
 
@@ -74,9 +79,11 @@ class MaxTrapProperty(ability: Ability,
 
         override fun getTooltip(provider: PropertyProvider): List<Text> {
             val trap = Translations.TOOLTIP_ABILITY_ARCHER_TRAPS.translate().string
-            return listOf(Symbol.CHARGE.asText().append(" ")
-                .append(Translations.TOOLTIP_ABILITY_MAX.formatted(Formatting.GRAY).append(" (${trap}): "))
-                .append(LiteralText(signed(modifier)).formatted(colorOf(modifier))))
+            return listOf(
+                Symbol.CHARGE.asText().append(" ")
+                    .append(Translations.TOOLTIP_ABILITY_MAX.formatted(Formatting.GRAY).append(" (${trap}): "))
+                    .append(Text.literal(signed(modifier)).formatted(colorOf(modifier)))
+            )
         }
     }
 }

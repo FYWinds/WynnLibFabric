@@ -3,15 +3,15 @@ package io.github.nbcss.wynnlib.gui.ability
 import com.mojang.blaze3d.systems.RenderSystem
 import io.github.nbcss.wynnlib.abilities.Ability
 import io.github.nbcss.wynnlib.abilities.AbilityTree
-import io.github.nbcss.wynnlib.abilities.builder.TreeBuildData
 import io.github.nbcss.wynnlib.abilities.builder.EntryContainer
 import io.github.nbcss.wynnlib.abilities.builder.TreeBuildContainer
+import io.github.nbcss.wynnlib.abilities.builder.TreeBuildData
 import io.github.nbcss.wynnlib.gui.HandbookTabScreen
 import io.github.nbcss.wynnlib.gui.TabFactory
 import io.github.nbcss.wynnlib.gui.widgets.ATreeScrollWidget
 import io.github.nbcss.wynnlib.gui.widgets.RollingTextWidget
-import io.github.nbcss.wynnlib.gui.widgets.buttons.SquareButton
 import io.github.nbcss.wynnlib.gui.widgets.VerticalSliderWidget
+import io.github.nbcss.wynnlib.gui.widgets.buttons.SquareButton
 import io.github.nbcss.wynnlib.i18n.Translations
 import io.github.nbcss.wynnlib.i18n.Translations.TOOLTIP_ABILITY_LOCKED
 import io.github.nbcss.wynnlib.i18n.Translations.TOOLTIP_ABILITY_UNUSABLE
@@ -31,24 +31,24 @@ import net.minecraft.client.gui.widget.TextFieldWidget
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.item.ItemStack
 import net.minecraft.sound.SoundEvents
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.MathHelper
-import kotlin.collections.ArrayList
 import kotlin.math.floor
 import kotlin.math.max
 import kotlin.math.min
 
-open class AbilityTreeBuilderScreen(parent: Screen?,
-                                    private val tree: AbilityTree,
-                                    private val maxPoints: Int = MAX_AP,
-                                    private val fixedAbilities: Set<Ability> =
-                                    tree.getMainAttackAbility()?.let { setOf(it) } ?: emptySet(),
-                                    private val mutableAbilities: Set<Ability> = emptySet(),
-                                    private var build: TreeBuildContainer = TreeBuildContainer
-                                        .fromAbilities(tree, fixedAbilities.union(mutableAbilities), maxPoints)):
+open class AbilityTreeBuilderScreen(
+    parent: Screen?,
+    private val tree: AbilityTree,
+    private val maxPoints: Int = MAX_AP,
+    private val fixedAbilities: Set<Ability> =
+        tree.getMainAttackAbility()?.let { setOf(it) } ?: emptySet(),
+    private val mutableAbilities: Set<Ability> = emptySet(),
+    private var build: TreeBuildContainer = TreeBuildContainer
+        .fromAbilities(tree, fixedAbilities.union(mutableAbilities), maxPoints)
+) :
     AbstractAbilityTreeScreen(parent) {
     companion object {
         private val OVERVIEW_PANE = Identifier("wynnlib", "textures/gui/ability_overview.png")
@@ -61,6 +61,7 @@ open class AbilityTreeBuilderScreen(parent: Screen?,
         const val MAX_AP = 45
         const val MAX_ENTRY_ITEM = 8
     }
+
     private val factory = object : TabFactory {
         override fun getTabIcon(): ItemStack = ICON
         override fun getTabTitle(): Text = TITLE
@@ -79,6 +80,7 @@ open class AbilityTreeBuilderScreen(parent: Screen?,
     private var deleteButton: SquareButton? = null
     private var shareButton: SquareButton? = null
     private var nameField: TextFieldWidget? = null
+
     init {
         setTabs()
         update()
@@ -128,7 +130,7 @@ open class AbilityTreeBuilderScreen(parent: Screen?,
         val removed = getRemovedAbilities()
         activeOrder = if (removed.isEmpty()) {
             build.getActiveOrder().filter { it !in fixedAbilities && it !in mutableAbilities }
-        }else{
+        } else {
             val abilities = fixedAbilities.union(mutableAbilities).subtract(removed)
             val container = TreeBuildContainer.fromAbilities(tree, abilities, maxPoints)
             val base = container.getAbilities()
@@ -139,7 +141,7 @@ open class AbilityTreeBuilderScreen(parent: Screen?,
     private fun setEntryIndex(index: Int) {
         val maxIndex = max(0, container.getSize() - MAX_ENTRY_ITEM)
         entryIndex = MathHelper.clamp(index, 0, maxIndex)
-        for (i in (0 until MAX_ENTRY_ITEM)){
+        for (i in (0 until MAX_ENTRY_ITEM)) {
             val entry = if (i + entryIndex < container.getSize()) container.getEntries()[i + entryIndex] else null
             entryNames[i]?.setText(entry?.getDisplayNameText())
             entryValues[i]?.setText(entry?.getSideText())
@@ -147,11 +149,13 @@ open class AbilityTreeBuilderScreen(parent: Screen?,
     }
 
     private fun updateEntrySlider() {
-        overviewSlider?.setSlider(if (container.getSize() > MAX_ENTRY_ITEM) {
-            entryIndex / (container.getSize() - MAX_ENTRY_ITEM).toDouble()
-        }else{
-            0.0
-        })
+        overviewSlider?.setSlider(
+            if (container.getSize() > MAX_ENTRY_ITEM) {
+                entryIndex / (container.getSize() - MAX_ENTRY_ITEM).toDouble()
+            } else {
+                0.0
+            }
+        )
     }
 
     private fun isInEntries(mouseX: Double, mouseY: Double): Boolean {
@@ -181,15 +185,17 @@ open class AbilityTreeBuilderScreen(parent: Screen?,
         viewerX = windowX + 7
         exitButton!!.x = windowX + 230
         viewer = BuilderWindow(viewerX, viewerY, viewerX + 223, viewerY)
-        overviewSlider = VerticalSliderWidget(windowX - 17, windowY + 45,
-            12, 158, SLIDER_LENGTH, SLIDER_TEXTURE) {
+        overviewSlider = VerticalSliderWidget(
+            windowX - 17, windowY + 45,
+            12, 158, SLIDER_LENGTH, SLIDER_TEXTURE
+        ) {
             val size = container.getSize() - MAX_ENTRY_ITEM + 1
             if (size > 0) {
                 setEntryIndex(floor(size * it).toInt())
             }
         }
         updateEntrySlider()
-        for (i in (0 until MAX_ENTRY_ITEM)){
+        for (i in (0 until MAX_ENTRY_ITEM)) {
             val entry = if (i + entryIndex < container.getSize()) container.getEntries()[i + entryIndex] else null
             val posX = windowX - 118
             val posY = windowY + 46 + i * 20
@@ -198,40 +204,48 @@ open class AbilityTreeBuilderScreen(parent: Screen?,
             entryNames[i] = RollingTextWidget(posX, posY, 95, name)
             entryValues[i] = RollingTextWidget(posX, posY + 9, 95, info)
         }
-        nameField = TextFieldWidget(textRenderer, windowX - 115, windowY + 16, 105, 12, LiteralText.EMPTY)
+        nameField = TextFieldWidget(textRenderer, windowX - 115, windowY + 16, 105, 12, Text.empty())
         nameField?.text = build.getData().getCustomName()
         nameField?.setDrawsBackground(false)
         nameField?.setChangedListener {
             build.getData().setName(it)
         }
         addDrawableChild(nameField)
-        shareButton = SquareButton(SHARE_BUTTON, windowX - 25, windowY + 3, 10,
+        shareButton = SquareButton(
+            SHARE_BUTTON, windowX - 25, windowY + 3, 10,
             this, object : TooltipProvider {
                 override fun getTooltip(): List<Text> {
-                    return listOf(UI_BUTTON_SHARE.formatted(Formatting.GREEN),
-                        UI_CLIPBOARD_EXPORT.formatted(Formatting.GRAY))
+                    return listOf(
+                        UI_BUTTON_SHARE.formatted(Formatting.GREEN),
+                        UI_CLIPBOARD_EXPORT.formatted(Formatting.GRAY)
+                    )
                 }
-            }, SoundEvents.ITEM_LODESTONE_COMPASS_LOCK) {
+            }, SoundEvents.ITEM_LODESTONE_COMPASS_LOCK
+        ) {
             writeClipboard(build.getData().getEncoding())
         }
         addDrawableChild(shareButton)
-        saveButton = SquareButton(SAVE_BUTTON, windowX - 15, windowY + 3, 10,
+        saveButton = SquareButton(
+            SAVE_BUTTON, windowX - 15, windowY + 3, 10,
             this, object : TooltipProvider {
                 override fun getTooltip(): List<Text> {
                     return listOf(UI_BUTTON_SAVE.formatted(Formatting.AQUA))
                 }
-            }, SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT) {
+            }, SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT
+        ) {
             AbilityBuildStorage.put(getBuild())
             it.visible = false
         }
         saveButton?.visible = !AbilityBuildStorage.has(getBuild().getKey())
         addDrawableChild(saveButton)
-        deleteButton = SquareButton(DELETE_BUTTON, windowX - 15, windowY + 3, 10,
+        deleteButton = SquareButton(
+            DELETE_BUTTON, windowX - 15, windowY + 3, 10,
             this, object : TooltipProvider {
                 override fun getTooltip(): List<Text> {
                     return listOf(UI_BUTTON_DELETE.formatted(Formatting.RED))
                 }
-            }, SoundEvents.BLOCK_LAVA_EXTINGUISH) {
+            }, SoundEvents.BLOCK_LAVA_EXTINGUISH
+        ) {
             AbilityBuildStorage.remove(getBuild().getKey())
             it.visible = false
         }
@@ -241,10 +255,14 @@ open class AbilityTreeBuilderScreen(parent: Screen?,
 
     override fun drawBackgroundPost(matrices: MatrixStack?, mouseX: Int, mouseY: Int, delta: Float) {
         super.drawBackgroundPost(matrices, mouseX, mouseY, delta)
-        RenderKit.renderTexture(matrices, OVERVIEW_PANE, windowX - 147,
-            windowY + 28, 0, 0, 148, 182)
-        RenderKit.renderTexture(matrices, BUILD_NAME_PANE, windowX - 147,
-            windowY, 0, 0, 148, 29, 148, 29)
+        RenderKit.renderTexture(
+            matrices, OVERVIEW_PANE, windowX - 147,
+            windowY + 28, 0, 0, 148, 182
+        )
+        RenderKit.renderTexture(
+            matrices, BUILD_NAME_PANE, windowX - 147,
+            windowY, 0, 0, 148, 29, 148, 29
+        )
         textRenderer.draw(
             matrices, Translations.TOOLTIP_ABILITY_OVERVIEW.translate(),
             (windowX - 147 + 6).toFloat(),
@@ -253,7 +271,7 @@ open class AbilityTreeBuilderScreen(parent: Screen?,
     }
 
     override fun mouseReleased(mouseX: Double, mouseY: Double, button: Int): Boolean {
-        if (overviewSlider?.mouseReleased(mouseX, mouseY, button) == true){
+        if (overviewSlider?.mouseReleased(mouseX, mouseY, button) == true) {
             return true
         }
         return super.mouseReleased(mouseX, mouseY, button)
@@ -267,7 +285,7 @@ open class AbilityTreeBuilderScreen(parent: Screen?,
     }
 
     override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
-        if (nameField?.isFocused == true && this.client!!.options.inventoryKey.matchesKey(keyCode, scanCode)){
+        if (nameField?.isFocused == true && this.client!!.options.inventoryKey.matchesKey(keyCode, scanCode)) {
             return true
         }
         return super.keyPressed(keyCode, scanCode, modifiers)
@@ -275,16 +293,16 @@ open class AbilityTreeBuilderScreen(parent: Screen?,
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
         if (isInEntries(mouseX, mouseY)) {
-            if (overviewSlider?.mouseClicked(mouseX, mouseY, button) == true){
+            if (overviewSlider?.mouseClicked(mouseX, mouseY, button) == true) {
                 return true
             }
             val entries = container.getEntries()
-            for (i in (0 until min(MAX_ENTRY_ITEM, entries.size))){
+            for (i in (0 until min(MAX_ENTRY_ITEM, entries.size))) {
                 val entry = entries[entryIndex + i]
                 val x1 = windowX - 141
                 val y1 = windowY + 45 + i * 20
                 val y2 = y1 + 18
-                if (mouseY >= y1 - 1 && mouseY <= y2 && mouseX >= x1 - 1 && mouseX < x1 + 122){
+                if (mouseY >= y1 - 1 && mouseY <= y2 && mouseX >= x1 - 1 && mouseX < x1 + 122) {
                     playSound(SoundEvents.ENTITY_ITEM_PICKUP)
                     getViewer()?.focusOnAbility(entry.getAbility())
                     return true
@@ -296,7 +314,7 @@ open class AbilityTreeBuilderScreen(parent: Screen?,
 
     override fun mouseScrolled(mouseX: Double, mouseY: Double, amount: Double): Boolean {
         //println("${mouseX}, ${mouseY}, $amount")
-        if(overviewSlider?.isDragging() != true && isInEntries(mouseX, mouseY)){
+        if (overviewSlider?.isDragging() != true && isInEntries(mouseX, mouseY)) {
             setEntryIndex(entryIndex - amount.toInt())
             updateEntrySlider()
             return true
@@ -315,8 +333,10 @@ open class AbilityTreeBuilderScreen(parent: Screen?,
         nameField?.let {
             if (!it.isFocused && it.text.isEmpty()) {
                 val s = textRenderer.trimToWidth(getBuild().getEncoding(), 106) + ".."
-                textRenderer.draw(matrices, LiteralText(s).formatted(Formatting.ITALIC).formatted(Formatting.DARK_GRAY),
-                    windowX - 115.0f, windowY + 16.0f, 0xFFFFFF)
+                textRenderer.draw(
+                    matrices, Text.literal(s).formatted(Formatting.ITALIC).formatted(Formatting.DARK_GRAY),
+                    windowX - 115.0f, windowY + 16.0f, 0xFFFFFF
+                )
             }
         }
         //Archetypes
@@ -327,7 +347,7 @@ open class AbilityTreeBuilderScreen(parent: Screen?,
             renderArchetypeIcon(matrices, it, archetypeX, archetypeY)
             val points = "${getBuild().getArchetypePoint(it)}/${tree.getArchetypePoint(it)}"
             textRenderer.draw(matrices, points, archetypeX.toFloat() + 20, archetypeY.toFloat() + 4, 0)
-            if (mouseX >= archetypeX && mouseY >= archetypeY && mouseX <= archetypeX + 16 && mouseY <= archetypeY + 16){
+            if (mouseX >= archetypeX && mouseY >= archetypeY && mouseX <= archetypeX + 16 && mouseY <= archetypeY + 16) {
                 drawTooltip(matrices, it.getTooltip(build), mouseX, mouseY)
             }
             archetypeX += 60
@@ -335,31 +355,39 @@ open class AbilityTreeBuilderScreen(parent: Screen?,
         //render ap points
         run {
             itemRenderer.renderInGuiWithOverrides(ICON, archetypeX, archetypeY)
-            textRenderer.draw(matrices, "${build.getSpareAbilityPoints()}/$maxPoints",
-                archetypeX.toFloat() + 18, archetypeY.toFloat() + 4, 0)
+            textRenderer.draw(
+                matrices, "${build.getSpareAbilityPoints()}/$maxPoints",
+                archetypeX.toFloat() + 18, archetypeY.toFloat() + 4, 0
+            )
         }
         //Render overview pane
         val entries = container.getEntries()
         overviewSlider?.visible = entries.size > MAX_ENTRY_ITEM
         overviewSlider?.render(matrices, mouseX, mouseY, delta)
-        for (i in (0 until min(MAX_ENTRY_ITEM, entries.size))){
+        for (i in (0 until min(MAX_ENTRY_ITEM, entries.size))) {
             val entry = entries[entryIndex + i]
             val x1 = windowX - 141
             val x2 = x1 + 18
             val y1 = windowY + 45 + i * 20
             val y2 = y1 + 18
             RenderSystem.enableDepthTest()
-            RenderKit.renderTexture(matrices, entry.getTexture(), x1, y1, 0, 0,
-                18, 18, 18, 18)
+            RenderKit.renderTexture(
+                matrices, entry.getTexture(), x1, y1, 0, 0,
+                18, 18, 18, 18
+            )
             val tier = entry.getTierText()
-            renderOutlineText(matrices, tier,
+            renderOutlineText(
+                matrices, tier,
                 x2.toFloat() - textRenderer.getWidth(tier) + 1,
-                y2.toFloat() - 7)
+                y2.toFloat() - 7
+            )
             entryNames[i]?.render(matrices)
             entryValues[i]?.render(matrices)
-            if (mouseY >= y1 - 1 && mouseY <= y2 && mouseX >= x1 - 1 && mouseX < x1 + 122){
-                DrawableHelper.fill(matrices, x1 - 1, y1 - 1, x1 + 122, y2 + 1,
-                    Color.WHITE.withAlpha(0x22).code())
+            if (mouseY >= y1 - 1 && mouseY <= y2 && mouseX >= x1 - 1 && mouseX < x1 + 122) {
+                DrawableHelper.fill(
+                    matrices, x1 - 1, y1 - 1, x1 + 122, y2 + 1,
+                    Color.WHITE.withAlpha(0x22).code()
+                )
                 matrices.push()
                 drawTooltip(matrices, entry.getTooltip(), mouseX, mouseY)
                 matrices.pop()
@@ -389,7 +417,7 @@ open class AbilityTreeBuilderScreen(parent: Screen?,
                     val m = toScreenPosition(predecessor.getHeight(), predecessor.getPosition())
                     val height = min(it.getHeight(), predecessor.getHeight())
                     val reroute = getAbilityTree().getAbilityFromPosition(height, it.getPosition()) != null
-                    if (build.hasAbility(it) && build.hasAbility(predecessor)){
+                    if (build.hasAbility(it) && build.hasAbility(predecessor)) {
                         nodes.add((m to n) to reroute)
                     }
                 }
@@ -403,15 +431,15 @@ open class AbilityTreeBuilderScreen(parent: Screen?,
             tree.getAbilities().forEach {
                 val node = toScreenPosition(it.getHeight(), it.getPosition())
                 renderArchetypeOutline(matrices, it, node.x, node.y)
-                val icon = if (build.hasAbility(it)){
+                val icon = if (build.hasAbility(it)) {
                     it.getTier().getActiveTexture()
-                }else if(build.isBlocked(it)){
+                } else if (build.isBlocked(it)) {
                     it.getTier().getBlockedTexture()
-                }else if (!build.isUnlockable(it)){
+                } else if (!build.isUnlockable(it)) {
                     it.getTier().getLockedTexture()
-                }else if(isMouseOver(mouseX.toDouble(), mouseY.toDouble()) && isOverNode(node, mouseX, mouseY)){
+                } else if (isMouseOver(mouseX.toDouble(), mouseY.toDouble()) && isOverNode(node, mouseX, mouseY)) {
                     it.getTier().getActiveTexture()     //hover over unlockable node
-                }else{
+                } else {
                     it.getTier().getUnlockedTexture()
                 }
                 itemRenderer.renderInGuiWithOverrides(icon, node.x - 8, node.y - 8)
@@ -425,19 +453,19 @@ open class AbilityTreeBuilderScreen(parent: Screen?,
         }
 
         override fun onClickNode(ability: Ability, button: Int): Boolean {
-            if (button == 0){
-                if (ability in fixedAbilities){
+            if (button == 0) {
+                if (ability in fixedAbilities) {
                     playSound(SoundEvents.ENTITY_SHULKER_HURT_CLOSED)
                     return true
                 }
-                if (build.hasAbility(ability)){
+                if (build.hasAbility(ability)) {
                     playSound(SoundEvents.BLOCK_END_PORTAL_FRAME_FILL, 0.5f)
                     build.removeAbility(ability)
                     update()
-                }else if(build.addAbility(ability)){
+                } else if (build.addAbility(ability)) {
                     playSound(SoundEvents.BLOCK_END_PORTAL_FRAME_FILL)
                     update()
-                }else{
+                } else {
                     playSound(SoundEvents.ENTITY_SHULKER_HURT_CLOSED)
                 }
                 return true
@@ -451,21 +479,23 @@ open class AbilityTreeBuilderScreen(parent: Screen?,
             //render ability tooltip
             for (ability in tree.getAbilities()) {
                 val node = toScreenPosition(ability.getHeight(), ability.getPosition())
-                if (isOverNode(node, mouseX, mouseY)){
+                if (isOverNode(node, mouseX, mouseY)) {
                     val tooltip = ability.getTooltip(build).toMutableList()
                     val disabled = container.isAbilityDisabled(ability)
                     val locked = ability in fixedAbilities
                     if (disabled || locked) {
-                        tooltip.add(LiteralText.EMPTY)
+                        tooltip.add(Text.empty())
                         if (locked) {
                             tooltip.add(
                                 Symbol.WARNING.asText().append(" ")
-                                    .append(TOOLTIP_ABILITY_LOCKED.formatted(Formatting.RED)))
+                                    .append(TOOLTIP_ABILITY_LOCKED.formatted(Formatting.RED))
+                            )
                         }
-                        if(disabled) {
+                        if (disabled) {
                             tooltip.add(
                                 Symbol.WARNING.asText().append(" ")
-                                    .append(TOOLTIP_ABILITY_UNUSABLE.formatted(Formatting.RED)))
+                                    .append(TOOLTIP_ABILITY_UNUSABLE.formatted(Formatting.RED))
+                            )
                         }
                     }
                     //drawTooltip(matrices, tooltip, mouseX, mouseY + 20)

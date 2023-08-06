@@ -3,9 +3,7 @@ package io.github.nbcss.wynnlib.data
 import com.google.gson.JsonObject
 import io.github.nbcss.wynnlib.i18n.Translatable
 import io.github.nbcss.wynnlib.i18n.Translations.SUFFIX_POWDER_SPEC_BLOCKS
-import io.github.nbcss.wynnlib.i18n.Translations.SUFFIX_POWDER_SPEC_DAM_PER_MANA
 import io.github.nbcss.wynnlib.i18n.Translations.SUFFIX_POWDER_SPEC_SEC
-import io.github.nbcss.wynnlib.i18n.Translations.SUFFIX_POWDER_SPEC_SEC_PER_MANA
 import io.github.nbcss.wynnlib.i18n.Translations.TOOLTIP_POWDER_SPEC_CHAINS
 import io.github.nbcss.wynnlib.i18n.Translations.TOOLTIP_POWDER_SPEC_DAMAGE
 import io.github.nbcss.wynnlib.i18n.Translations.TOOLTIP_POWDER_SPEC_DAMAGE_BOOST
@@ -16,12 +14,11 @@ import io.github.nbcss.wynnlib.registry.Registry
 import io.github.nbcss.wynnlib.utils.Keyed
 import io.github.nbcss.wynnlib.utils.removeDecimal
 import io.github.nbcss.wynnlib.utils.tierOf
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 
-abstract class PowderSpecial(private val tier: Int): Keyed {
-    companion object: Registry<PowderSpecial>() {
+abstract class PowderSpecial(private val tier: Int) : Keyed {
+    companion object : Registry<PowderSpecial>() {
         private const val RESOURCE = "assets/wynnlib/data/PowderSpecs.json"
         private val factoryMap: Map<String, Factory<out PowderSpecial>> = mapOf(
             pairs = listOf(
@@ -39,10 +36,11 @@ abstract class PowderSpecial(private val tier: Int): Keyed {
             return factoryMap[data["type"].asString.uppercase()]?.fromData(data)
         }
     }
+
     fun getTooltip(): List<Text> {
         val tooltip: MutableList<Text> = mutableListOf()
         val color = getType().getElement().color
-        val title = LiteralText(getType().getElement().icon).formatted(color)
+        val title = Text.literal(getType().getElement().icon).formatted(color)
             .append(" ").append(getType().formatted(color))
         //val title = getType().formatted(color)
         if (getTier() > 0) {
@@ -50,10 +48,11 @@ abstract class PowderSpecial(private val tier: Int): Keyed {
         }
         tooltip.add(title)
         for (text in getPropertyTooltip()) {
-            tooltip.add(LiteralText("- ").formatted(color).append(text))
+            tooltip.add(Text.literal("- ").formatted(color).append(text))
         }
         return tooltip
     }
+
     abstract fun getType(): Type
 
     abstract fun getPropertyTooltip(): List<Text>
@@ -63,10 +62,12 @@ abstract class PowderSpecial(private val tier: Int): Keyed {
         return getType().name.lowercase() + ":" + getTier()
     }
 
-    class Quake(private val radius: Double,
-                private val damage: Int,
-                tier: Int) : PowderSpecial(tier) {
-        companion object: Factory<Quake> {
+    class Quake(
+        private val radius: Double,
+        private val damage: Int,
+        tier: Int
+    ) : PowderSpecial(tier) {
+        companion object : Factory<Quake> {
             override val type: Type = Type.QUAKE
             override fun fromData(data: JsonObject): Quake {
                 val radius = data["radius"].asDouble
@@ -80,19 +81,25 @@ abstract class PowderSpecial(private val tier: Int): Keyed {
 
         override fun getPropertyTooltip(): List<Text> {
             val tooltip: MutableList<Text> = mutableListOf()
-            tooltip.add(LiteralText("${TOOLTIP_POWDER_SPEC_DAMAGE.translate().string}: ${damage}%")
-                .formatted(Formatting.GRAY).append(LiteralText(" ✤").formatted(Formatting.DARK_GREEN)))
-            tooltip.add((LiteralText("${TOOLTIP_POWDER_SPEC_RADIUS.translate().string}: ")
-                .formatted(Formatting.GRAY))
-                .append(SUFFIX_POWDER_SPEC_BLOCKS.formatted(Formatting.GRAY, label = null, removeDecimal(radius))))
+            tooltip.add(
+                Text.literal("${TOOLTIP_POWDER_SPEC_DAMAGE.translate().string}: ${damage}%")
+                    .formatted(Formatting.GRAY).append(Text.literal(" ✤").formatted(Formatting.DARK_GREEN))
+            )
+            tooltip.add(
+                (Text.literal("${TOOLTIP_POWDER_SPEC_RADIUS.translate().string}: ")
+                    .formatted(Formatting.GRAY))
+                    .append(SUFFIX_POWDER_SPEC_BLOCKS.formatted(Formatting.GRAY, label = null, removeDecimal(radius)))
+            )
             return tooltip
         }
     }
 
-    class Rage(private val damage: Double,
-               private val minHealthLost: Double,
-               tier: Int) : PowderSpecial(tier) {
-        companion object: Factory<Rage> {
+    class Rage(
+        private val damage: Double,
+        private val minHealthLost: Double,
+        tier: Int
+    ) : PowderSpecial(tier) {
+        companion object : Factory<Rage> {
             override val type: Type = Type.RAGE
             override fun fromData(data: JsonObject): Rage {
                 val damage = data["damage"].asDouble
@@ -106,19 +113,29 @@ abstract class PowderSpecial(private val tier: Int): Keyed {
 
         override fun getPropertyTooltip(): List<Text> {
             val tooltip: MutableList<Text> = mutableListOf()
-            tooltip.add(LiteralText("${TOOLTIP_POWDER_SPEC_DAMAGE_BOOST.translate().string}: " +
-                    "+${removeDecimal(damage)}%").formatted(Formatting.GRAY)
-                .append(LiteralText(" ✤").formatted(Formatting.DARK_GREEN)))
-            tooltip.add(LiteralText("${TOOLTIP_POWDER_SPEC_HP_LOST_MIN.translate().string}: " +
-                    "${removeDecimal(minHealthLost)}%").formatted(Formatting.GRAY))
+            tooltip.add(
+                Text.literal(
+                    "${TOOLTIP_POWDER_SPEC_DAMAGE_BOOST.translate().string}: " +
+                            "+${removeDecimal(damage)}%"
+                ).formatted(Formatting.GRAY)
+                    .append(Text.literal(" ✤").formatted(Formatting.DARK_GREEN))
+            )
+            tooltip.add(
+                Text.literal(
+                    "${TOOLTIP_POWDER_SPEC_HP_LOST_MIN.translate().string}: " +
+                            "${removeDecimal(minHealthLost)}%"
+                ).formatted(Formatting.GRAY)
+            )
             return tooltip
         }
     }
 
-    class ChainLightning(private val chains: Int,
-                         private val damage: Int,
-                         tier: Int) : PowderSpecial(tier) {
-        companion object: Factory<ChainLightning> {
+    class ChainLightning(
+        private val chains: Int,
+        private val damage: Int,
+        tier: Int
+    ) : PowderSpecial(tier) {
+        companion object : Factory<ChainLightning> {
             override val type: Type = Type.CHAIN_LIGHTNING
             override fun fromData(data: JsonObject): ChainLightning {
                 val chains = data["chains"].asInt
@@ -132,19 +149,25 @@ abstract class PowderSpecial(private val tier: Int): Keyed {
 
         override fun getPropertyTooltip(): List<Text> {
             val tooltip: MutableList<Text> = mutableListOf()
-            tooltip.add(LiteralText("${TOOLTIP_POWDER_SPEC_DAMAGE.translate().string}: ${damage}%")
+            tooltip.add(
+                Text.literal("${TOOLTIP_POWDER_SPEC_DAMAGE.translate().string}: ${damage}%")
                     .formatted(Formatting.GRAY)
-                .append(LiteralText(" ✦").formatted(Formatting.YELLOW)))
-            tooltip.add(LiteralText("${TOOLTIP_POWDER_SPEC_CHAINS.translate().string}: $chains")
-                .formatted(Formatting.GRAY))
+                    .append(Text.literal(" ✦").formatted(Formatting.YELLOW))
+            )
+            tooltip.add(
+                Text.literal("${TOOLTIP_POWDER_SPEC_CHAINS.translate().string}: $chains")
+                    .formatted(Formatting.GRAY)
+            )
             return tooltip
         }
     }
 
-    class KillStreak(private val damage: Double,
-                     private val duration: Double,
-                     tier: Int) : PowderSpecial(tier) {
-        companion object: Factory<KillStreak> {
+    class KillStreak(
+        private val damage: Double,
+        private val duration: Double,
+        tier: Int
+    ) : PowderSpecial(tier) {
+        companion object : Factory<KillStreak> {
             override val type: Type = Type.KILL_STREAK
             override fun fromData(data: JsonObject): KillStreak {
                 val damage = data["damage"].asDouble
@@ -158,21 +181,29 @@ abstract class PowderSpecial(private val tier: Int): Keyed {
 
         override fun getPropertyTooltip(): List<Text> {
             val tooltip: MutableList<Text> = mutableListOf()
-            tooltip.add(LiteralText("${TOOLTIP_POWDER_SPEC_DAMAGE_BOOST.translate().string}: " +
-                        "+${removeDecimal(damage)}%").formatted(Formatting.GRAY)
-                .append(LiteralText(" ✦").formatted(Formatting.YELLOW)))
-            tooltip.add(LiteralText("${TOOLTIP_POWDER_SPEC_DURATION.translate().string}: ")
-                .formatted(Formatting.GRAY)
-                .append(SUFFIX_POWDER_SPEC_SEC.formatted(Formatting.GRAY, label = null, removeDecimal(duration))))
+            tooltip.add(
+                Text.literal(
+                    "${TOOLTIP_POWDER_SPEC_DAMAGE_BOOST.translate().string}: " +
+                            "+${removeDecimal(damage)}%"
+                ).formatted(Formatting.GRAY)
+                    .append(Text.literal(" ✦").formatted(Formatting.YELLOW))
+            )
+            tooltip.add(
+                Text.literal("${TOOLTIP_POWDER_SPEC_DURATION.translate().string}: ")
+                    .formatted(Formatting.GRAY)
+                    .append(SUFFIX_POWDER_SPEC_SEC.formatted(Formatting.GRAY, label = null, removeDecimal(duration)))
+            )
             return tooltip
         }
     }
 
-    class Courage(private val duration: Double,
-                  private val damage: Double,
-                  private val boost: Double,
-                  tier: Int) : PowderSpecial(tier) {
-        companion object: Factory<Courage> {
+    class Courage(
+        private val duration: Double,
+        private val damage: Double,
+        private val boost: Double,
+        tier: Int
+    ) : PowderSpecial(tier) {
+        companion object : Factory<Courage> {
             override val type: Type = Type.COURAGE
             override fun fromData(data: JsonObject): Courage {
                 val duration = data["duration"].asDouble
@@ -187,23 +218,35 @@ abstract class PowderSpecial(private val tier: Int): Keyed {
 
         override fun getPropertyTooltip(): List<Text> {
             val tooltip: MutableList<Text> = mutableListOf()
-            tooltip.add(LiteralText("${TOOLTIP_POWDER_SPEC_DAMAGE.translate().string}: " +
-                    "${removeDecimal(damage)}%").formatted(Formatting.GRAY)
-                .append(LiteralText(" ✹").formatted(Formatting.RED)))
-            tooltip.add(LiteralText("${TOOLTIP_POWDER_SPEC_DAMAGE_BOOST.translate().string}: " +
-                        "+${removeDecimal(boost)}%")
-                    .formatted(Formatting.GRAY))
-            tooltip.add(LiteralText("${TOOLTIP_POWDER_SPEC_DURATION.translate().string}: ")
-                .formatted(Formatting.GRAY)
-                .append(SUFFIX_POWDER_SPEC_SEC.formatted(Formatting.GRAY, label = null, removeDecimal(duration))))
+            tooltip.add(
+                Text.literal(
+                    "${TOOLTIP_POWDER_SPEC_DAMAGE.translate().string}: " +
+                            "${removeDecimal(damage)}%"
+                ).formatted(Formatting.GRAY)
+                    .append(Text.literal(" ✹").formatted(Formatting.RED))
+            )
+            tooltip.add(
+                Text.literal(
+                    "${TOOLTIP_POWDER_SPEC_DAMAGE_BOOST.translate().string}: " +
+                            "+${removeDecimal(boost)}%"
+                )
+                    .formatted(Formatting.GRAY)
+            )
+            tooltip.add(
+                Text.literal("${TOOLTIP_POWDER_SPEC_DURATION.translate().string}: ")
+                    .formatted(Formatting.GRAY)
+                    .append(SUFFIX_POWDER_SPEC_SEC.formatted(Formatting.GRAY, label = null, removeDecimal(duration)))
+            )
             return tooltip
         }
     }
 
-    class Endurance(private val damage: Double,
-                    private val duration: Double,
-                    tier: Int) : PowderSpecial(tier) {
-        companion object: Factory<Endurance> {
+    class Endurance(
+        private val damage: Double,
+        private val duration: Double,
+        tier: Int
+    ) : PowderSpecial(tier) {
+        companion object : Factory<Endurance> {
             override val type: Type = Type.ENDURANCE
             override fun fromData(data: JsonObject): Endurance {
                 val damage = data["damage"].asDouble
@@ -217,21 +260,29 @@ abstract class PowderSpecial(private val tier: Int): Keyed {
 
         override fun getPropertyTooltip(): List<Text> {
             val tooltip: MutableList<Text> = mutableListOf()
-            tooltip.add(LiteralText("${TOOLTIP_POWDER_SPEC_DAMAGE_BOOST.translate().string}: " +
-                        "+${removeDecimal(damage)}%").formatted(Formatting.GRAY)
-                .append(LiteralText(" ✹").formatted(Formatting.RED)))
-            tooltip.add(LiteralText("${TOOLTIP_POWDER_SPEC_DURATION.translate().string}: ")
+            tooltip.add(
+                Text.literal(
+                    "${TOOLTIP_POWDER_SPEC_DAMAGE_BOOST.translate().string}: " +
+                            "+${removeDecimal(damage)}%"
+                ).formatted(Formatting.GRAY)
+                    .append(Text.literal(" ✹").formatted(Formatting.RED))
+            )
+            tooltip.add(
+                Text.literal("${TOOLTIP_POWDER_SPEC_DURATION.translate().string}: ")
                     .formatted(Formatting.GRAY)
-                .append(SUFFIX_POWDER_SPEC_SEC.formatted(Formatting.GRAY, label = null, removeDecimal(duration))))
+                    .append(SUFFIX_POWDER_SPEC_SEC.formatted(Formatting.GRAY, label = null, removeDecimal(duration)))
+            )
             return tooltip
         }
     }
 
-    class Curse(private val duration: Double,
-                private val boost: Double,
-                private val radius: Double,
-                tier: Int) : PowderSpecial(tier) {
-        companion object: Factory<Curse> {
+    class Curse(
+        private val duration: Double,
+        private val boost: Double,
+        private val radius: Double,
+        tier: Int
+    ) : PowderSpecial(tier) {
+        companion object : Factory<Curse> {
             override val type: Type = Type.CURSE
             override fun fromData(data: JsonObject): Curse {
                 val duration = data["duration"].asDouble
@@ -246,22 +297,32 @@ abstract class PowderSpecial(private val tier: Int): Keyed {
 
         override fun getPropertyTooltip(): List<Text> {
             val tooltip: MutableList<Text> = mutableListOf()
-            tooltip.add(LiteralText("${TOOLTIP_POWDER_SPEC_DAMAGE_BOOST.translate().string}: " +
-                        "+${removeDecimal(boost)}%").formatted(Formatting.GRAY))
-            tooltip.add((LiteralText("${TOOLTIP_POWDER_SPEC_RADIUS.translate().string}: ")
-                .formatted(Formatting.GRAY))
-                .append(SUFFIX_POWDER_SPEC_BLOCKS.formatted(Formatting.GRAY, label = null, removeDecimal(radius))))
-            tooltip.add(LiteralText("${TOOLTIP_POWDER_SPEC_DURATION.translate().string}: ")
-                .formatted(Formatting.GRAY)
-                .append(SUFFIX_POWDER_SPEC_SEC.formatted(Formatting.GRAY, label = null, removeDecimal(duration))))
+            tooltip.add(
+                Text.literal(
+                    "${TOOLTIP_POWDER_SPEC_DAMAGE_BOOST.translate().string}: " +
+                            "+${removeDecimal(boost)}%"
+                ).formatted(Formatting.GRAY)
+            )
+            tooltip.add(
+                (Text.literal("${TOOLTIP_POWDER_SPEC_RADIUS.translate().string}: ")
+                    .formatted(Formatting.GRAY))
+                    .append(SUFFIX_POWDER_SPEC_BLOCKS.formatted(Formatting.GRAY, label = null, removeDecimal(radius)))
+            )
+            tooltip.add(
+                Text.literal("${TOOLTIP_POWDER_SPEC_DURATION.translate().string}: ")
+                    .formatted(Formatting.GRAY)
+                    .append(SUFFIX_POWDER_SPEC_SEC.formatted(Formatting.GRAY, label = null, removeDecimal(duration)))
+            )
             return tooltip
         }
     }
 
-    class Concentration(private val damage: Double,
-                        private val duration: Double,
-                        tier: Int) : PowderSpecial(tier) {
-        companion object: Factory<Concentration> {
+    class Concentration(
+        private val damage: Double,
+        private val duration: Double,
+        tier: Int
+    ) : PowderSpecial(tier) {
+        companion object : Factory<Concentration> {
             override val type: Type = Type.CONCENTRATION
             override fun fromData(data: JsonObject): Concentration {
                 val damage = data["damage"].asDouble
@@ -275,21 +336,33 @@ abstract class PowderSpecial(private val tier: Int): Keyed {
 
         override fun getPropertyTooltip(): List<Text> {
             val tooltip: MutableList<Text> = mutableListOf()
-            tooltip.add(LiteralText("${TOOLTIP_POWDER_SPEC_DAMAGE_BOOST.translate().string}: " +
-                    "+${removeDecimal(damage)}%").formatted(Formatting.GRAY)
-                .append(LiteralText(" ❉").formatted(Formatting.AQUA)))
-            tooltip.add(LiteralText("${TOOLTIP_POWDER_SPEC_DURATION.translate().string}: ")
+            tooltip.add(
+                Text.literal(
+                    "${TOOLTIP_POWDER_SPEC_DAMAGE_BOOST.translate().string}: " +
+                            "+${removeDecimal(damage)}%"
+                ).formatted(Formatting.GRAY)
+                    .append(Text.literal(" ❉").formatted(Formatting.AQUA))
+            )
+            tooltip.add(
+                Text.literal("${TOOLTIP_POWDER_SPEC_DURATION.translate().string}: ")
                     .formatted(Formatting.GRAY)
-                .append(SUFFIX_POWDER_SPEC_SEC.formatted(Formatting.GRAY, label = null,
-                    removeDecimal(duration))))
+                    .append(
+                        SUFFIX_POWDER_SPEC_SEC.formatted(
+                            Formatting.GRAY, label = null,
+                            removeDecimal(duration)
+                        )
+                    )
+            )
             return tooltip
         }
     }
 
-    class WindPrison(private val duration: Double,
-                     private val boost: Double,
-                     tier: Int) : PowderSpecial(tier) {
-        companion object: Factory<WindPrison> {
+    class WindPrison(
+        private val duration: Double,
+        private val boost: Double,
+        tier: Int
+    ) : PowderSpecial(tier) {
+        companion object : Factory<WindPrison> {
             override val type: Type = Type.WIND_PRISON
             override fun fromData(data: JsonObject): WindPrison {
                 val duration = data["duration"].asDouble
@@ -303,20 +376,28 @@ abstract class PowderSpecial(private val tier: Int): Keyed {
 
         override fun getPropertyTooltip(): List<Text> {
             val tooltip: MutableList<Text> = mutableListOf()
-            tooltip.add(LiteralText("${TOOLTIP_POWDER_SPEC_DAMAGE_BOOST.translate().string}: " +
-                        "+${removeDecimal(boost)}%").formatted(Formatting.GRAY))
+            tooltip.add(
+                Text.literal(
+                    "${TOOLTIP_POWDER_SPEC_DAMAGE_BOOST.translate().string}: " +
+                            "+${removeDecimal(boost)}%"
+                ).formatted(Formatting.GRAY)
+            )
             //fixme max duration
-            tooltip.add(LiteralText("${TOOLTIP_POWDER_SPEC_DURATION.translate().string}: ")
-                .formatted(Formatting.GRAY)
-                .append(SUFFIX_POWDER_SPEC_SEC.formatted(Formatting.GRAY, label = null, removeDecimal(duration))))
+            tooltip.add(
+                Text.literal("${TOOLTIP_POWDER_SPEC_DURATION.translate().string}: ")
+                    .formatted(Formatting.GRAY)
+                    .append(SUFFIX_POWDER_SPEC_SEC.formatted(Formatting.GRAY, label = null, removeDecimal(duration)))
+            )
             return tooltip
         }
     }
 
-    class Dodge(private val damage: Double,
-                private val duration: Double,
-                tier: Int) : PowderSpecial(tier) {
-        companion object: Factory<Dodge> {
+    class Dodge(
+        private val damage: Double,
+        private val duration: Double,
+        tier: Int
+    ) : PowderSpecial(tier) {
+        companion object : Factory<Dodge> {
             override val type: Type = Type.DODGE
             override fun fromData(data: JsonObject): Dodge {
                 val damage = data["damage"].asDouble
@@ -330,22 +411,28 @@ abstract class PowderSpecial(private val tier: Int): Keyed {
 
         override fun getPropertyTooltip(): List<Text> {
             val tooltip: MutableList<Text> = mutableListOf()
-            tooltip.add(LiteralText("${TOOLTIP_POWDER_SPEC_DAMAGE_BOOST.translate().string}: " +
-                        "+${removeDecimal(damage)}%").formatted(Formatting.GRAY)
-                .append(LiteralText(" ❋").formatted(Formatting.WHITE)))
-            tooltip.add(LiteralText("${TOOLTIP_POWDER_SPEC_DURATION.translate().string}: ")
+            tooltip.add(
+                Text.literal(
+                    "${TOOLTIP_POWDER_SPEC_DAMAGE_BOOST.translate().string}: " +
+                            "+${removeDecimal(damage)}%"
+                ).formatted(Formatting.GRAY)
+                    .append(Text.literal(" ❋").formatted(Formatting.WHITE))
+            )
+            tooltip.add(
+                Text.literal("${TOOLTIP_POWDER_SPEC_DURATION.translate().string}: ")
                     .formatted(Formatting.GRAY)
-                .append(SUFFIX_POWDER_SPEC_SEC.formatted(Formatting.GRAY, label = null, removeDecimal(duration))))
+                    .append(SUFFIX_POWDER_SPEC_SEC.formatted(Formatting.GRAY, label = null, removeDecimal(duration)))
+            )
             return tooltip
         }
     }
 
-    interface Factory<T: PowderSpecial> {
+    interface Factory<T : PowderSpecial> {
         val type: Type
         fun fromData(data: JsonObject): T
     }
 
-    enum class Type(private val element: Element): Translatable {
+    enum class Type(private val element: Element) : Translatable {
         QUAKE(Element.EARTH),
         CHAIN_LIGHTNING(Element.THUNDER),
         CURSE(Element.WATER),
@@ -356,9 +443,10 @@ abstract class PowderSpecial(private val tier: Int): Keyed {
         CONCENTRATION(Element.WATER),
         ENDURANCE(Element.FIRE),
         DODGE(Element.AIR);
+
         companion object {
             fun fromWeaponElement(element: Element): Type {
-                return when (element){
+                return when (element) {
                     Element.FIRE -> COURAGE
                     Element.WATER -> CURSE
                     Element.AIR -> WIND_PRISON
@@ -368,7 +456,7 @@ abstract class PowderSpecial(private val tier: Int): Keyed {
             }
 
             fun fromArmourElement(element: Element): Type {
-                return when (element){
+                return when (element) {
                     Element.FIRE -> ENDURANCE
                     Element.WATER -> CONCENTRATION
                     Element.AIR -> DODGE

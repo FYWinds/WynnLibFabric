@@ -9,6 +9,7 @@ class EntryContainer(abilities: Collection<Ability> = emptyList()) {
     private val entries: MutableMap<String, PropertyEntry> = linkedMapOf()
     private val slotEntries: MutableMap<String, MutableSet<PropertyEntry>> = linkedMapOf()
     private val disabled: MutableSet<Ability> = mutableSetOf()
+
     init {
         val spells: MutableSet<AbilityMetadata> = HashSet()
         val replaces: MutableSet<AbilityMetadata> = HashSet()
@@ -20,15 +21,19 @@ class EntryContainer(abilities: Collection<Ability> = emptyList()) {
                     is MainAttackEntry.Companion -> {
                         it.createEntry(this)?.let { x -> putEntry(x) }
                     }
+
                     is SpellEntry.Companion -> {
                         spells.add(it)
                     }
+
                     is ReplaceSpellEntry.Companion -> {
                         replaces.add(it)
                     }
+
                     is ExtendEntry.Companion -> {
                         extending.add(it)
                     }
+
                     else -> {
                         dummy.add(it)
                     }
@@ -36,20 +41,20 @@ class EntryContainer(abilities: Collection<Ability> = emptyList()) {
             }
         }
         spells.sortedBy { BoundSpellProperty.from(it.ability)?.getSpell()?.ordinal ?: 99 }
-            .mapNotNull {it.createEntry(this)}.forEach { putEntry(it) }
-        replaces.mapNotNull {it.createEntry(this)}.forEach { putEntry(it) }
-        dummy.mapNotNull {it.createEntry(this)}.forEach { putEntry(it) }
+            .mapNotNull { it.createEntry(this) }.forEach { putEntry(it) }
+        replaces.mapNotNull { it.createEntry(this) }.forEach { putEntry(it) }
+        dummy.mapNotNull { it.createEntry(this) }.forEach { putEntry(it) }
         var keys: List<AbilityMetadata>
         do {
             keys = extending.toList()
             for (meta in keys) {
                 val entry = meta.createEntry(this)
-                if (entry != null){
+                if (entry != null) {
                     putEntry(entry)
                     extending.remove(meta)
                 }
             }
-        }while (extending.isNotEmpty() && extending.size < keys.size)
+        } while (extending.isNotEmpty() && extending.size < keys.size)
         disabled.addAll(extending.map { it.ability })
         for (ability in abilities) {
             if (!ability.updateEntries(this)) {
@@ -83,7 +88,7 @@ class EntryContainer(abilities: Collection<Ability> = emptyList()) {
         entries.remove(ability.getKey())
         BoundSpellProperty.from(ability)?.let {
             slotEntries[it.getSpell().name]?.let { entrySet ->
-                entrySet.removeIf{e -> e.getAbility() == ability}
+                entrySet.removeIf { e -> e.getAbility() == ability }
             }
         }
     }

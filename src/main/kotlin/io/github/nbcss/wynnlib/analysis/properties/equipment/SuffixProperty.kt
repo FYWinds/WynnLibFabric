@@ -5,11 +5,12 @@ import io.github.nbcss.wynnlib.data.Tier
 import net.minecraft.text.Text
 import java.util.regex.Pattern
 
-class SuffixProperty: AnalysisProperty {
+class SuffixProperty : AnalysisProperty {
     companion object {
         private val PATTERN = Pattern.compile("(.+) Item( \\[(\\d+)])?")
         const val KEY = "SUFFIX"
     }
+
     private var tier: Tier? = null
     private var roll = 1
 
@@ -21,10 +22,10 @@ class SuffixProperty: AnalysisProperty {
         if (tier != null || tooltip[line].siblings.isEmpty())
             return 0
         val base = tooltip[line].siblings[0]
-        if(base.asString() == "")
+        if (base.asString() == "")
             return 0
         val matcher = PATTERN.matcher(base.asString())
-        if (matcher.find()){
+        if (matcher.find()) {
             Tier.fromId(matcher.group(1))?.let {
                 tier = it
                 roll = matcher.group(3)?.toInt() ?: 1

@@ -8,13 +8,16 @@ import io.github.nbcss.wynnlib.abilities.properties.AbilityProperty
 import io.github.nbcss.wynnlib.abilities.properties.SetupProperty
 import io.github.nbcss.wynnlib.utils.removeDecimal
 
-class FluidHealProperty(ability: Ability,
-                        private val power: Double):
+class FluidHealProperty(
+    ability: Ability,
+    private val power: Double
+) :
     AbilityProperty(ability), SetupProperty {
-    companion object: Type<FluidHealProperty> {
+    companion object : Type<FluidHealProperty> {
         override fun create(ability: Ability, data: JsonElement): FluidHealProperty {
             return FluidHealProperty(ability, data.asDouble)
         }
+
         override fun getKey(): String = "fluid_heal"
     }
 

@@ -8,10 +8,12 @@ import io.github.nbcss.wynnlib.abilities.properties.AbilityProperty
 import io.github.nbcss.wynnlib.abilities.properties.SetupProperty
 import io.github.nbcss.wynnlib.utils.removeDecimal
 
-class DiscombobulateProperty(ability: Ability,
-                             private val info: Info):
+class DiscombobulateProperty(
+    ability: Ability,
+    private val info: Info
+) :
     AbilityProperty(ability), SetupProperty {
-    companion object: Type<DiscombobulateProperty> {
+    companion object : Type<DiscombobulateProperty> {
         private const val CHARGE_RATE_KEY: String = "rate"
         private const val MAX_BOOST_KEY: String = "max"
         private const val DECAY_RATE_KEY: String = "decay"
@@ -22,6 +24,7 @@ class DiscombobulateProperty(ability: Ability,
             val decay = if (json.has(DECAY_RATE_KEY)) json[DECAY_RATE_KEY].asDouble else 0.0
             return DiscombobulateProperty(ability, Info(rate, maxBoost, decay))
         }
+
         override fun getKey(): String = "discombobulate"
     }
 
@@ -37,7 +40,9 @@ class DiscombobulateProperty(ability: Ability,
         entry.setProperty(getKey(), this)
     }
 
-    data class Info(val rate: Double,
-                    val damageBonusMax: Double,
-                    val decayRate: Double)
+    data class Info(
+        val rate: Double,
+        val damageBonusMax: Double,
+        val decayRate: Double
+    )
 }

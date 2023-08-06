@@ -9,18 +9,19 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder
 import net.minecraft.client.gui.widget.ClickableWidget
 import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import net.minecraft.util.Identifier
 import java.util.function.Consumer
 
-class CheckboxWidget(private val posX: Int,
-                     private val posY: Int,
-                     private val name: Text,
-                     private val screen: TooltipScreen? = null,
-                     private var checked: Boolean = true,
-                     private val description: TooltipProvider? = null):
+class CheckboxWidget(
+    private val posX: Int,
+    private val posY: Int,
+    private val name: Text,
+    private val screen: TooltipScreen? = null,
+    private var checked: Boolean = true,
+    private val description: TooltipProvider? = null
+) :
     ClickableWidget(-1000, -1000, SIZE, SIZE, fromBoolean(checked)), ScrollElement {
     companion object {
         private val TEXTURE = Identifier("wynnlib", "textures/gui/checkbox_button.png")
@@ -31,9 +32,11 @@ class CheckboxWidget(private val posX: Int,
             return if (checked) Symbol.TICK.asText() else Symbol.CROSS.asText()
         }
     }
+
     private var interactable: Boolean = true
     private var onUpdate: Consumer<CheckboxWidget>? = null
     private var group: Group? = null
+
     init {
         visible = false
     }
@@ -70,12 +73,14 @@ class CheckboxWidget(private val posX: Int,
         RenderKit.renderTexture(matrices!!, TEXTURE, x, y, 0, v, SIZE, SIZE, SIZE, SIZE * 4)
         if (isHovered && screen != null) {
             val tooltip: MutableList<Text> = mutableListOf()
-            tooltip.add((if (checked) Symbol.TICK.asText() else Symbol.CROSS.asText())
-                .append(" ").append(name))
+            tooltip.add(
+                (if (checked) Symbol.TICK.asText() else Symbol.CROSS.asText())
+                    .append(" ").append(name)
+            )
             description?.getTooltip()?.let {
                 tooltip.addAll(it)
             }
-            tooltip.add(LiteralText.EMPTY)
+            tooltip.add(Text.empty())
             tooltip.add(LEFT_CLICK.formatted(Formatting.AQUA))
             if (group != null) {
                 tooltip.add(RIGHT_CLICK.formatted(Formatting.LIGHT_PURPLE))
@@ -92,7 +97,7 @@ class CheckboxWidget(private val posX: Int,
                     setChecked(!isChecked())
                     onUpdate?.accept(this)
                     return true
-                }else if(button == 1 && group != null) {
+                } else if (button == 1 && group != null) {
                     playDownSound(MinecraftClient.getInstance().soundManager)
                     group?.onlySelect(this)
                     return true
@@ -106,8 +111,10 @@ class CheckboxWidget(private val posX: Int,
         appendDefaultNarrations(builder)
     }
 
-    class Group(val widgets: Set<CheckboxWidget>,
-                private var callback: Consumer<Group>? = null) {
+    class Group(
+        val widgets: Set<CheckboxWidget>,
+        private var callback: Consumer<Group>? = null
+    ) {
         fun onlySelect(widget: CheckboxWidget) {
             widgets.forEach { it.setChecked(it == widget) }
             callback?.accept(this)

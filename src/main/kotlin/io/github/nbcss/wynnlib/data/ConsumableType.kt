@@ -4,7 +4,7 @@ import io.github.nbcss.wynnlib.i18n.Translatable
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 
-enum class ConsumableType(private val prefix: Formatting): Translatable {
+enum class ConsumableType(private val prefix: Formatting) : Translatable {
     HEALING_POTION(Formatting.RED),
     MANA_POTION(Formatting.AQUA),
     WISDOM_POTION(Formatting.GOLD),

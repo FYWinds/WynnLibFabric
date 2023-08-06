@@ -1,7 +1,6 @@
 package io.github.nbcss.wynnlib.abilities.properties.general
 
 import com.google.gson.JsonElement
-import com.google.gson.JsonObject
 import io.github.nbcss.wynnlib.abilities.Ability
 import io.github.nbcss.wynnlib.abilities.PropertyProvider
 import io.github.nbcss.wynnlib.abilities.builder.entries.PropertyEntry
@@ -12,14 +11,15 @@ import io.github.nbcss.wynnlib.i18n.Translatable
 import io.github.nbcss.wynnlib.i18n.Translations
 import io.github.nbcss.wynnlib.utils.Symbol
 import io.github.nbcss.wynnlib.utils.signed
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 
-open class BonusEffectProperty(ability: Ability,
-                               private val bonuses: Map<EffectType, Int?>):
+open class BonusEffectProperty(
+    ability: Ability,
+    private val bonuses: Map<EffectType, Int?>
+) :
     AbilityProperty(ability), SetupProperty, ModifiableProperty {
-    companion object: Type<BonusEffectProperty> {
+    companion object : Type<BonusEffectProperty> {
         override fun create(ability: Ability, data: JsonElement): BonusEffectProperty {
             //val bonus = EffectBonus(data.asJsonObject)
             val json = data.asJsonObject
@@ -32,6 +32,7 @@ open class BonusEffectProperty(ability: Ability,
             }
             return BonusEffectProperty(ability, bonuses)
         }
+
         override fun getKey(): String = "effects"
     }
 
@@ -51,11 +52,11 @@ open class BonusEffectProperty(ability: Ability,
             for (effectType in EffectType.values()) {
                 val modifier = getEffectBonus(effectType)
                 val base = it.getEffectBonus(effectType)
-                if (modifier != null && base != null){
+                if (modifier != null && base != null) {
                     bonuses[effectType] = upgrade(base, modifier)
-                }else if(modifier != null){
+                } else if (modifier != null) {
                     bonuses[effectType] = modifier
-                }else if(base != null){
+                } else if (base != null) {
                     bonuses[effectType] = base
                 }
             }
@@ -77,15 +78,15 @@ open class BonusEffectProperty(ability: Ability,
         val modifier = bonus.second ?: return null
         val text = Symbol.EFFECT.asText().append(" ")
             .append(Translations.TOOLTIP_ABILITY_EFFECT.formatted(Formatting.GRAY).append(": "))
-        if (modifier != 0){
+        if (modifier != 0) {
             val color = if (bonus.first.isPositiveEffect() == modifier > 0) {
                 Formatting.WHITE
-            }else{
+            } else {
                 Formatting.RED
             }
-            text.append(LiteralText("${signed(modifier)}% ").formatted(color))
+            text.append(Text.literal("${signed(modifier)}% ").formatted(color))
                 .append(bonus.first.formatted(Formatting.GRAY))
-        }else{
+        } else {
             text.append(bonus.first.formatted(Formatting.WHITE))
         }
         return listOf(text)
@@ -95,7 +96,7 @@ open class BonusEffectProperty(ability: Ability,
         return bonuses.entries.mapNotNull { getBonusText(it.key to it.value) }.flatten()
     }
 
-    enum class EffectType(private val positive: Boolean): Translatable {
+    enum class EffectType(private val positive: Boolean) : Translatable {
         ALLIES_RESISTANCE(true),
         ALLIES_DAMAGE(true),
         ALLIES_WALK_SPEED(true),
@@ -110,9 +111,12 @@ open class BonusEffectProperty(ability: Ability,
         ENEMIES_RESISTANCE(false),
         ENEMIES_BLINDNESS(true),
         ENEMIES_SLOWNESS(true);
+
         companion object {
             private val VALUE_MAP: Map<String, EffectType> = mapOf(
-                pairs = values().map { it.name.uppercase() to it }.toTypedArray())
+                pairs = values().map { it.name.uppercase() to it }.toTypedArray()
+            )
+
             fun fromName(name: String): EffectType? = VALUE_MAP[name.uppercase()]
         }
 

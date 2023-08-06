@@ -17,13 +17,16 @@ import io.github.nbcss.wynnlib.utils.round
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 
-class DurationProperty(ability: Ability,
-                       private val duration: Double):
+class DurationProperty(
+    ability: Ability,
+    private val duration: Double
+) :
     AbilityProperty(ability), SetupProperty, OverviewProvider {
-    companion object: Type<DurationProperty> {
+    companion object : Type<DurationProperty> {
         override fun create(ability: Ability, data: JsonElement): DurationProperty {
             return DurationProperty(ability, data.asDouble)
         }
+
         override fun getKey(): String = "duration"
     }
 
@@ -45,17 +48,20 @@ class DurationProperty(ability: Ability,
 
     override fun getTooltip(provider: PropertyProvider): List<Text> {
         val value = TOOLTIP_SUFFIX_S.formatted(Formatting.WHITE, null, removeDecimal(duration))
-        return listOf(Symbol.DURATION.asText().append(" ")
-            .append(Translations.TOOLTIP_ABILITY_DURATION.formatted(Formatting.GRAY).append(": "))
-            .append(value))
+        return listOf(
+            Symbol.DURATION.asText().append(" ")
+                .append(Translations.TOOLTIP_ABILITY_DURATION.formatted(Formatting.GRAY).append(": "))
+                .append(value)
+        )
     }
 
-    class Modifier(ability: Ability, private val modifier: Double):
+    class Modifier(ability: Ability, private val modifier: Double) :
         AbilityProperty(ability), ModifiableProperty {
-        companion object: Type<Modifier> {
+        companion object : Type<Modifier> {
             override fun create(ability: Ability, data: JsonElement): Modifier {
                 return Modifier(ability, data.asDouble)
             }
+
             override fun getKey(): String = "duration_modifier"
         }
 
@@ -73,12 +79,16 @@ class DurationProperty(ability: Ability,
         }
 
         override fun getTooltip(provider: PropertyProvider): List<Text> {
-            val color = if(modifier < 0) Formatting.RED else Formatting.GREEN
-            val value = TOOLTIP_SUFFIX_S.formatted(color, null,
-                (if(modifier > 0) "+" else "") + removeDecimal(modifier))
-            return listOf(Symbol.DURATION.asText().append(" ")
-                .append(Translations.TOOLTIP_ABILITY_DURATION.formatted(Formatting.GRAY).append(": "))
-                .append(value))
+            val color = if (modifier < 0) Formatting.RED else Formatting.GREEN
+            val value = TOOLTIP_SUFFIX_S.formatted(
+                color, null,
+                (if (modifier > 0) "+" else "") + removeDecimal(modifier)
+            )
+            return listOf(
+                Symbol.DURATION.asText().append(" ")
+                    .append(Translations.TOOLTIP_ABILITY_DURATION.formatted(Formatting.GRAY).append(": "))
+                    .append(value)
+            )
         }
     }
 }

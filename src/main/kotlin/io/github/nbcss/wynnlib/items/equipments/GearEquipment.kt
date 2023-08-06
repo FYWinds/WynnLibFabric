@@ -1,10 +1,6 @@
 package io.github.nbcss.wynnlib.items.equipments
 
-import io.github.nbcss.wynnlib.items.equipments.Equipment
-import io.github.nbcss.wynnlib.items.equipments.Weapon
-import io.github.nbcss.wynnlib.items.equipments.Wearable
-
-interface GearEquipment: Equipment {
+interface GearEquipment : Equipment {
 
     /**
      * Get the number of powder slots of the equipment.

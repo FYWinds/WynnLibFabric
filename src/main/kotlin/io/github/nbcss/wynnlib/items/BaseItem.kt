@@ -5,7 +5,7 @@ import io.github.nbcss.wynnlib.utils.Color
 import net.minecraft.item.ItemStack
 import net.minecraft.text.Text
 
-interface BaseItem: TooltipProvider {
+interface BaseItem : TooltipProvider {
     fun getDisplayText(): Text
     fun getDisplayName(): String
     fun getIcon(): ItemStack

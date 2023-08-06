@@ -6,8 +6,8 @@ import io.github.nbcss.wynnlib.items.UnidentifiedBox
 import net.minecraft.item.ItemStack
 import net.minecraft.text.Text
 
-class UnidentifiedBoxTransformer(private val item: UnidentifiedBox): TooltipTransformer {
-    companion object: TooltipTransformer.Factory {
+class UnidentifiedBoxTransformer(private val item: UnidentifiedBox) : TooltipTransformer {
+    companion object : TooltipTransformer.Factory {
         const val KEY = "UNID_BOX"
         override fun create(stack: ItemStack, item: TransformableItem): TooltipTransformer? {
             return if (item is UnidentifiedBox) UnidentifiedBoxTransformer(item) else null
@@ -15,6 +15,7 @@ class UnidentifiedBoxTransformer(private val item: UnidentifiedBox): TooltipTran
 
         override fun getKey(): String = KEY
     }
+
     override fun init() {
 
     }

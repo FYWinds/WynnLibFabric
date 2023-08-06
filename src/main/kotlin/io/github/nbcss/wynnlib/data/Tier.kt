@@ -7,12 +7,13 @@ import net.minecraft.util.Formatting
 import java.util.*
 import kotlin.math.ceil
 
-enum class Tier(val id: String,
-                val formatting: Formatting,
-                val displayName: String,
-                private val priceBase: Double?,
-                private val priceCoefficient: Double?
-                ): Keyed, Translatable {
+enum class Tier(
+    val id: String,
+    val formatting: Formatting,
+    val displayName: String,
+    private val priceBase: Double?,
+    private val priceCoefficient: Double?
+) : Keyed, Translatable {
     MYTHIC("Mythic", Formatting.DARK_PURPLE, "Mythic Item", 90.0, 18.0),
     FABLED("Fabled", Formatting.RED, "Fabled Item", 16.0, 8.0),
     LEGENDARY("Legendary", Formatting.AQUA, "Legendary Item", 12.0, 4.5),

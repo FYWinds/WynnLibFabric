@@ -7,13 +7,16 @@ import io.github.nbcss.wynnlib.abilities.builder.entries.PropertyEntry
 import io.github.nbcss.wynnlib.abilities.properties.AbilityProperty
 import io.github.nbcss.wynnlib.abilities.properties.SetupProperty
 
-class MantleResistanceProperty(ability: Ability,
-                               private val resistance: Int):
+class MantleResistanceProperty(
+    ability: Ability,
+    private val resistance: Int
+) :
     AbilityProperty(ability), SetupProperty {
-    companion object: Type<MantleResistanceProperty> {
+    companion object : Type<MantleResistanceProperty> {
         override fun create(ability: Ability, data: JsonElement): MantleResistanceProperty {
             return MantleResistanceProperty(ability, data.asInt)
         }
+
         override fun getKey(): String = "mantle_resistance"
     }
 

@@ -11,12 +11,13 @@ import net.minecraft.text.Text
 import kotlin.math.max
 import kotlin.math.min
 
-class Recipe(json: JsonObject): Keyed, BaseItem {
+class Recipe(json: JsonObject) : Keyed, BaseItem {
     private val id: String = json["id"].asString
     private val type: CraftedType
     private val profession: Profession
     private val level: IRange
     private val materials: Map<String, Int>
+
     init {
         val minLv = json["level"].asJsonObject["minimum"].asInt
         val maxLv = json["level"].asJsonObject["maximum"].asInt

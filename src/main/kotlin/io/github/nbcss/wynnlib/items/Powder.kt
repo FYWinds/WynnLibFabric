@@ -1,7 +1,6 @@
 package io.github.nbcss.wynnlib.items
 
 import com.google.gson.JsonObject
-import io.github.nbcss.wynnlib.Settings
 import io.github.nbcss.wynnlib.data.Element
 import io.github.nbcss.wynnlib.data.PowderSpecial
 import io.github.nbcss.wynnlib.data.Skill
@@ -17,12 +16,10 @@ import io.github.nbcss.wynnlib.items.identity.ConfigurableItem
 import io.github.nbcss.wynnlib.matcher.MatcherType
 import io.github.nbcss.wynnlib.utils.*
 import net.minecraft.item.ItemStack
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import net.minecraft.util.math.MathHelper
 import java.util.*
-import kotlin.collections.ArrayList
 
 class Powder(json: JsonObject) : Keyed, BaseItem, Translatable, ConfigurableItem {
     private val skillMap: MutableMap<Skill, Int> = EnumMap(Skill::class.java)
@@ -39,6 +36,7 @@ class Powder(json: JsonObject) : Keyed, BaseItem, Translatable, ConfigurableItem
     private val element: Element
     private val oppoElem: Element
     private val texture: ItemStack
+
     init {
         id = json["id"].asString
         name = json["name"].asString
@@ -56,7 +54,7 @@ class Powder(json: JsonObject) : Keyed, BaseItem, Translatable, ConfigurableItem
         durability = itemOnly["durabilityModifier"].asDouble
         Skill.values().forEach {
             val value = if (itemOnly.has(it.requirementName)) itemOnly[it.requirementName].asInt else 0
-            if (value != 0){
+            if (value != 0) {
                 skillMap[it] = value
             }
         }
@@ -89,60 +87,82 @@ class Powder(json: JsonObject) : Keyed, BaseItem, Translatable, ConfigurableItem
     override fun getTooltip(): List<Text> {
         val tooltip: MutableList<Text> = ArrayList()
         tooltip.add(getDisplayText())
-        tooltip.add(LiteralText.EMPTY)
-        tooltip.add(TOOLTIP_POWDER_WEAPON.translate().formatted(element.altColor)
-            .append(LiteralText(":").formatted(element.altColor)))
-        val prefix = LiteralText("- ")
-        tooltip.add(prefix.copy().formatted(element.altColor)
-            .append(LiteralText("+${minDamageBonus}-${maxDamageBonus} ").formatted(Formatting.GRAY))
-            .append(element.formatted(Formatting.GRAY, "tooltip.damage")))
-        tooltip.add(prefix.copy().formatted(element.altColor)
-            .append(LiteralText("+${convertRate}% ").formatted(Formatting.GRAY))
-            .append(TOOLTIP_POWDER_CONVERT.formatted(Formatting.GRAY))
-            .append(element.formatted(Formatting.GRAY, "tooltip.damage")))
-        if (tier.index() >= 4){
+        tooltip.add(Text.empty())
+        tooltip.add(
+            TOOLTIP_POWDER_WEAPON.translate().formatted(element.altColor)
+                .append(Text.literal(":").formatted(element.altColor))
+        )
+        val prefix = Text.literal("- ")
+        tooltip.add(
+            prefix.copy().formatted(element.altColor)
+                .append(Text.literal("+${minDamageBonus}-${maxDamageBonus} ").formatted(Formatting.GRAY))
+                .append(element.formatted(Formatting.GRAY, "tooltip.damage"))
+        )
+        tooltip.add(
+            prefix.copy().formatted(element.altColor)
+                .append(Text.literal("+${convertRate}% ").formatted(Formatting.GRAY))
+                .append(TOOLTIP_POWDER_CONVERT.formatted(Formatting.GRAY))
+                .append(element.formatted(Formatting.GRAY, "tooltip.damage"))
+        )
+        if (tier.index() >= 4) {
             val spec = PowderSpecial.Type.fromWeaponElement(element)
-            tooltip.add(prefix.copy().formatted(element.altColor)
-                .append(LiteralText("+").formatted(Formatting.GRAY))
-                .append(TOOLTIP_POWDER_SPECIAL.formatted(Formatting.GRAY))
-                .append(LiteralText(": ").formatted(Formatting.GRAY))
-                .append(spec.formatted(element.color)))
+            tooltip.add(
+                prefix.copy().formatted(element.altColor)
+                    .append(Text.literal("+").formatted(Formatting.GRAY))
+                    .append(TOOLTIP_POWDER_SPECIAL.formatted(Formatting.GRAY))
+                    .append(Text.literal(": ").formatted(Formatting.GRAY))
+                    .append(spec.formatted(element.color))
+            )
         }
-        tooltip.add(LiteralText.EMPTY)
-        tooltip.add(TOOLTIP_POWDER_ARMOUR.translate().formatted(element.altColor)
-            .append(LiteralText(":").formatted(element.altColor)))
-        tooltip.add(prefix.copy().formatted(element.altColor)
-            .append(LiteralText("+${defenceBonus} ").formatted(Formatting.GRAY))
-            .append(element.formatted(Formatting.GRAY, "tooltip.defence")))
-        tooltip.add(prefix.copy().formatted(element.altColor)
-            .append(LiteralText("$defencePenalty ").formatted(Formatting.GRAY))
-            .append(oppoElem.formatted(Formatting.GRAY, "tooltip.defence")))
-        if (tier.index() >= 4){
+        tooltip.add(Text.empty())
+        tooltip.add(
+            TOOLTIP_POWDER_ARMOUR.translate().formatted(element.altColor)
+                .append(Text.literal(":").formatted(element.altColor))
+        )
+        tooltip.add(
+            prefix.copy().formatted(element.altColor)
+                .append(Text.literal("+${defenceBonus} ").formatted(Formatting.GRAY))
+                .append(element.formatted(Formatting.GRAY, "tooltip.defence"))
+        )
+        tooltip.add(
+            prefix.copy().formatted(element.altColor)
+                .append(Text.literal("$defencePenalty ").formatted(Formatting.GRAY))
+                .append(oppoElem.formatted(Formatting.GRAY, "tooltip.defence"))
+        )
+        if (tier.index() >= 4) {
             val spec = PowderSpecial.Type.fromArmourElement(element)
-            tooltip.add(prefix.copy().formatted(element.altColor)
-                .append(LiteralText("+").formatted(Formatting.GRAY))
-                .append(TOOLTIP_POWDER_SPECIAL.formatted(Formatting.GRAY))
-                .append(LiteralText(": ").formatted(Formatting.GRAY))
-                .append(spec.formatted(element.color)))
+            tooltip.add(
+                prefix.copy().formatted(element.altColor)
+                    .append(Text.literal("+").formatted(Formatting.GRAY))
+                    .append(TOOLTIP_POWDER_SPECIAL.formatted(Formatting.GRAY))
+                    .append(Text.literal(": ").formatted(Formatting.GRAY))
+                    .append(spec.formatted(element.color))
+            )
         }
-        if(durability != 0.0 || skillMap.isNotEmpty()){
-            tooltip.add(LiteralText.EMPTY)
-            tooltip.add(TOOLTIP_POWDER_CRAFTING.translate().formatted(element.altColor)
-                .append(LiteralText(":").formatted(element.altColor)))
-            if (durability != 0.0){
+        if (durability != 0.0 || skillMap.isNotEmpty()) {
+            tooltip.add(Text.empty())
+            tooltip.add(
+                TOOLTIP_POWDER_CRAFTING.translate().formatted(element.altColor)
+                    .append(Text.literal(":").formatted(element.altColor))
+            )
+            if (durability != 0.0) {
                 val value = if (durability.toInt().toDouble() == durability)
                     durability.toInt().toString() else durability.toString()
                 val color = colorOf(durability.toInt())
-                tooltip.add(LiteralText(value).formatted(color).append(" ")
-                    .append(TOOLTIP_ING_DURABILITY.translate().formatted(color)))
+                tooltip.add(
+                    Text.literal(value).formatted(color).append(" ")
+                        .append(TOOLTIP_ING_DURABILITY.translate().formatted(color))
+                )
             }
             Skill.values().forEach { skill ->
                 skillMap[skill]?.let {
-                    if (it != 0){
+                    if (it != 0) {
                         val color = colorOf(-it)
                         val modifier = TOOLTIP_SKILL_MODIFIER.translate(null, skill.translate().string)
-                        tooltip.add(LiteralText("${signed(it)} ").formatted(color)
-                            .append(modifier.formatted(color)))
+                        tooltip.add(
+                            Text.literal("${signed(it)} ").formatted(color)
+                                .append(modifier.formatted(color))
+                        )
                     }
                 }
             }
@@ -161,6 +181,7 @@ class Powder(json: JsonObject) : Keyed, BaseItem, Translatable, ConfigurableItem
         IV(Color.AQUA),
         V(Color.RED),
         VI(Color.DARK_PURPLE);
+
         fun index(): Int = ordinal + 1
     }
 }

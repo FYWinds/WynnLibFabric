@@ -1,10 +1,14 @@
 package io.github.nbcss.wynnlib.timer
 
-abstract class AbstractFooterEntryTimer(protected val entry: StatusEntry,
-                                        startTime: Long): ITimer {
+abstract class AbstractFooterEntryTimer(
+    protected val entry: StatusEntry,
+    startTime: Long
+) : ITimer {
     private var expired: Boolean = false
-    protected val timeTracker: TimeTracker = TimeTracker(startTime,
-        if (entry.duration != null) entry.duration + 1 else 0)
+    protected val timeTracker: TimeTracker = TimeTracker(
+        startTime,
+        if (entry.duration != null) entry.duration + 1 else 0
+    )
 
     fun getSyncTime(): Long = timeTracker.getCurrentTime()
 

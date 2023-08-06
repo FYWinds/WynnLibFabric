@@ -8,17 +8,21 @@ import io.github.nbcss.wynnlib.utils.FileUtils
 import io.github.nbcss.wynnlib.utils.Scheduler
 import kotlin.concurrent.thread
 
-class StoreSet<T>(private val name: String,
-                  private val path: String,
-                  private val convertor: DataConvertor<T>) {
-    object StringConvertor: DataConvertor<String> {
+class StoreSet<T>(
+    private val name: String,
+    private val path: String,
+    private val convertor: DataConvertor<T>
+) {
+    object StringConvertor : DataConvertor<String> {
         override fun read(data: JsonElement): String? {
             return data.asString
         }
+
         override fun write(item: String): JsonElement {
             return JsonPrimitive(item)
         }
     }
+
     private val items: MutableSet<T> = mutableSetOf()
     private var dirty: Boolean = false
     private var saving: Boolean = false
@@ -27,7 +31,7 @@ class StoreSet<T>(private val name: String,
         FileUtils.readFile(path)?.let {
             reload(it)
         }
-        Scheduler.registerTask(name, 20){
+        Scheduler.registerTask(name, 20) {
             save()
         }
     }
@@ -42,7 +46,7 @@ class StoreSet<T>(private val name: String,
     }
 
     fun remove(item: T): Boolean {
-        if (items.remove(item)){
+        if (items.remove(item)) {
             markDirty()
             return true
         }
@@ -51,9 +55,9 @@ class StoreSet<T>(private val name: String,
 
     fun reload(data: JsonObject) {
         items.clear()
-        data["data"].asJsonArray.forEach{
+        data["data"].asJsonArray.forEach {
             val item = convertor.read(it)
-            if (item!= null){
+            if (item != null) {
                 items.add(item)
             }
         }

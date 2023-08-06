@@ -12,17 +12,19 @@ import io.github.nbcss.wynnlib.i18n.Translations
 import io.github.nbcss.wynnlib.utils.Symbol
 import io.github.nbcss.wynnlib.utils.colorOf
 import io.github.nbcss.wynnlib.utils.signed
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 
-class ArcherSentientBowsProperty(ability: Ability,
-                                 private val bows: Int):
+class ArcherSentientBowsProperty(
+    ability: Ability,
+    private val bows: Int
+) :
     AbilityProperty(ability), SetupProperty {
-    companion object: Type<ArcherSentientBowsProperty> {
+    companion object : Type<ArcherSentientBowsProperty> {
         override fun create(ability: Ability, data: JsonElement): ArcherSentientBowsProperty {
             return ArcherSentientBowsProperty(ability, data.asInt)
         }
+
         override fun getKey(): String = "sentient_bows"
     }
 
@@ -37,20 +39,25 @@ class ArcherSentientBowsProperty(ability: Ability,
     }
 
     override fun getTooltip(provider: PropertyProvider): List<Text> {
-        return listOf(Symbol.ALTER_HITS.asText().append(" ")
-            .append(Translations.TOOLTIP_ABILITY_ARCHER_SENTIENT_BOWS.formatted(Formatting.GRAY).append(": "))
-            .append(LiteralText(bows.toString()).formatted(Formatting.WHITE)))
+        return listOf(
+            Symbol.ALTER_HITS.asText().append(" ")
+                .append(Translations.TOOLTIP_ABILITY_ARCHER_SENTIENT_BOWS.formatted(Formatting.GRAY).append(": "))
+                .append(Text.literal(bows.toString()).formatted(Formatting.WHITE))
+        )
     }
 
-    class Modifier(ability: Ability, data: JsonElement):
+    class Modifier(ability: Ability, data: JsonElement) :
         AbilityProperty(ability), ModifiableProperty {
-        companion object: Type<Modifier> {
+        companion object : Type<Modifier> {
             override fun create(ability: Ability, data: JsonElement): Modifier {
                 return Modifier(ability, data)
             }
+
             override fun getKey(): String = "sentient_bows_modifier"
         }
+
         private val modifier: Int = data.asInt
+
         init {
             ability.putPlaceholder(getKey(), modifier.toString())
         }
@@ -60,14 +67,19 @@ class ArcherSentientBowsProperty(ability: Ability,
         override fun modify(entry: PropertyEntry) {
             ArcherSentientBowsProperty.from(entry)?.let {
                 val bows = it.getArcherSentientBows() + getArcherSentientBowsModifier()
-                entry.setProperty(ArcherSentientBowsProperty.getKey(), ArcherSentientBowsProperty(it.getAbility(), bows))
+                entry.setProperty(
+                    ArcherSentientBowsProperty.getKey(),
+                    ArcherSentientBowsProperty(it.getAbility(), bows)
+                )
             }
         }
 
         override fun getTooltip(provider: PropertyProvider): List<Text> {
-            return listOf(Symbol.ALTER_HITS.asText().append(" ")
-                .append(Translations.TOOLTIP_ABILITY_ARCHER_SENTIENT_BOWS.formatted(Formatting.GRAY).append(": "))
-                .append(LiteralText(signed(modifier)).formatted(colorOf(modifier))))
+            return listOf(
+                Symbol.ALTER_HITS.asText().append(" ")
+                    .append(Translations.TOOLTIP_ABILITY_ARCHER_SENTIENT_BOWS.formatted(Formatting.GRAY).append(": "))
+                    .append(Text.literal(signed(modifier)).formatted(colorOf(modifier)))
+            )
         }
     }
 }

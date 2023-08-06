@@ -6,14 +6,14 @@ import io.github.nbcss.wynnlib.data.CraftedType
 import io.github.nbcss.wynnlib.data.Recipe
 import io.github.nbcss.wynnlib.items.Material
 
-object RecipeRegistry: Registry<Recipe>() {
+object RecipeRegistry : Registry<Recipe>() {
     private const val RESOURCE = "assets/wynnlib/data/Recipes.json"
     private val materialMap: MutableMap<String, MutableSet<Recipe>> = mutableMapOf()
     override fun getFilename(): String = RESOURCE
 
     override fun read(data: JsonObject): Recipe? = try {
         Recipe(data)
-    }catch (e: Exception){
+    } catch (e: Exception) {
         e.printStackTrace()
         null
     }
@@ -26,7 +26,7 @@ object RecipeRegistry: Registry<Recipe>() {
     override fun put(item: Recipe) {
         super.put(item)
         item.getMaterials().forEach {
-            materialMap.getOrPut(it.first){ mutableSetOf() }.add(item)
+            materialMap.getOrPut(it.first) { mutableSetOf() }.add(item)
         }
     }
 

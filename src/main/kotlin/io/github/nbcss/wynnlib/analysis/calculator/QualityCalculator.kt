@@ -3,7 +3,6 @@ package io.github.nbcss.wynnlib.analysis.calculator
 import io.github.nbcss.wynnlib.i18n.SuffixTranslation
 import io.github.nbcss.wynnlib.utils.colorOf
 import io.github.nbcss.wynnlib.utils.range.BaseIRange
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 
@@ -27,8 +26,8 @@ interface QualityCalculator {
             val text = SuffixTranslation.withSuffix(range.upper(), id.suffix).formatted(color)
             val quality = calculator.getQuality(value, stars, range)
             if (quality == null) return text to quality
-            if (quality !in 0.0..1.0){
-                text.append(LiteralText(" (Outdated)").formatted(Formatting.DARK_GRAY))
+            if (quality !in 0.0..1.0) {
+                text.append(Text.literal(" (Outdated)").formatted(Formatting.DARK_GRAY))
                 return text to null
             }
             text.append(" ").append(formattingQuality(quality))
@@ -36,18 +35,18 @@ interface QualityCalculator {
         }
 
         fun formattingQuality(quality: Float): Text {
-            val text = LiteralText("(%.1f%%)".format(quality * 100))
+            val text = Text.literal("(%.1f%%)".format(quality * 100))
             if (quality >= 1.0) {
                 text.formatted(Formatting.GREEN).formatted(Formatting.BOLD)
-            }else if(quality >= 0.9) {
+            } else if (quality >= 0.9) {
                 text.formatted(Formatting.GREEN)
-            }else if(quality >= 0.7) {
+            } else if (quality >= 0.7) {
                 text.formatted(Formatting.DARK_GREEN)
-            }else if(quality >= 0.3) {
+            } else if (quality >= 0.3) {
                 text.formatted(Formatting.YELLOW)
-            }else if(quality >= 0.1) {
+            } else if (quality >= 0.1) {
                 text.formatted(Formatting.RED)
-            }else{
+            } else {
                 text.formatted(Formatting.DARK_RED)
             }
             return text

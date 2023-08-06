@@ -5,11 +5,12 @@ import io.github.nbcss.wynnlib.data.Identification
 import net.minecraft.text.Text
 import java.util.regex.Pattern
 
-class IdentificationProperty: AnalysisProperty {
+class IdentificationProperty : AnalysisProperty {
     companion object {
         private val ID_VALUE_PATTERN = Pattern.compile("(\\+\\d+|-\\d+)(.*)")
         const val KEY = "IDENTIFICATION"
     }
+
     private val idMap: MutableMap<Identification, Int> = mutableMapOf()
     private val starMap: MutableMap<Identification, Int> = mutableMapOf()
     private var terminated: Boolean = false //need this flag due to id from the set bonus...
@@ -38,7 +39,7 @@ class IdentificationProperty: AnalysisProperty {
             val idName = base.siblings.last().asString()
             Identification.fromSuffixName(suffix, idName)?.let { id ->
                 idMap[id] = value
-                if (base.siblings.size > 2){
+                if (base.siblings.size > 2) {
                     val stars = base.siblings[1].asString().chars().filter { it.toChar() == '*' }.count()
                     starMap[id] = stars.toInt()
                 }

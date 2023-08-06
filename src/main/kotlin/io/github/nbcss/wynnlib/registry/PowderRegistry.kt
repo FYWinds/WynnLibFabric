@@ -4,7 +4,7 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import io.github.nbcss.wynnlib.items.Powder
 
-object PowderRegistry: Registry<Powder>() {
+object PowderRegistry : Registry<Powder>() {
     private const val RESOURCE = "assets/wynnlib/data/Powders.json"
     private val nameMap: MutableMap<String, Powder> = LinkedHashMap()
 

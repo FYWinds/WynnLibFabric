@@ -4,7 +4,7 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import io.github.nbcss.wynnlib.items.Ingredient
 
-object IngredientRegistry: Registry<Ingredient>() {
+object IngredientRegistry : Registry<Ingredient>() {
     private const val RESOURCE = "assets/wynnlib/data/Ingredients.json"
     private val nameMap: MutableMap<String, Ingredient> = LinkedHashMap()
 
@@ -14,7 +14,7 @@ object IngredientRegistry: Registry<Ingredient>() {
 
     override fun getFilename(): String = RESOURCE
 
-    override fun reload(array: JsonArray){
+    override fun reload(array: JsonArray) {
         nameMap.clear()
         super.reload(array)
     }
@@ -26,7 +26,7 @@ object IngredientRegistry: Registry<Ingredient>() {
 
     override fun read(data: JsonObject): Ingredient? = try {
         Ingredient(data)
-    }catch (e: Exception){
+    } catch (e: Exception) {
         e.printStackTrace()
         null
     }

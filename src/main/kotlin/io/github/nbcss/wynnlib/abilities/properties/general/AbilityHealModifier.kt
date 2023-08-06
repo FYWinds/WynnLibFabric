@@ -10,14 +10,15 @@ import io.github.nbcss.wynnlib.i18n.Translations
 import io.github.nbcss.wynnlib.registry.AbilityRegistry
 import io.github.nbcss.wynnlib.utils.Symbol
 import io.github.nbcss.wynnlib.utils.removeDecimal
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 
-class AbilityHealModifier(ability: Ability,
-                          private val modifiers: Map<String, Pair<String, Double>>):
+class AbilityHealModifier(
+    ability: Ability,
+    private val modifiers: Map<String, Pair<String, Double>>
+) :
     AbilityProperty(ability) {
-    companion object: Type<AbilityHealModifier> {
+    companion object : Type<AbilityHealModifier> {
         override fun create(ability: Ability, data: JsonElement): AbilityHealModifier {
             val json = data.asJsonObject
             val modifiers: MutableMap<String, Pair<String, Double>> = linkedMapOf()
@@ -29,6 +30,7 @@ class AbilityHealModifier(ability: Ability,
             }
             return AbilityHealModifier(ability, modifiers)
         }
+
         override fun getKey(): String = "ability_heal_modifier"
     }
 
@@ -51,16 +53,16 @@ class AbilityHealModifier(ability: Ability,
         for (entry in modifiers.entries) {
             val ability = AbilityRegistry.get(entry.key)?.let { return@let it.translate().string }
             val modifier = entry.value
-            if(modifier.second != 0.0){
+            if (modifier.second != 0.0) {
                 val color = if (modifier.second < 0) Formatting.RED else Formatting.GREEN
                 val total = Symbol.HEART.asText().append(" ")
                     .append(Translations.TOOLTIP_ABILITY_TOTAL_HEAL.formatted(Formatting.GRAY))
                 if (ability != null) {
-                    total.append(LiteralText(" ($ability)").formatted(Formatting.GRAY))
+                    total.append(Text.literal(" ($ability)").formatted(Formatting.GRAY))
                 }
                 val value = (if (modifier.second > 0) "+" else "") + "${removeDecimal(modifier.second)}%"
-                total.append(LiteralText(": ").formatted(Formatting.GRAY))
-                    .append(LiteralText(value).formatted(color))
+                total.append(Text.literal(": ").formatted(Formatting.GRAY))
+                    .append(Text.literal(value).formatted(color))
                 tooltip.add(total)
             }
         }

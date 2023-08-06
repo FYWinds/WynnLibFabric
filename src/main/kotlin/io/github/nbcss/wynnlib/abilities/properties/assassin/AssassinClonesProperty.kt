@@ -13,17 +13,19 @@ import io.github.nbcss.wynnlib.i18n.Translations
 import io.github.nbcss.wynnlib.utils.Symbol
 import io.github.nbcss.wynnlib.utils.colorOf
 import io.github.nbcss.wynnlib.utils.signed
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 
-class AssassinClonesProperty(ability: Ability,
-                             private val clones: Int):
+class AssassinClonesProperty(
+    ability: Ability,
+    private val clones: Int
+) :
     AbilityProperty(ability), SetupProperty, OverviewProvider {
-    companion object: Type<AssassinClonesProperty> {
+    companion object : Type<AssassinClonesProperty> {
         override fun create(ability: Ability, data: JsonElement): AssassinClonesProperty {
             return AssassinClonesProperty(ability, data.asInt)
         }
+
         override fun getKey(): String = "clones"
     }
 
@@ -31,7 +33,7 @@ class AssassinClonesProperty(ability: Ability,
 
     override fun getOverviewTip(): Text {
         return Symbol.CHARGE.asText().append(" ").append(
-            LiteralText("$clones").formatted(Formatting.WHITE)
+            Text.literal("$clones").formatted(Formatting.WHITE)
         )
     }
 
@@ -44,18 +46,23 @@ class AssassinClonesProperty(ability: Ability,
     }
 
     override fun getTooltip(provider: PropertyProvider): List<Text> {
-            return listOf(Symbol.CHARGE.asText().append(" ")
-            .append(Translations.TOOLTIP_ABILITY_ASSASSIN_CLONES.formatted(Formatting.GRAY).append(": "))
-            .append(LiteralText(clones.toString()).formatted(Formatting.WHITE)))
+        return listOf(
+            Symbol.CHARGE.asText().append(" ")
+                .append(Translations.TOOLTIP_ABILITY_ASSASSIN_CLONES.formatted(Formatting.GRAY).append(": "))
+                .append(Text.literal(clones.toString()).formatted(Formatting.WHITE))
+        )
     }
 
-    class Modifier(ability: Ability,
-                   private val modifier: Int):
+    class Modifier(
+        ability: Ability,
+        private val modifier: Int
+    ) :
         AbilityProperty(ability), ModifiableProperty {
-        companion object: Type<Modifier> {
+        companion object : Type<Modifier> {
             override fun create(ability: Ability, data: JsonElement): Modifier {
                 return Modifier(ability, data.asInt)
             }
+
             override fun getKey(): String = "clones_modifier"
         }
 
@@ -73,9 +80,11 @@ class AssassinClonesProperty(ability: Ability,
         }
 
         override fun getTooltip(provider: PropertyProvider): List<Text> {
-            return listOf(Symbol.CHARGE.asText().append(" ")
-                .append(Translations.TOOLTIP_ABILITY_ASSASSIN_CLONES.formatted(Formatting.GRAY).append(": "))
-                .append(LiteralText(signed(modifier)).formatted(colorOf(modifier))))
+            return listOf(
+                Symbol.CHARGE.asText().append(" ")
+                    .append(Translations.TOOLTIP_ABILITY_ASSASSIN_CLONES.formatted(Formatting.GRAY).append(": "))
+                    .append(Text.literal(signed(modifier)).formatted(colorOf(modifier)))
+            )
         }
     }
 }

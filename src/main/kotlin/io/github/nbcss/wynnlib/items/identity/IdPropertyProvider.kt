@@ -8,7 +8,7 @@ interface IdPropertyProvider {
      */
     fun getIdProperty(key: String): String? = null
 
-    companion object: IdPropertyProvider {
+    companion object : IdPropertyProvider {
         //default property, always provide blank spell name
         override fun getIdProperty(key: String): String? {
             SpellSlot.fromKey(key)?.let { spell ->

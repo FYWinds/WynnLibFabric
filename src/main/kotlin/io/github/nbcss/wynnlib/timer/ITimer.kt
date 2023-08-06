@@ -5,7 +5,7 @@ import io.github.nbcss.wynnlib.timer.custom.MajorIdIndicator
 import io.github.nbcss.wynnlib.timer.status.TypedStatusTimer
 import io.github.nbcss.wynnlib.utils.Keyed
 
-interface ITimer: Keyed {
+interface ITimer : Keyed {
     fun isExpired(): Boolean
     fun updateWorldTime(time: Long)
     fun getDuration(): Double?

@@ -5,7 +5,7 @@ import com.google.gson.JsonObject
 import io.github.nbcss.wynnlib.registry.SavingStorage
 import io.github.nbcss.wynnlib.utils.Keyed
 
-interface ConfigurableItem: Keyed {
+interface ConfigurableItem : Keyed {
     fun getConfigDomain(): String
     fun getConfigKey(): String = "${getConfigDomain()}:${getKey()}"
 
@@ -47,7 +47,7 @@ interface ConfigurableItem: Keyed {
                     it.properties.remove(field)
                     if (it.isEmpty()) {
                         registry.remove(item.getConfigKey())
-                    }else{
+                    } else {
                         registry.markDirty()
                     }
                 }
@@ -63,8 +63,10 @@ interface ConfigurableItem: Keyed {
         }
     }
 
-    private class ConfigData(val itemKey: String,
-                             var properties: JsonObject): Keyed {
+    private class ConfigData(
+        val itemKey: String,
+        var properties: JsonObject
+    ) : Keyed {
         override fun getKey(): String = itemKey
         fun isEmpty(): Boolean = properties.size() == 0
     }

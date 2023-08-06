@@ -8,9 +8,11 @@ import io.github.nbcss.wynnlib.abilities.properties.AbilityProperty
 import io.github.nbcss.wynnlib.abilities.properties.SetupProperty
 import io.github.nbcss.wynnlib.utils.removeDecimal
 
-class EnragedBlowProperty(ability: Ability,
-                          private val info: Info): AbilityProperty(ability), SetupProperty {
-    companion object: Type<EnragedBlowProperty> {
+class EnragedBlowProperty(
+    ability: Ability,
+    private val info: Info
+) : AbilityProperty(ability), SetupProperty {
+    companion object : Type<EnragedBlowProperty> {
         private const val CONVERT_KEY: String = "rate"
         private const val DAMAGE_BOOST_KEY: String = "damage_boost"
         private const val DAMAGE_BOOST_MAX_KEY: String = "max_boost"
@@ -21,6 +23,7 @@ class EnragedBlowProperty(ability: Ability,
             val maxBoost = if (json.has(DAMAGE_BOOST_MAX_KEY)) json[DAMAGE_BOOST_MAX_KEY].asDouble else 0.0
             return EnragedBlowProperty(ability, Info(convert, boost, maxBoost))
         }
+
         override fun getKey(): String = "enraged_blow"
     }
 
@@ -36,7 +39,9 @@ class EnragedBlowProperty(ability: Ability,
         entry.setProperty(getKey(), this)
     }
 
-    data class Info(val convertRate: Double,
-                    val damageBonus: Double,
-                    val damageBonusMax: Double)
+    data class Info(
+        val convertRate: Double,
+        val damageBonus: Double,
+        val damageBonusMax: Double
+    )
 }

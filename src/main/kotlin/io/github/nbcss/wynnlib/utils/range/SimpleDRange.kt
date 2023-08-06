@@ -1,8 +1,9 @@
 package io.github.nbcss.wynnlib.utils.range
 
-data class SimpleDRange(private val lower: Double, private val upper: Double): DRange {
+data class SimpleDRange(private val lower: Double, private val upper: Double) : DRange {
     override fun lower(): Double = lower
     override fun upper(): Double = upper
+
     companion object {
         fun fromString(s: String): DRange {
             val values = s.split("-")

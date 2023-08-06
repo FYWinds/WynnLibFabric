@@ -5,7 +5,7 @@ import io.github.nbcss.wynnlib.Settings
 import io.github.nbcss.wynnlib.utils.Color
 import io.github.nbcss.wynnlib.utils.JsonGetter
 
-abstract class AbstractMatcherType(private val color: Color): MatcherType {
+abstract class AbstractMatcherType(private val color: Color) : MatcherType {
     private var customColor: Color = color
 
     override fun reload(data: JsonObject) {

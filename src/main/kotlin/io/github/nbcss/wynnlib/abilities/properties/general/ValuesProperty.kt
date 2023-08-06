@@ -5,9 +5,11 @@ import io.github.nbcss.wynnlib.abilities.Ability
 import io.github.nbcss.wynnlib.abilities.PlaceholderContainer
 import io.github.nbcss.wynnlib.abilities.properties.AbilityProperty
 
-class ValuesProperty(ability: Ability,
-                     private val values: Map<String, String>): AbilityProperty(ability) {
-    companion object: Type<ValuesProperty> {
+class ValuesProperty(
+    ability: Ability,
+    private val values: Map<String, String>
+) : AbilityProperty(ability) {
+    companion object : Type<ValuesProperty> {
         override fun create(ability: Ability, data: JsonElement): ValuesProperty {
             val values: MutableMap<String, String> = mutableMapOf()
             for (entry in data.asJsonObject.entrySet()) {
@@ -15,6 +17,7 @@ class ValuesProperty(ability: Ability,
             }
             return ValuesProperty(ability, values)
         }
+
         override fun getKey(): String = "values"
     }
 

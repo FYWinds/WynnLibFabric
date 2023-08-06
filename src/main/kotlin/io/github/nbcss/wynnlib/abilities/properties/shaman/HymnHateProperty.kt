@@ -8,12 +8,15 @@ import io.github.nbcss.wynnlib.abilities.properties.AbilityProperty
 import io.github.nbcss.wynnlib.abilities.properties.SetupProperty
 import io.github.nbcss.wynnlib.utils.removeDecimal
 
-class HymnHateProperty(ability: Ability,
-                       private val damage: Double): AbilityProperty(ability), SetupProperty {
-    companion object: Type<HymnHateProperty> {
+class HymnHateProperty(
+    ability: Ability,
+    private val damage: Double
+) : AbilityProperty(ability), SetupProperty {
+    companion object : Type<HymnHateProperty> {
         override fun create(ability: Ability, data: JsonElement): HymnHateProperty {
             return HymnHateProperty(ability, data.asDouble)
         }
+
         override fun getKey(): String = "hymn_of_hate"
     }
 

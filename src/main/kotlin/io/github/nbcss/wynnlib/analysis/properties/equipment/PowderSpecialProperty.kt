@@ -7,7 +7,7 @@ import io.github.nbcss.wynnlib.utils.tierOf
 import net.minecraft.text.Text
 import java.util.regex.Pattern
 
-class PowderSpecialProperty: AnalysisProperty {
+class PowderSpecialProperty : AnalysisProperty {
     companion object {
         private val SPEC_NAME_PATTERN = Pattern.compile("\u00C0\u00C0[✤✦❉✹❋] (.+)")
         private val DURATION_PATTERN = Pattern.compile("Duration: (\\d+\\.?\\d*)")
@@ -16,20 +16,23 @@ class PowderSpecialProperty: AnalysisProperty {
         private val RADIUS_PATTERN = Pattern.compile("Radius: (\\d+\\.?\\d*)")
         private val CHAINS_PATTERN = Pattern.compile("Chains: (\\d+\\.?\\d*)")
         private val HEALTH_LOST_PATTERN = Pattern.compile("Min\\. Lost Health: (\\d+\\.?\\d*)")
+
         //private val KNOCKBACK_PATTERN = Pattern.compile("Knockback: (\\d+\\.?\\d*)")
         private val FACTORY_MAP: Map<String, SpecFactory> = mapOf(
-            pairs = (1..5).map { listOf(
-                QuakeSpec(it),
-                RageSpec(it),
-                ChainLightningSpec(it),
-                KillStreakSpec(it),
-                CourageSpec(it),
-                EnduranceSpec(it),
-                CurseSpec(it),
-                ConcentrationSpec(it),
-                WindPrisonSpec(it),
-                DodgeSpec(it),
-            ) }.flatten().map { it.getKey() to it }.toTypedArray()
+            pairs = (1..5).map {
+                listOf(
+                    QuakeSpec(it),
+                    RageSpec(it),
+                    ChainLightningSpec(it),
+                    KillStreakSpec(it),
+                    CourageSpec(it),
+                    EnduranceSpec(it),
+                    CurseSpec(it),
+                    ConcentrationSpec(it),
+                    WindPrisonSpec(it),
+                    DodgeSpec(it),
+                )
+            }.flatten().map { it.getKey() to it }.toTypedArray()
         )
 
         private fun toDataString(text: Text): String? {
@@ -44,14 +47,16 @@ class PowderSpecialProperty: AnalysisProperty {
         private fun readValue(text: Text, pattern: Pattern): Double {
             toDataString(text)?.let {
                 val matcher = pattern.matcher(it)
-                if(matcher.find()) {
+                if (matcher.find()) {
                     return matcher.group(1).toDouble()
                 }
             }
             return 0.0
         }
+
         const val KEY = "POWDER_SPEC"
     }
+
     private var powderSpec: PowderSpecial? = null
 
     fun getPowderSpecial(): PowderSpecial? = powderSpec
@@ -61,7 +66,7 @@ class PowderSpecialProperty: AnalysisProperty {
             return 0
         val base = tooltip[line].siblings[0]
         val matcher = SPEC_NAME_PATTERN.matcher(base.asString())
-        if(matcher.find()){
+        if (matcher.find()) {
             FACTORY_MAP[matcher.group(1)]?.let { factory ->
                 val result = factory.read(tooltip, line + 1)
                 powderSpec = result.first
@@ -73,7 +78,7 @@ class PowderSpecialProperty: AnalysisProperty {
 
     override fun getKey(): String = KEY
 
-    abstract class SpecFactory(val tier: Int): Keyed {
+    abstract class SpecFactory(val tier: Int) : Keyed {
         abstract val name: String
         abstract fun read(tooltip: List<Text>, line: Int): Pair<PowderSpecial?, Int>
         override fun getKey(): String = name.replace("$", tierOf(tier))

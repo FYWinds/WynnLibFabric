@@ -8,10 +8,12 @@ import io.github.nbcss.wynnlib.abilities.properties.AbilityProperty
 import io.github.nbcss.wynnlib.abilities.properties.SetupProperty
 import io.github.nbcss.wynnlib.utils.removeDecimal
 
-class SacrificialShrineProperty(ability: Ability,
-                                private val cost: Double,
-                                private val damageBoost: Double): AbilityProperty(ability), SetupProperty {
-    companion object: Type<SacrificialShrineProperty> {
+class SacrificialShrineProperty(
+    ability: Ability,
+    private val cost: Double,
+    private val damageBoost: Double
+) : AbilityProperty(ability), SetupProperty {
+    companion object : Type<SacrificialShrineProperty> {
         private const val COST_KEY = "cost"
         private const val BOOST_KEY = "damage_boost"
         override fun create(ability: Ability, data: JsonElement): SacrificialShrineProperty {
@@ -20,6 +22,7 @@ class SacrificialShrineProperty(ability: Ability,
             val damageBoost = if (json.has(BOOST_KEY)) json[BOOST_KEY].asDouble else 0.0
             return SacrificialShrineProperty(ability, cost, damageBoost)
         }
+
         override fun getKey(): String = "sacrificial_shrine"
     }
 

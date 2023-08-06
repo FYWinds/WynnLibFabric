@@ -5,26 +5,29 @@ import io.github.nbcss.wynnlib.gui.HandbookTabScreen
 import io.github.nbcss.wynnlib.gui.TabFactory
 import io.github.nbcss.wynnlib.utils.playSound
 import net.minecraft.client.gui.screen.Screen
-import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.item.ItemStack
 import net.minecraft.sound.SoundEvents
 import net.minecraft.text.Text
 
-class TreeBuildSelectScreen(parent: Screen?,
-                            factory: TabFactory,
-                            private val builder: AbilityTreeBuilderScreen): AbilityBuildDictionaryScreen(parent) {
+class TreeBuildSelectScreen(
+    parent: Screen?,
+    factory: TabFactory,
+    private val builder: AbilityTreeBuilderScreen
+) : AbilityBuildDictionaryScreen(parent) {
     companion object {
         fun ofFactory(builder: AbilityTreeBuilderScreen): TabFactory {
-            return object: TabFactory {
+            return object : TabFactory {
                 override fun getTabIcon(): ItemStack = ICON
                 override fun getTabTitle(): Text = TITLE
                 override fun createScreen(parent: Screen?): HandbookTabScreen =
                     TreeBuildSelectScreen(parent, this, builder)
+
                 override fun isInstance(screen: HandbookTabScreen): Boolean = screen is TreeBuildSelectScreen
                 override fun shouldDisplay(): Boolean = true
             }
         }
     }
+
     init {
         tabs.clear()
         tabs.add(builder.getFactory())
@@ -45,7 +48,7 @@ class TreeBuildSelectScreen(parent: Screen?,
     }
 
     override fun onClickItem(item: TreeBuildData, button: Int) {
-        if (button == 0){
+        if (button == 0) {
             playSound(SoundEvents.ENTITY_ITEM_PICKUP)
             builder.setAbilities(item.getActiveAbilities())
             client!!.setScreen(builder)

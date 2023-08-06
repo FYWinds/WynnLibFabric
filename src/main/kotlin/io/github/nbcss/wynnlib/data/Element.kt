@@ -5,58 +5,72 @@ import io.github.nbcss.wynnlib.utils.Keyed
 import net.minecraft.util.Formatting
 import java.util.*
 
-enum class Element(val icon: String,
-                   val displayName: String,
-                   val damageName: String,
-                   val defenceName: String,
-                   val damageBonusName: String,
-                   val defenceBonusName: String,
-                   val color: Formatting,
-                   val altColor: Formatting
-                   ): Keyed, Translatable {
-    FIRE("✹",
+enum class Element(
+    val icon: String,
+    val displayName: String,
+    val damageName: String,
+    val defenceName: String,
+    val damageBonusName: String,
+    val defenceBonusName: String,
+    val color: Formatting,
+    val altColor: Formatting
+) : Keyed, Translatable {
+    FIRE(
+        "✹",
         "✹ Fire",
         "fireDamage",
         "fireDefense",
         "bonusFireDamage",
         "bonusFireDefense",
-        Formatting.RED, Formatting.DARK_RED),
-    WATER("❉",
+        Formatting.RED, Formatting.DARK_RED
+    ),
+    WATER(
+        "❉",
         "❉ Water",
         "waterDamage",
         "waterDefense",
         "bonusWaterDamage",
         "bonusWaterDefense",
-        Formatting.AQUA, Formatting.DARK_AQUA),
-    AIR("❋",
+        Formatting.AQUA, Formatting.DARK_AQUA
+    ),
+    AIR(
+        "❋",
         "❋ Air",
         "airDamage",
         "airDefense",
         "bonusAirDamage",
         "bonusAirDefense",
-        Formatting.WHITE, Formatting.GRAY),
-    THUNDER("✦",
+        Formatting.WHITE, Formatting.GRAY
+    ),
+    THUNDER(
+        "✦",
         "✦ Thunder",
         "thunderDamage",
         "thunderDefense",
         "bonusThunderDamage",
         "bonusThunderDefense",
-        Formatting.YELLOW, Formatting.GOLD),
-    EARTH("✤",
+        Formatting.YELLOW, Formatting.GOLD
+    ),
+    EARTH(
+        "✤",
         "✤ Earth",
         "earthDamage",
         "earthDefense",
         "bonusEarthDamage",
         "bonusEarthDefense",
-        Formatting.DARK_GREEN, Formatting.GREEN);
+        Formatting.DARK_GREEN, Formatting.GREEN
+    );
 
     companion object {
         private val VALUE_MAP: Map<String, Element> = mapOf(
-            pairs = values().map { it.name.uppercase() to it }.toTypedArray())
+            pairs = values().map { it.name.uppercase() to it }.toTypedArray()
+        )
         private val DISPLAY_NAME_MAP: Map<String, Element> = mapOf(
-            pairs = values().map { it.displayName to it }.toTypedArray())
+            pairs = values().map { it.displayName to it }.toTypedArray()
+        )
         private val ICON_MAP: Map<String, Element> = mapOf(
-            pairs = values().map { it.icon to it }.toTypedArray())
+            pairs = values().map { it.icon to it }.toTypedArray()
+        )
 
         fun fromId(id: String): Element? {
             return VALUE_MAP[id.uppercase()]
@@ -75,9 +89,9 @@ enum class Element(val icon: String,
 
     override fun getTranslationKey(label: String?): String {
         val key = getKey().lowercase(Locale.getDefault())
-        if ("tooltip.damage" == label){
+        if ("tooltip.damage" == label) {
             return "wynnlib.tooltip.${key}_damage"
-        }else if("tooltip.defence" == label){
+        } else if ("tooltip.defence" == label) {
             return "wynnlib.tooltip.${key}_defence"
         }
         return "wynnlib.element.$key"

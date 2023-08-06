@@ -3,9 +3,11 @@ package io.github.nbcss.wynnlib.data
 import io.github.nbcss.wynnlib.i18n.Translatable
 import io.github.nbcss.wynnlib.utils.Keyed
 
-enum class CraftedType(private val id: String,
-                       private val profession: Profession,
-                       private val translationKey: String): Keyed, Translatable {
+enum class CraftedType(
+    private val id: String,
+    private val profession: Profession,
+    private val translationKey: String
+) : Keyed, Translatable {
     SPEAR("SPEAR", Profession.WEAPONSMITHING, "wynnlib.item_type.spear"),
     BOW("BOW", Profession.WOODWORKING, "wynnlib.item_type.bow"),
     WAND("WAND", Profession.WOODWORKING, "wynnlib.item_type.wand"),
@@ -26,6 +28,7 @@ enum class CraftedType(private val id: String,
         private val ID_MAP: Map<String, CraftedType> = mapOf(
             pairs = values().map { it.id.uppercase() to it }.toTypedArray()
         )
+
         fun fromId(id: String): CraftedType? {
             return ID_MAP[id.uppercase()]
         }

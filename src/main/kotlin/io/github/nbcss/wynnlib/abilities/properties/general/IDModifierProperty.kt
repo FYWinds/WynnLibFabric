@@ -8,10 +8,12 @@ import io.github.nbcss.wynnlib.abilities.properties.AbilityProperty
 import io.github.nbcss.wynnlib.abilities.properties.SetupProperty
 import io.github.nbcss.wynnlib.data.Identification
 
-class IDModifierProperty(ability: Ability,
-                         pairs: List<Pair<String, Int>>):
+class IDModifierProperty(
+    ability: Ability,
+    pairs: List<Pair<String, Int>>
+) :
     AbilityProperty(ability), SetupProperty {
-    companion object: Type<IDModifierProperty> {
+    companion object : Type<IDModifierProperty> {
         override fun create(ability: Ability, data: JsonElement): IDModifierProperty {
             val json = data.asJsonObject
             val values: MutableList<Pair<String, Int>> = mutableListOf()
@@ -22,8 +24,10 @@ class IDModifierProperty(ability: Ability,
             }
             return IDModifierProperty(ability, values)
         }
+
         override fun getKey(): String = "id_modifier"
     }
+
     private val modifiers: Map<String, Int> = mapOf(pairs = pairs.toTypedArray())
 
     fun getModifiers(): Map<Identification, Int> = mapOf(pairs = modifiers.mapNotNull {

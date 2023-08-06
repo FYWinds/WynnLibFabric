@@ -15,24 +15,27 @@ import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.item.ItemStack
 import net.minecraft.sound.SoundEvent
 import net.minecraft.sound.SoundEvents
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 
 
-class AbilityTreeViewerScreen(parent: Screen?,
-                              character: CharacterClass = CharacterClass.values()[0]) : AbstractAbilityTreeScreen(parent) {
+class AbilityTreeViewerScreen(
+    parent: Screen?,
+    character: CharacterClass = CharacterClass.values()[0]
+) : AbstractAbilityTreeScreen(parent) {
     companion object {
         val CREATE_ICON = ItemFactory.fromEncoding("minecraft:writable_book")
-        val FACTORY = object: TabFactory {
+        val FACTORY = object : TabFactory {
             override fun getTabIcon(): ItemStack = ICON
             override fun getTabTitle(): Text = TITLE
             override fun createScreen(parent: Screen?): HandbookTabScreen = AbilityTreeViewerScreen(parent)
             override fun isInstance(screen: HandbookTabScreen): Boolean = screen is AbilityBuildDictionaryScreen
                     || screen is AbilityTreeViewerScreen
+
             override fun shouldDisplay(): Boolean = true
         }
     }
+
     private val buttons: MutableList<SideTabWidget> = mutableListOf()
     private var tree: AbilityTree = AbilityRegistry.fromCharacter(character)
     private var viewer: ViewerWindow? = null
@@ -48,40 +51,56 @@ class AbilityTreeViewerScreen(parent: Screen?,
                     tree = AbilityRegistry.fromCharacter(characterClass)
                     getViewer()?.reset()
                 }
+
                 override fun isSelected(index: Int): Boolean {
                     return tree.character.ordinal == index
                 }
+
                 override fun drawTooltip(matrices: MatrixStack, mouseX: Int, mouseY: Int, index: Int) {
                     drawTooltip(matrices, listOf(characterClass.translate()), mouseX, mouseY)
                 }
             }
-            buttons.add(SideTabWidget.fromWindowSide(index++, windowX, windowY, 34,
-                SideTabWidget.Side.LEFT, characterClass.getWeapon().getIcon(), handler))
+            buttons.add(
+                SideTabWidget.fromWindowSide(
+                    index++, windowX, windowY, 34,
+                    SideTabWidget.Side.LEFT, characterClass.getWeapon().getIcon(), handler
+                )
+            )
         }
-        buttons.add(SideTabWidget.fromWindowSide(index, windowX, windowY, 34,
-            SideTabWidget.Side.LEFT, AbilityBuildDictionaryScreen.ICON, object : SideTabWidget.Handler {
-                override fun onClick(index: Int) {
-                    val screen = AbilityBuildDictionaryScreen(parent)
-                    client!!.setScreen(screen)
-                }
-                override fun isSelected(index: Int): Boolean = false
-                override fun drawTooltip(matrices: MatrixStack, mouseX: Int, mouseY: Int, index: Int) {
-                    drawTooltip(matrices, listOf(AbilityBuildDictionaryScreen.TITLE), mouseX, mouseY)
-                }
-            }))
-        buttons.add(SideTabWidget.fromWindowSide(0, windowX, windowY, 45,
-            SideTabWidget.Side.RIGHT, CREATE_ICON, object : SideTabWidget.Handler {
-                override fun onClick(index: Int) {
-                    client!!.setScreen(AbilityTreeBuilderScreen(this@AbilityTreeViewerScreen, tree))
-                }
-                override fun isSelected(index: Int): Boolean = false
-                override fun getClickSound(): SoundEvent? = SoundEvents.ENTITY_ITEM_PICKUP
-                override fun drawTooltip(matrices: MatrixStack, mouseX: Int, mouseY: Int, index: Int) {
-                    val name = Translations.UI_TREE_BUILDS.translate().string
-                    drawTooltip(matrices, listOf(LiteralText("[+] $name").formatted(Formatting.GREEN),
-                        tree.character.formatted(Formatting.GRAY)), mouseX, mouseY)
-                }
-            }))
+        buttons.add(
+            SideTabWidget.fromWindowSide(index, windowX, windowY, 34,
+                SideTabWidget.Side.LEFT, AbilityBuildDictionaryScreen.ICON, object : SideTabWidget.Handler {
+                    override fun onClick(index: Int) {
+                        val screen = AbilityBuildDictionaryScreen(parent)
+                        client!!.setScreen(screen)
+                    }
+
+                    override fun isSelected(index: Int): Boolean = false
+                    override fun drawTooltip(matrices: MatrixStack, mouseX: Int, mouseY: Int, index: Int) {
+                        drawTooltip(matrices, listOf(AbilityBuildDictionaryScreen.TITLE), mouseX, mouseY)
+                    }
+                })
+        )
+        buttons.add(
+            SideTabWidget.fromWindowSide(0, windowX, windowY, 45,
+                SideTabWidget.Side.RIGHT, CREATE_ICON, object : SideTabWidget.Handler {
+                    override fun onClick(index: Int) {
+                        client!!.setScreen(AbilityTreeBuilderScreen(this@AbilityTreeViewerScreen, tree))
+                    }
+
+                    override fun isSelected(index: Int): Boolean = false
+                    override fun getClickSound(): SoundEvent? = SoundEvents.ENTITY_ITEM_PICKUP
+                    override fun drawTooltip(matrices: MatrixStack, mouseX: Int, mouseY: Int, index: Int) {
+                        val name = Translations.UI_TREE_BUILDS.translate().string
+                        drawTooltip(
+                            matrices, listOf(
+                                Text.literal("[+] $name").formatted(Formatting.GREEN),
+                                tree.character.formatted(Formatting.GRAY)
+                            ), mouseX, mouseY
+                        )
+                    }
+                })
+        )
     }
 
     override fun getViewer(): ATreeScrollWidget? = viewer
@@ -116,7 +135,7 @@ class AbilityTreeViewerScreen(parent: Screen?,
             renderArchetypeIcon(matrices, it, archetypeX, archetypeY)
             val points = tree.getArchetypePoint(it).toString()
             textRenderer.draw(matrices, points, archetypeX.toFloat() + 20, archetypeY.toFloat() + 4, 0)
-            if (mouseX >= archetypeX && mouseY >= archetypeY && mouseX <= archetypeX + 16 && mouseY <= archetypeY + 16){
+            if (mouseX >= archetypeX && mouseY >= archetypeY && mouseX <= archetypeX + 16 && mouseY <= archetypeY + 16) {
                 drawTooltip(matrices, it.getTooltip(), mouseX, mouseY)
             }
             archetypeX += 60
@@ -139,7 +158,8 @@ class AbilityTreeViewerScreen(parent: Screen?,
             //render inactive edges (basic)
             val inactive = tree.getAbilities().filter {
                 !isMouseOver(mouseX.toDouble(), mouseY.toDouble()) || !isOverNode(
-                    toScreenPosition(it.getHeight(), it.getPosition()), mouseX, mouseY)
+                    toScreenPosition(it.getHeight(), it.getPosition()), mouseX, mouseY
+                )
             }
             renderEdges(inactive, matrices, LOCKED_OUTER_COLOR, false)
             renderEdges(inactive, matrices, LOCKED_INNER_COLOR, true)
@@ -155,11 +175,11 @@ class AbilityTreeViewerScreen(parent: Screen?,
             tree.getAbilities().forEach {
                 val node = toScreenPosition(it.getHeight(), it.getPosition())
                 renderArchetypeOutline(matrices, it, node.x, node.y)
-                val item = if (it in locked){
+                val item = if (it in locked) {
                     it.getTier().getLockedTexture()
-                }else if (isMouseOver(mouseX.toDouble(), mouseY.toDouble()) && isOverNode(node, mouseX, mouseY)){
+                } else if (isMouseOver(mouseX.toDouble(), mouseY.toDouble()) && isOverNode(node, mouseX, mouseY)) {
                     it.getTier().getActiveTexture()
-                }else{
+                } else {
                     it.getTier().getUnlockedTexture()
                 }
                 itemRenderer.renderInGuiWithOverrides(item, node.x - 8, node.y - 8)
@@ -176,7 +196,7 @@ class AbilityTreeViewerScreen(parent: Screen?,
             //render ability tooltip
             for (ability in tree.getAbilities()) {
                 val node = toScreenPosition(ability.getHeight(), ability.getPosition())
-                if (isOverNode(node, mouseX, mouseY)){
+                if (isOverNode(node, mouseX, mouseY)) {
                     renderAbilityTooltip(matrices, mouseX, mouseY, ability)
                     break
                 }

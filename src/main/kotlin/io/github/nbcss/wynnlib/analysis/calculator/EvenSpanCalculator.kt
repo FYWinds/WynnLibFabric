@@ -5,7 +5,7 @@ import net.minecraft.util.math.MathHelper
 import kotlin.math.max
 import kotlin.math.min
 
-object EvenSpanCalculator: QualityCalculator {
+object EvenSpanCalculator : QualityCalculator {
     override fun getQuality(value: Int, stars: Int, range: BaseIRange): Float? {
         if (value < min(range.lower(), range.upper()))
             return -1.0f //outdated range

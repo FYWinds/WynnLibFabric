@@ -5,8 +5,6 @@ import io.github.nbcss.wynnlib.data.CharacterClass
 import io.github.nbcss.wynnlib.data.SpellSlot
 import io.github.nbcss.wynnlib.utils.IntPos
 import java.util.*
-import kotlin.collections.HashMap
-import kotlin.collections.HashSet
 import kotlin.math.max
 
 class AbilityTree(val character: CharacterClass) {
@@ -68,13 +66,13 @@ class AbilityTree(val character: CharacterClass) {
         abilities.forEach {
             this.abilities.add(it)
             this.posMap[IntPos(it.getHeight(), it.getPosition())] = it
-            if (it.isMainAttack()){
+            if (it.isMainAttack()) {
                 mainAttack = it
             }
-            if(it.getHeight() == 0){
+            if (it.getHeight() == 0) {
                 root = it
             }
-            if(it.getTier().getLevel() == 0){
+            if (it.getTier().getLevel() == 0) {
                 BoundSpellProperty.from(it)?.let { property ->
                     this.spellMap[property.getSpell()] = it
                 }
@@ -88,14 +86,14 @@ class AbilityTree(val character: CharacterClass) {
         this.costMap.clear()
         this.abilities.forEach { from ->
             costMap[from to from] = 0
-            val queue: Queue<Pair<Ability, Int>> = PriorityQueue(compareBy{ it.second })
+            val queue: Queue<Pair<Ability, Int>> = PriorityQueue(compareBy { it.second })
             queue.add(from to from.getAbilityPointCost())
             while (queue.isNotEmpty()) {
                 val pair = queue.remove()
                 val node = pair.first
                 for (successor in node.getSuccessors()) {
                     val nextCost = successor.getAbilityPointCost() + costMap[from to node]!!
-                    if (costMap[from to successor] == null || nextCost < costMap[from to successor]!!){
+                    if (costMap[from to successor] == null || nextCost < costMap[from to successor]!!) {
                         costMap[from to successor] = nextCost
                         queue.add(successor to nextCost)
                     }

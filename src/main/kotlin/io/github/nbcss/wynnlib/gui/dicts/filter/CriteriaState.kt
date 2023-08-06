@@ -4,9 +4,11 @@ import io.github.nbcss.wynnlib.items.BaseItem
 import io.github.nbcss.wynnlib.utils.Keyed
 import java.util.function.Consumer
 
-class CriteriaState<T: BaseItem>(private val onContentUpdate: Consumer<CriteriaState<T>>,
-                                 private val onCriteriaUpdate: Consumer<CriteriaState<T>>,
-                                 private val maxSorters: Int = 8) {
+class CriteriaState<T : BaseItem>(
+    private val onContentUpdate: Consumer<CriteriaState<T>>,
+    private val onCriteriaUpdate: Consumer<CriteriaState<T>>,
+    private val maxSorters: Int = 8
+) {
     private val filters: MutableMap<String, Filter<T>> = mutableMapOf()
     private val sorterIndexes: MutableMap<String, Int> = mutableMapOf()
     private val sorters: MutableList<Sorter<T>> = mutableListOf()
@@ -14,8 +16,8 @@ class CriteriaState<T: BaseItem>(private val onContentUpdate: Consumer<CriteriaS
         val copy: MutableList<Comparator<T>> = sorters.toMutableList()
         copy.add(Comparator.comparing { it.getDisplayName() })
         val comparator = copy
-            .map { it as Comparator<T> }
-            .reduce { acc, sorter ->  acc.thenComparing(sorter) }
+            .map { it }
+            .reduce { acc, sorter -> acc.thenComparing(sorter) }
         return items.filter { i -> filters.values.all { it.accept(i) } }
             .filter { i -> sorters.all { it.accept(i) } }.sortedWith(comparator)
     }
@@ -30,7 +32,7 @@ class CriteriaState<T: BaseItem>(private val onContentUpdate: Consumer<CriteriaS
     }
 
     fun removeFilter(key: String): Boolean {
-        if (filters.remove(key) != null){
+        if (filters.remove(key) != null) {
             onContentUpdate.accept(this)
             return true
         }
@@ -48,12 +50,12 @@ class CriteriaState<T: BaseItem>(private val onContentUpdate: Consumer<CriteriaS
             sorters[index] = sorter
             onContentUpdate.accept(this)
             index
-        }else if(sorterIndexes.size < maxSorters) {
+        } else if (sorterIndexes.size < maxSorters) {
             val size = sorterIndexes.size
             sorters.add(sorter)
             sorterIndexes[sorter.getKey()] = size
             size
-        }else{
+        } else {
             null
         }
     }
@@ -62,7 +64,7 @@ class CriteriaState<T: BaseItem>(private val onContentUpdate: Consumer<CriteriaS
         val index = sorterIndexes.remove(key)
         if (index != null) {
             sorters.removeAt(index)
-            for (i in (index until sorters.size)){
+            for (i in (index until sorters.size)) {
                 sorterIndexes[sorters[i].getKey()] = i
             }
             onContentUpdate.accept(this)
@@ -72,11 +74,11 @@ class CriteriaState<T: BaseItem>(private val onContentUpdate: Consumer<CriteriaS
         return false
     }
 
-    interface Filter<T>: Keyed {
+    interface Filter<T> : Keyed {
         fun accept(item: T): Boolean
     }
 
-    interface Sorter<T>: Filter<T>, Comparator<T> {
+    interface Sorter<T> : Filter<T>, Comparator<T> {
         override fun accept(item: T): Boolean = true
     }
 }

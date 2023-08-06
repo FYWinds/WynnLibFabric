@@ -10,17 +10,21 @@ import net.minecraft.client.gui.DrawableHelper
 import net.minecraft.client.gui.Element
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.util.math.MathHelper
-import kotlin.math.*
+import kotlin.math.PI
+import kotlin.math.max
+import kotlin.math.sin
 
-abstract class ScrollPaneWidget(private val background: TextureData?,
-                                private val screen: TooltipScreen,
-                                val x: Int,
-                                val y: Int,
-                                val width: Int,
-                                val height: Int,
-                                val scrollDelay: Long = 200L,
-                                private val scrollUnit: Double = 32.0):
-    DrawableHelper(), Drawable, Element{
+abstract class ScrollPaneWidget(
+    private val background: TextureData?,
+    private val screen: TooltipScreen,
+    val x: Int,
+    val y: Int,
+    val width: Int,
+    val height: Int,
+    val scrollDelay: Long = 200L,
+    private val scrollUnit: Double = 32.0
+) :
+    DrawableHelper(), Drawable, Element {
     protected val client: MinecraftClient = MinecraftClient.getInstance()
     private var position: Double = 0.0
     private var dragging: Pair<Double, Double>? = null
@@ -37,7 +41,7 @@ abstract class ScrollPaneWidget(private val background: TextureData?,
 
     abstract fun getContentHeight(): Int
 
-    open fun renderContentsPost(matrices: MatrixStack, mouseX: Int, mouseY: Int, delta: Float){
+    open fun renderContentsPost(matrices: MatrixStack, mouseX: Int, mouseY: Int, delta: Float) {
 
     }
 
@@ -54,7 +58,8 @@ abstract class ScrollPaneWidget(private val background: TextureData?,
             val maxPos = getMaxPosition()
             val factor = if (maxPos == 0.0) 0.0 else MathHelper.clamp(position / maxPos, 0.0, 1.0)
             val offset = factor * max(0, (it.height - it.v) - height)
-            RenderKit.renderTexture(matrices!!,
+            RenderKit.renderTexture(
+                matrices!!,
                 it.texture,
                 x.toDouble(),
                 y - offset,
@@ -63,7 +68,8 @@ abstract class ScrollPaneWidget(private val background: TextureData?,
                 width,
                 it.height - it.v,
                 it.width,
-                it.height)
+                it.height
+            )
         }
     }
 
@@ -84,7 +90,7 @@ abstract class ScrollPaneWidget(private val background: TextureData?,
         val pos = MathHelper.clamp(position, 0.0, getMaxPosition())
         if (delay <= 0) {
             this.position = pos
-        }else{
+        } else {
             val time = System.currentTimeMillis()
             this.scrolling = ScrollChange(this.position, pos, delay, time, time)
         }
@@ -105,8 +111,10 @@ abstract class ScrollPaneWidget(private val background: TextureData?,
         val bottom = y + height
         val scale = client.window.scaleFactor
         val position = getScrollPosition()
-        RenderSystem.enableScissor((x * scale).toInt(), (client.window.scaledHeight - bottom) * scale.toInt(),
-            (width * scale).toInt(), (height * scale).toInt())
+        RenderSystem.enableScissor(
+            (x * scale).toInt(), (client.window.scaledHeight - bottom) * scale.toInt(),
+            (width * scale).toInt(), (height * scale).toInt()
+        )
         renderBackground(matrices, position)
         renderContents(matrices!!, mouseX, mouseY, position, delta, isMouseOver(mouseX.toDouble(), mouseY.toDouble()))
         RenderSystem.disableScissor()
@@ -122,7 +130,7 @@ abstract class ScrollPaneWidget(private val background: TextureData?,
     }
 
     override fun mouseScrolled(mouseX: Double, mouseY: Double, amount: Double): Boolean {
-        if (isMouseOver(mouseX, mouseY) && dragging == null){
+        if (isMouseOver(mouseX, mouseY) && dragging == null) {
             val pos = scrolling?.to ?: position
             setScrollPosition(pos - amount.toInt() * scrollUnit, scrollDelay)
             updateSlider()
@@ -172,11 +180,13 @@ abstract class ScrollPaneWidget(private val background: TextureData?,
         return super.mouseReleased(mouseX, mouseY, button)
     }
 
-    data class ScrollChange(val from: Double,
-                            val to: Double,
-                            val duration: Long,
-                            val startTime: Long,
-                            val currentTime: Long){
+    data class ScrollChange(
+        val from: Double,
+        val to: Double,
+        val duration: Long,
+        val startTime: Long,
+        val currentTime: Long
+    ) {
         fun update(): ScrollChange? {
             if (currentTime > startTime + duration)
                 return null

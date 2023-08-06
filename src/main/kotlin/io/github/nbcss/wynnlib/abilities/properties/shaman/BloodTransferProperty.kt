@@ -12,14 +12,15 @@ import io.github.nbcss.wynnlib.i18n.Translations.TOOLTIP_ABILITY_SHAMAN_BLOOD_TR
 import io.github.nbcss.wynnlib.utils.Symbol
 import io.github.nbcss.wynnlib.utils.removeDecimal
 import io.github.nbcss.wynnlib.utils.round
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 
-class BloodTransferProperty(ability: Ability,
-                            private val rate: Double,
-                            private val interval: Double): AbilityProperty(ability), SetupProperty {
-    companion object: Type<BloodTransferProperty> {
+class BloodTransferProperty(
+    ability: Ability,
+    private val rate: Double,
+    private val interval: Double
+) : AbilityProperty(ability), SetupProperty {
+    companion object : Type<BloodTransferProperty> {
         private const val RATE_KEY = "rate"
         private const val INTERVAL_KEY = "interval"
         override fun create(ability: Ability, data: JsonElement): BloodTransferProperty {
@@ -28,6 +29,7 @@ class BloodTransferProperty(ability: Ability,
             val interval = if (json.has(INTERVAL_KEY)) json[INTERVAL_KEY].asDouble else 0.0
             return BloodTransferProperty(ability, rate, interval)
         }
+
         override fun getKey(): String = "blood_transfer"
     }
 
@@ -46,10 +48,16 @@ class BloodTransferProperty(ability: Ability,
 
     override fun getTooltip(provider: PropertyProvider): List<Text> {
         val modifier = removeDecimal(round(if (interval == 0.0) 0.0 else rate / interval))
-        return listOf(Symbol.HEART.asText().append(" ")
-            .append(TOOLTIP_ABILITY_SHAMAN_BLOOD_TRANSFER.formatted(Formatting.GRAY))
-            .append(LiteralText(": ").formatted(Formatting.GRAY))
-            .append(Translations.TOOLTIP_SUFFIX_PER_S.formatted(Formatting.WHITE,
-                null, "+${modifier}%")))
+        return listOf(
+            Symbol.HEART.asText().append(" ")
+                .append(TOOLTIP_ABILITY_SHAMAN_BLOOD_TRANSFER.formatted(Formatting.GRAY))
+                .append(Text.literal(": ").formatted(Formatting.GRAY))
+                .append(
+                    Translations.TOOLTIP_SUFFIX_PER_S.formatted(
+                        Formatting.WHITE,
+                        null, "+${modifier}%"
+                    )
+                )
+        )
     }
 }

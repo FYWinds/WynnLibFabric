@@ -2,28 +2,29 @@ package io.github.nbcss.wynnlib.data
 
 import io.github.nbcss.wynnlib.i18n.Translatable
 import io.github.nbcss.wynnlib.i18n.Translations
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 
-enum class SpellSlot(val key: String,
-                     val displayName: String): Translatable {
-    SPELL_1("sp1", "1st Spell"){
+enum class SpellSlot(
+    val key: String,
+    val displayName: String
+) : Translatable {
+    SPELL_1("sp1", "1st Spell") {
         override fun getClickCombo(spellKey: MouseKey): Array<MouseKey> {
             return arrayOf(spellKey, spellKey.opposite(), spellKey)
         }
     },
-    SPELL_2("sp2", "2nd Spell"){
+    SPELL_2("sp2", "2nd Spell") {
         override fun getClickCombo(spellKey: MouseKey): Array<MouseKey> {
             return arrayOf(spellKey, spellKey, spellKey)
         }
     },
-    SPELL_3("sp3", "3rd Spell"){
+    SPELL_3("sp3", "3rd Spell") {
         override fun getClickCombo(spellKey: MouseKey): Array<MouseKey> {
             return arrayOf(spellKey, spellKey.opposite(), spellKey.opposite())
         }
     },
-    SPELL_4("sp4", "4th Spell"){
+    SPELL_4("sp4", "4th Spell") {
         override fun getClickCombo(spellKey: MouseKey): Array<MouseKey> {
             return arrayOf(spellKey, spellKey, spellKey.opposite())
         }
@@ -34,9 +35,9 @@ enum class SpellSlot(val key: String,
             return Translations.TOOLTIP_ABILITY_CLICK_COMBO.translate().formatted(Formatting.GOLD)
                 .append(": ")
                 .append(combo[0].translate().formatted(Formatting.LIGHT_PURPLE).formatted(Formatting.BOLD))
-                .append(LiteralText("-").formatted(Formatting.WHITE))
+                .append(Text.literal("-").formatted(Formatting.WHITE))
                 .append(combo[1].translate().formatted(Formatting.LIGHT_PURPLE).formatted(Formatting.BOLD))
-                .append(LiteralText("-").formatted(Formatting.WHITE))
+                .append(Text.literal("-").formatted(Formatting.WHITE))
                 .append(combo[2].translate().formatted(Formatting.LIGHT_PURPLE).formatted(Formatting.BOLD))
         }
     }

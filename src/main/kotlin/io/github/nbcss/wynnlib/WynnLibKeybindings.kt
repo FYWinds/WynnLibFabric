@@ -25,9 +25,9 @@ object WynnLibKeybindings {
     fun getToggleAnalyzeKeybinding(): KeyBinding = toggleAnalyze
 
     private fun registerKey(name: String, key: Int, unregister: Boolean = false): KeyBinding {
-        val keyBinding = if(unregister) {
+        val keyBinding = if (unregister) {
             UnregisteredKeyBinding(name, "wynnlib.category.keys", key)
-        }else{
+        } else {
             KeyBinding(name, InputUtil.Type.KEYSYM, key, "wynnlib.category.keys")
         }
         return KeyBindingHelper.registerKeyBinding(keyBinding)

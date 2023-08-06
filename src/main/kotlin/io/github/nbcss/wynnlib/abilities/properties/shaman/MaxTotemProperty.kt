@@ -12,17 +12,19 @@ import io.github.nbcss.wynnlib.i18n.Translations
 import io.github.nbcss.wynnlib.utils.Symbol
 import io.github.nbcss.wynnlib.utils.colorOf
 import io.github.nbcss.wynnlib.utils.signed
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 
-class MaxTotemProperty(ability: Ability,
-                       private val maxLimit: Int):
+class MaxTotemProperty(
+    ability: Ability,
+    private val maxLimit: Int
+) :
     AbilityProperty(ability), SetupProperty {
-    companion object: Type<MaxTotemProperty> {
+    companion object : Type<MaxTotemProperty> {
         override fun create(ability: Ability, data: JsonElement): MaxTotemProperty {
             return MaxTotemProperty(ability, data.asInt)
         }
+
         override fun getKey(): String = "max_totem"
     }
 
@@ -38,17 +40,20 @@ class MaxTotemProperty(ability: Ability,
 
     override fun getTooltip(provider: PropertyProvider): List<Text> {
         val name = Translations.TOOLTIP_ABILITY_SHAMAN_TOTEM.translate().string
-        return listOf(Symbol.ALTER_HITS.asText().append(" ")
-            .append(Translations.TOOLTIP_ABILITY_MAX.formatted(Formatting.GRAY).append(" (${name}): "))
-            .append(LiteralText(getMaxLimit().toString()).formatted(Formatting.WHITE)))
+        return listOf(
+            Symbol.ALTER_HITS.asText().append(" ")
+                .append(Translations.TOOLTIP_ABILITY_MAX.formatted(Formatting.GRAY).append(" (${name}): "))
+                .append(Text.literal(getMaxLimit().toString()).formatted(Formatting.WHITE))
+        )
     }
 
-    class Modifier(ability: Ability, private val modifier: Int):
+    class Modifier(ability: Ability, private val modifier: Int) :
         AbilityProperty(ability), ModifiableProperty {
-        companion object: Type<Modifier> {
+        companion object : Type<Modifier> {
             override fun create(ability: Ability, data: JsonElement): Modifier {
                 return Modifier(ability, data.asInt)
             }
+
             override fun getKey(): String = "max_totem_modifier"
         }
 
@@ -67,9 +72,11 @@ class MaxTotemProperty(ability: Ability,
 
         override fun getTooltip(provider: PropertyProvider): List<Text> {
             val name = Translations.TOOLTIP_ABILITY_SHAMAN_TOTEM.translate().string
-            return listOf(Symbol.ALTER_HITS.asText().append(" ")
-                .append(Translations.TOOLTIP_ABILITY_MAX.formatted(Formatting.GRAY).append(" (${name}): "))
-                .append(LiteralText(signed(modifier)).formatted(colorOf(modifier))))
+            return listOf(
+                Symbol.ALTER_HITS.asText().append(" ")
+                    .append(Translations.TOOLTIP_ABILITY_MAX.formatted(Formatting.GRAY).append(" (${name}): "))
+                    .append(Text.literal(signed(modifier)).formatted(colorOf(modifier)))
+            )
         }
     }
 }

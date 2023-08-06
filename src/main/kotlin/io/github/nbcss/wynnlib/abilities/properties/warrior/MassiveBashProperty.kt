@@ -8,10 +8,12 @@ import io.github.nbcss.wynnlib.abilities.properties.AbilityProperty
 import io.github.nbcss.wynnlib.abilities.properties.SetupProperty
 import io.github.nbcss.wynnlib.utils.removeDecimal
 
-class MassiveBashProperty(ability: Ability,
-                          private val info: Info):
+class MassiveBashProperty(
+    ability: Ability,
+    private val info: Info
+) :
     AbilityProperty(ability), SetupProperty {
-    companion object: Type<MassiveBashProperty> {
+    companion object : Type<MassiveBashProperty> {
         private const val CONVERT_KEY: String = "rate"
         private const val RANGE_BOOST_KEY: String = "range_boost"
         private const val RANGE_BOOST_MAX_KEY: String = "max_boost"
@@ -22,6 +24,7 @@ class MassiveBashProperty(ability: Ability,
             val maxBoost = if (json.has(RANGE_BOOST_MAX_KEY)) json[RANGE_BOOST_MAX_KEY].asDouble else 0.0
             return MassiveBashProperty(ability, Info(convert, boost, maxBoost))
         }
+
         override fun getKey(): String = "massive_bash"
     }
 
@@ -37,7 +40,9 @@ class MassiveBashProperty(ability: Ability,
         entry.setProperty(getKey(), this)
     }
 
-    data class Info(val convertRate: Double,
-                    val rangeBonus: Double,
-                    val rangeBonusMax: Double)
+    data class Info(
+        val convertRate: Double,
+        val rangeBonus: Double,
+        val rangeBonusMax: Double
+    )
 }

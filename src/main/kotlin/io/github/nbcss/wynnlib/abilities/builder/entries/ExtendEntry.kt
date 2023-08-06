@@ -8,20 +8,24 @@ import net.minecraft.util.Identifier
 /**
  * Extend a particular ability (parent).
  */
-class ExtendEntry(private val parent: PropertyEntry,
-                  container: EntryContainer,
-                  root: Ability,
-                  icon: Identifier,
-                  upgradable: Boolean): PropertyEntry(container, root, icon, upgradable) {
-    companion object: Factory {
-        override fun create(container: EntryContainer,
-                            ability: Ability,
-                            texture: Identifier,
-                            upgradable: Boolean): PropertyEntry? {
+class ExtendEntry(
+    private val parent: PropertyEntry,
+    container: EntryContainer,
+    root: Ability,
+    icon: Identifier,
+    upgradable: Boolean
+) : PropertyEntry(container, root, icon, upgradable) {
+    companion object : Factory {
+        override fun create(
+            container: EntryContainer,
+            ability: Ability,
+            texture: Identifier,
+            upgradable: Boolean
+        ): PropertyEntry? {
             val property = ExtendProperty.from(ability)
-            if (property != null){
+            if (property != null) {
                 val parent = property.getParent(container)
-                if (parent != null){
+                if (parent != null) {
                     return ExtendEntry(parent, container, ability, texture, upgradable)
                 }
             }

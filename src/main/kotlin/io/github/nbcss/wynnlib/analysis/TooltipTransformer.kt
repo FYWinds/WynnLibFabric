@@ -8,16 +8,18 @@ import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NbtCompound
 import java.util.*
 
-interface TooltipTransformer: TooltipProvider {
+interface TooltipTransformer : TooltipProvider {
 
     fun init()
 
     companion object {
         private val transformerCacheMap: MutableMap<String, TooltipTransformer?> = WeakHashMap()
-        private val factoryMap: Map<String, Factory> = mapOf(pairs = listOf(
-            EquipmentTransformer,
-            UnidentifiedBoxTransformer,
-        ).map { it.getKey() to it }.toTypedArray())
+        private val factoryMap: Map<String, Factory> = mapOf(
+            pairs = listOf(
+                EquipmentTransformer,
+                UnidentifiedBoxTransformer,
+            ).map { it.getKey() to it }.toTypedArray()
+        )
 
         fun asTransformer(stack: ItemStack, item: TransformableItem): TooltipTransformer? {
             val key = stack.writeNbt(NbtCompound()).toString()
@@ -31,7 +33,7 @@ interface TooltipTransformer: TooltipProvider {
         }
     }
 
-    interface Factory: Keyed {
+    interface Factory : Keyed {
         fun create(stack: ItemStack, item: TransformableItem): TooltipTransformer?
     }
 }

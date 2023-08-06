@@ -17,7 +17,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 
 
 @Suppress("UNUSED")
-object WynnLibEntry: ModInitializer {
+object WynnLibEntry : ModInitializer {
     private const val MOD_ID = "wynnlib"
 
     override fun onInitialize() {

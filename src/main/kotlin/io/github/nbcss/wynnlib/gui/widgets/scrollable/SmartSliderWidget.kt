@@ -6,26 +6,29 @@ import net.minecraft.client.gui.DrawableHelper
 import net.minecraft.client.gui.widget.ButtonWidget
 import net.minecraft.client.render.GameRenderer
 import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.text.LiteralText
+import net.minecraft.text.Text
 import net.minecraft.util.math.MathHelper
 import java.util.function.Consumer
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
-open class SmartSliderWidget(private val posX: Int,
-                             private val posY: Int,
-                             private val minValue: Int,
-                             private val maxValue: Int,
-                             width: Int,
-                             private val format: String?):
-    ButtonWidget(-1000, -1000, width, 20, LiteralText.EMPTY, null), ScrollElement {
+open class SmartSliderWidget(
+    private val posX: Int,
+    private val posY: Int,
+    private val minValue: Int,
+    private val maxValue: Int,
+    width: Int,
+    private val format: String?
+) :
+    ButtonWidget(-1000, -1000, width, 20, Text.empty(), null), ScrollElement {
     protected var gap = if (minValue == maxValue) 1 else abs(maxValue - minValue)
     private var handler: Consumer<Int>? = null
     private var interactable: Boolean = true
     private var dragging = false
     protected var pos = minValue
-    protected var previous:Int = -1
+    protected var previous: Int = -1
     protected var buffer: String? = null
+
     init {
         visible = false
     }
@@ -68,7 +71,8 @@ open class SmartSliderWidget(private val posX: Int,
             )
             RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, alpha)
             val slider = abs(pos - minValue) / gap.toFloat()
-            this.drawTexture(matrices,
+            this.drawTexture(
+                matrices,
                 this.x + (slider * (this.width - 8).toFloat()).toInt(),
                 this.y,
                 0,
@@ -76,7 +80,8 @@ open class SmartSliderWidget(private val posX: Int,
                 4,
                 20
             )
-            this.drawTexture(matrices,
+            this.drawTexture(
+                matrices,
                 this.x + (slider * (this.width - 8).toFloat()).toInt() + 4,
                 this.y,
                 196,
@@ -88,7 +93,7 @@ open class SmartSliderWidget(private val posX: Int,
                 10526880
             } else if (this.hovered) {
                 16777120
-            }else {
+            } else {
                 14737632
             }
             val s = format!!.replace("%value%", if (buffer == null) pos.toString() + "" else buffer + "_")
@@ -124,7 +129,7 @@ open class SmartSliderWidget(private val posX: Int,
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
         return if (isMouseOver(mouseX, mouseY)) {
-            playDownSound(MinecraftClient.getInstance().soundManager);
+            playDownSound(MinecraftClient.getInstance().soundManager)
             if (button == 1) {
                 buffer = if (buffer == null) "" + pos else ""
                 setPosition(if (buffer == "") minValue else parseBuffer())

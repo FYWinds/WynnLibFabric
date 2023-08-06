@@ -12,13 +12,15 @@ import io.github.nbcss.wynnlib.data.Identification
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 
-class IDConvertorProperty(ability: Ability,
-                          pairs: List<Pair<String, Int>>,
-                          private val targetId: String?,
-                          private val convertRate: Int,
-                          private val maxValue: Int):
+class IDConvertorProperty(
+    ability: Ability,
+    pairs: List<Pair<String, Int>>,
+    private val targetId: String?,
+    private val convertRate: Int,
+    private val maxValue: Int
+) :
     AbilityProperty(ability), SetupProperty, OverviewProvider {
-    companion object: Type<IDConvertorProperty> {
+    companion object : Type<IDConvertorProperty> {
         private const val SOURCE_KEY = "source"
         private const val TARGET_KEY = "target"
         private const val RATE_KEY = "rate"
@@ -37,8 +39,10 @@ class IDConvertorProperty(ability: Ability,
             val maxValue = if (json.has(MAX_KEY)) json[MAX_KEY].asInt else 0
             return IDConvertorProperty(ability, values, targetId, rate, maxValue)
         }
+
         override fun getKey(): String = "id_convertor"
     }
+
     private val sources: Map<String, Int> = mapOf(pairs = pairs.toTypedArray())
 
     override fun writePlaceholder(container: PlaceholderContainer) {

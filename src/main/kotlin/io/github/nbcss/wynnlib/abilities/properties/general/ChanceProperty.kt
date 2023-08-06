@@ -12,16 +12,16 @@ import io.github.nbcss.wynnlib.abilities.properties.SetupProperty
 import io.github.nbcss.wynnlib.i18n.Translations
 import io.github.nbcss.wynnlib.utils.Symbol
 import io.github.nbcss.wynnlib.utils.removeDecimal
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 
-class ChanceProperty(ability: Ability, private val chance: Double):
+class ChanceProperty(ability: Ability, private val chance: Double) :
     AbilityProperty(ability), SetupProperty, OverviewProvider {
-    companion object: Type<ChanceProperty> {
+    companion object : Type<ChanceProperty> {
         override fun create(ability: Ability, data: JsonElement): ChanceProperty {
             return ChanceProperty(ability, data.asDouble)
         }
+
         override fun getKey(): String = "chance"
     }
 
@@ -29,7 +29,7 @@ class ChanceProperty(ability: Ability, private val chance: Double):
 
     override fun getOverviewTip(): Text? {
         return Symbol.CHANCE.asText().append(" ")
-            .append(LiteralText("${removeDecimal(chance)}%").formatted(Formatting.WHITE))
+            .append(Text.literal("${removeDecimal(chance)}%").formatted(Formatting.WHITE))
     }
 
     override fun writePlaceholder(container: PlaceholderContainer) {
@@ -41,18 +41,23 @@ class ChanceProperty(ability: Ability, private val chance: Double):
     }
 
     override fun getTooltip(provider: PropertyProvider): List<Text> {
-        return listOf(Symbol.CHANCE.asText().append(" ")
-            .append(Translations.TOOLTIP_ABILITY_CHANCE.formatted(Formatting.GRAY).append(": "))
-            .append(LiteralText("${removeDecimal(chance)}%").formatted(Formatting.WHITE)))
+        return listOf(
+            Symbol.CHANCE.asText().append(" ")
+                .append(Translations.TOOLTIP_ABILITY_CHANCE.formatted(Formatting.GRAY).append(": "))
+                .append(Text.literal("${removeDecimal(chance)}%").formatted(Formatting.WHITE))
+        )
     }
 
-    class Modifier(ability: Ability,
-                   private val modifier: Double):
+    class Modifier(
+        ability: Ability,
+        private val modifier: Double
+    ) :
         AbilityProperty(ability), ModifiableProperty {
-        companion object: Type<Modifier> {
+        companion object : Type<Modifier> {
             override fun create(ability: Ability, data: JsonElement): Modifier {
                 return Modifier(ability, data.asDouble)
             }
+
             override fun getKey(): String = "chance_modifier"
         }
 
@@ -72,9 +77,11 @@ class ChanceProperty(ability: Ability, private val chance: Double):
         override fun getTooltip(provider: PropertyProvider): List<Text> {
             val color = if (modifier <= 0) Formatting.RED else Formatting.GREEN
             val text = (if (modifier > 0) "+" else "") + removeDecimal(modifier) + "%"
-            return listOf(Symbol.CHANCE.asText().append(" ")
-                .append(Translations.TOOLTIP_ABILITY_CHANCE.formatted(Formatting.GRAY).append(": "))
-                .append(LiteralText(text).formatted(color)))
+            return listOf(
+                Symbol.CHANCE.asText().append(" ")
+                    .append(Translations.TOOLTIP_ABILITY_CHANCE.formatted(Formatting.GRAY).append(": "))
+                    .append(Text.literal(text).formatted(color))
+            )
         }
     }
 }

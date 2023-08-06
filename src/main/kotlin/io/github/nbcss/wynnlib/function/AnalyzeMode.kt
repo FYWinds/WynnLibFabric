@@ -11,7 +11,7 @@ import net.minecraft.nbt.NbtList
 import net.minecraft.nbt.NbtString
 import net.minecraft.text.Text
 
-object AnalyzeMode: EventHandler<ItemLoadEvent> {
+object AnalyzeMode : EventHandler<ItemLoadEvent> {
     const val KEY = "analyze_result"
     override fun handle(event: ItemLoadEvent) {
         val result = toItem(event.item)?.asBaseItem() ?: return
@@ -32,7 +32,7 @@ object AnalyzeMode: EventHandler<ItemLoadEvent> {
         return ItemModifier.readElement(item, KEY) { elem ->
             return@readElement if (elem is NbtList) {
                 elem.map { Text.Serializer.fromJson(it.asString()) as Text }
-            }else{
+            } else {
                 null
             }
         }

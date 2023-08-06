@@ -6,10 +6,11 @@ import net.minecraft.text.Text
 import net.minecraft.text.TextColor
 import net.minecraft.util.Formatting
 
-class RestrictionProperty: AnalysisProperty {
+class RestrictionProperty : AnalysisProperty {
     companion object {
         const val KEY = "RESTRICTION"
     }
+
     private var restriction: Restriction? = null
 
     fun getRestriction(): Restriction? = restriction

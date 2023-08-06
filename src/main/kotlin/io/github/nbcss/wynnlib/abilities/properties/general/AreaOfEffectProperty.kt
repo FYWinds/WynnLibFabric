@@ -16,28 +16,32 @@ import io.github.nbcss.wynnlib.utils.range.DRange
 import io.github.nbcss.wynnlib.utils.range.SimpleDRange
 import io.github.nbcss.wynnlib.utils.removeDecimal
 import io.github.nbcss.wynnlib.utils.round
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 
-class AreaOfEffectProperty(ability: Ability,
-                           private val aoe: AreaOfEffect):
+class AreaOfEffectProperty(
+    ability: Ability,
+    private val aoe: AreaOfEffect
+) :
     AbilityProperty(ability), SetupProperty, OverviewProvider {
-    companion object: Type<AreaOfEffectProperty> {
+    companion object : Type<AreaOfEffectProperty> {
         private const val RANGE_KEY: String = "range"
         private const val SHAPE_KEY: String = "shape"
         override fun create(ability: Ability, data: JsonElement): AreaOfEffectProperty {
             return AreaOfEffectProperty(ability, AreaOfEffect(data.asJsonObject))
         }
+
         override fun getKey(): String = "aoe"
 
         private fun checkZero(aoe: AreaOfEffect): List<Text>? {
-            if (aoe.getRange().isZero()){
+            if (aoe.getRange().isZero()) {
                 val tooltip: MutableList<Text> = ArrayList()
                 aoe.getShape()?.let {
-                    tooltip.add(Symbol.AOE.asText().append(" ")
-                        .append(Translations.TOOLTIP_ABILITY_AREA_OF_EFFECT.formatted(Formatting.GRAY).append(": "))
-                        .append(it.formatted(Formatting.WHITE)))
+                    tooltip.add(
+                        Symbol.AOE.asText().append(" ")
+                            .append(Translations.TOOLTIP_ABILITY_AREA_OF_EFFECT.formatted(Formatting.GRAY).append(": "))
+                            .append(it.formatted(Formatting.WHITE))
+                    )
                 }
                 return tooltip
             }
@@ -56,19 +60,19 @@ class AreaOfEffectProperty(ability: Ability,
         if (range.isZero())
             return null
         var value = removeDecimal(range.lower())
-        if(!range.isConstant()){
+        if (!range.isConstant()) {
             value = "$value-${removeDecimal(range.upper())}"
         }
-        return Symbol.AOE.asText().append(" ").append(LiteralText(value).formatted(Formatting.WHITE))
+        return Symbol.AOE.asText().append(" ").append(Text.literal(value).formatted(Formatting.WHITE))
     }
 
     override fun getTooltip(provider: PropertyProvider): List<Text> {
         val range = aoe.getRange()
         checkZero(aoe)?.let { return it }
-        val suffix = if(range.upper() <= 1)
+        val suffix = if (range.upper() <= 1)
             Translations.TOOLTIP_SUFFIX_BLOCK else Translations.TOOLTIP_SUFFIX_BLOCKS
         var value = removeDecimal(range.lower())
-        if(!range.isConstant()){
+        if (!range.isConstant()) {
             value = "$value-${removeDecimal(range.upper())}"
         }
         //val value = suffix.formatted(Formatting.WHITE, null, if (range % 1.0 != 0.0) range else range.toInt())
@@ -76,21 +80,23 @@ class AreaOfEffectProperty(ability: Ability,
             .append(Translations.TOOLTIP_ABILITY_AREA_OF_EFFECT.formatted(Formatting.GRAY).append(": "))
             .append(suffix.formatted(Formatting.WHITE, null, value))
         aoe.getShape()?.let {
-            text.append(LiteralText(" (").formatted(Formatting.GRAY))
+            text.append(Text.literal(" (").formatted(Formatting.GRAY))
                 .append(it.formatted(Formatting.GRAY))
-                .append(LiteralText(")").formatted(Formatting.GRAY))
+                .append(Text.literal(")").formatted(Formatting.GRAY))
         }
         return listOf(text)
     }
 
-    class Modifier(ability: Ability, data: JsonElement):
+    class Modifier(ability: Ability, data: JsonElement) :
         AbilityProperty(ability), ModifiableProperty {
-        companion object: Type<Modifier> {
+        companion object : Type<Modifier> {
             override fun create(ability: Ability, data: JsonElement): Modifier {
                 return Modifier(ability, data)
             }
+
             override fun getKey(): String = "aoe_modifier"
         }
+
         private val modifier: AreaOfEffect = AreaOfEffect(data.asJsonObject)
 
         fun getAreaOfEffectModifier(): AreaOfEffect = modifier
@@ -105,30 +111,31 @@ class AreaOfEffectProperty(ability: Ability,
         override fun getTooltip(provider: PropertyProvider): List<Text> {
             val range = modifier.getRange()
             checkZero(modifier)?.let { return it }
-            val suffix = if(range.upper() <= 1)
+            val suffix = if (range.upper() <= 1)
                 Translations.TOOLTIP_SUFFIX_BLOCK else Translations.TOOLTIP_SUFFIX_BLOCKS
             var value = (if (range.lower() > 0) "+" else "") + removeDecimal(range.lower())
             val color = if (range.lower() < 0) Formatting.RED else Formatting.GREEN
-            if(!range.isConstant()){
+            if (!range.isConstant()) {
                 value = "$value-${removeDecimal(range.upper())}"
             }
             val text = Symbol.AOE.asText().append(" ")
                 .append(Translations.TOOLTIP_ABILITY_AREA_OF_EFFECT.formatted(Formatting.GRAY).append(": "))
                 .append(suffix.formatted(color, null, value))
             modifier.getShape()?.let {
-                text.append(LiteralText(" (").formatted(Formatting.GRAY))
+                text.append(Text.literal(" (").formatted(Formatting.GRAY))
                     .append(it.translate().formatted(Formatting.GRAY))
-                    .append(LiteralText(")").formatted(Formatting.GRAY))
+                    .append(Text.literal(")").formatted(Formatting.GRAY))
             }
             return listOf(text)
         }
     }
 
-    class Clear(ability: Ability): AbilityProperty(ability), ModifiableProperty {
-        companion object: Type<Clear> {
+    class Clear(ability: Ability) : AbilityProperty(ability), ModifiableProperty {
+        companion object : Type<Clear> {
             override fun create(ability: Ability, data: JsonElement): Clear {
                 return Clear(ability)
             }
+
             override fun getKey(): String = "aoe_clear"
         }
 
@@ -139,9 +146,11 @@ class AreaOfEffectProperty(ability: Ability,
         }
     }
 
-    data class AreaOfEffect(private val range: DRange,
-                            private val shape: Shape?){
-        constructor(data: JsonObject): this(
+    data class AreaOfEffect(
+        private val range: DRange,
+        private val shape: Shape?
+    ) {
+        constructor(data: JsonObject) : this(
             if (data.has(RANGE_KEY)) SimpleDRange.fromString(data[RANGE_KEY].asString) else DRange.ZERO,
             if (data.has(SHAPE_KEY)) Shape.fromName(data[SHAPE_KEY].asString) else null
         )
@@ -158,11 +167,14 @@ class AreaOfEffectProperty(ability: Ability,
         }
     }
 
-    enum class Shape: Translatable {
+    enum class Shape : Translatable {
         CIRCLE, CONE, LINE;
+
         companion object {
             private val VALUE_MAP: Map<String, Shape> = mapOf(
-                pairs = values().map { it.name.uppercase() to it }.toTypedArray())
+                pairs = values().map { it.name.uppercase() to it }.toTypedArray()
+            )
+
             fun fromName(name: String): Shape? = VALUE_MAP[name.uppercase()]
         }
 

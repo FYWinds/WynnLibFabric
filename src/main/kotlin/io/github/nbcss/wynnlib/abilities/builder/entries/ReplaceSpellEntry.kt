@@ -9,18 +9,22 @@ import io.github.nbcss.wynnlib.data.SpellSlot
 import net.minecraft.text.MutableText
 import net.minecraft.util.Identifier
 
-class ReplaceSpellEntry(private val removing: Ability,
-                        properties: List<AbilityProperty.Type<out AbilityProperty>>,
-                        container: EntryContainer,
-                        spell: SpellSlot,
-                        root: Ability,
-                        icon: Identifier,
-                        upgradable: Boolean): SpellEntry(spell, container, root, icon, upgradable) {
-    companion object: Factory {
-        override fun create(container: EntryContainer,
-                            ability: Ability,
-                            texture: Identifier,
-                            upgradable: Boolean): PropertyEntry? {
+class ReplaceSpellEntry(
+    private val removing: Ability,
+    properties: List<AbilityProperty.Type<out AbilityProperty>>,
+    container: EntryContainer,
+    spell: SpellSlot,
+    root: Ability,
+    icon: Identifier,
+    upgradable: Boolean
+) : SpellEntry(spell, container, root, icon, upgradable) {
+    companion object : Factory {
+        override fun create(
+            container: EntryContainer,
+            ability: Ability,
+            texture: Identifier,
+            upgradable: Boolean
+        ): PropertyEntry? {
             ReplaceAbilityProperty.from(ability)?.let {
                 it.getReplaceAbility()?.let { parent ->
                     BoundSpellProperty.from(parent)?.let { spell ->
@@ -28,16 +32,20 @@ class ReplaceSpellEntry(private val removing: Ability,
                             return null
                         }
                         val properties = it.getKeepProperties()
-                        return ReplaceSpellEntry(parent,
+                        return ReplaceSpellEntry(
+                            parent,
                             properties, container, spell.getSpell(),
-                            ability, texture, upgradable)
+                            ability, texture, upgradable
+                        )
                     }
                 }
             }
             return null
         }
+
         override fun getKey(): String = "REPLACE"
     }
+
     init {
         for (type in properties) {
             val property = type.from(removing)

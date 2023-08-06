@@ -4,14 +4,15 @@ import io.github.nbcss.wynnlib.data.MajorId
 import io.github.nbcss.wynnlib.i18n.Translatable.Companion.from
 import io.github.nbcss.wynnlib.timer.BasicTimer
 import io.github.nbcss.wynnlib.timer.StatusEntry
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import java.util.regex.Pattern
 
-class MajorIdIndicator(private val majorId: MajorId,
-                       entry: StatusEntry,
-                       startTime: Long):
+class MajorIdIndicator(
+    private val majorId: MajorId,
+    entry: StatusEntry,
+    startTime: Long
+) :
     BasicTimer(entry, startTime) {
     companion object {
         private val numberPattern = Pattern.compile("^\\+(.+) Major ID$")
@@ -29,8 +30,10 @@ class MajorIdIndicator(private val majorId: MajorId,
     }
 
     override fun getDisplayText(): Text {
-        val name = INDICATOR_NAME.formatted(Formatting.GRAY, null,
-            majorId.translate().string)
-        return LiteralText(entry.icon).append(" ").append(name)
+        val name = INDICATOR_NAME.formatted(
+            Formatting.GRAY, null,
+            majorId.translate().string
+        )
+        return Text.literal(entry.icon).append(" ").append(name)
     }
 }

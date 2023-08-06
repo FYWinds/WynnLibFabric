@@ -13,17 +13,19 @@ import io.github.nbcss.wynnlib.i18n.Translations
 import io.github.nbcss.wynnlib.utils.Symbol
 import io.github.nbcss.wynnlib.utils.colorOf
 import io.github.nbcss.wynnlib.utils.signed
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 
-class MaxPuppetProperty(ability: Ability,
-                        private val maxLimit: Int):
+class MaxPuppetProperty(
+    ability: Ability,
+    private val maxLimit: Int
+) :
     AbilityProperty(ability), SetupProperty, OverviewProvider {
-    companion object: Type<MaxPuppetProperty> {
+    companion object : Type<MaxPuppetProperty> {
         override fun create(ability: Ability, data: JsonElement): MaxPuppetProperty {
             return MaxPuppetProperty(ability, data.asInt)
         }
+
         override fun getKey(): String = "max_puppet"
     }
 
@@ -31,7 +33,7 @@ class MaxPuppetProperty(ability: Ability,
 
     override fun getOverviewTip(): Text {
         return Symbol.CHARGE.asText().append(" ").append(
-            LiteralText("$maxLimit").formatted(Formatting.WHITE)
+            Text.literal("$maxLimit").formatted(Formatting.WHITE)
         )
     }
 
@@ -45,17 +47,20 @@ class MaxPuppetProperty(ability: Ability,
 
     override fun getTooltip(provider: PropertyProvider): List<Text> {
         val name = Translations.TOOLTIP_ABILITY_SHAMAN_PUPPET.translate().string
-        return listOf(Symbol.ALTER_HITS.asText().append(" ")
-            .append(Translations.TOOLTIP_ABILITY_MAX.formatted(Formatting.GRAY).append(" (${name}): "))
-            .append(LiteralText(getMaxLimit().toString()).formatted(Formatting.WHITE)))
+        return listOf(
+            Symbol.ALTER_HITS.asText().append(" ")
+                .append(Translations.TOOLTIP_ABILITY_MAX.formatted(Formatting.GRAY).append(" (${name}): "))
+                .append(Text.literal(getMaxLimit().toString()).formatted(Formatting.WHITE))
+        )
     }
 
-    class Modifier(ability: Ability, private val modifier: Int):
+    class Modifier(ability: Ability, private val modifier: Int) :
         AbilityProperty(ability), ModifiableProperty {
-        companion object: Type<Modifier> {
+        companion object : Type<Modifier> {
             override fun create(ability: Ability, data: JsonElement): Modifier {
                 return Modifier(ability, data.asInt)
             }
+
             override fun getKey(): String = "max_puppet_modifier"
         }
 
@@ -74,9 +79,11 @@ class MaxPuppetProperty(ability: Ability,
 
         override fun getTooltip(provider: PropertyProvider): List<Text> {
             val name = Translations.TOOLTIP_ABILITY_SHAMAN_PUPPET.translate().string
-            return listOf(Symbol.ALTER_HITS.asText().append(" ")
-                .append(Translations.TOOLTIP_ABILITY_MAX.formatted(Formatting.GRAY).append(" (${name}): "))
-                .append(LiteralText(signed(modifier)).formatted(colorOf(modifier))))
+            return listOf(
+                Symbol.ALTER_HITS.asText().append(" ")
+                    .append(Translations.TOOLTIP_ABILITY_MAX.formatted(Formatting.GRAY).append(" (${name}): "))
+                    .append(Text.literal(signed(modifier)).formatted(colorOf(modifier)))
+            )
         }
     }
 }

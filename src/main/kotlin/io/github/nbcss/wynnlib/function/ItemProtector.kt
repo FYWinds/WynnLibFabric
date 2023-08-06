@@ -50,12 +50,12 @@ object ItemProtector {
         return title in lootTitles
     }
 
-    object PressListener: EventHandler<InventoryPressEvent> {
+    object PressListener : EventHandler<InventoryPressEvent> {
         override fun handle(event: InventoryPressEvent) {
             if (event.screen !is GenericContainerScreen)
                 return
             val title = event.screen.title.asString()
-            if (isLootInventory(title)){
+            if (isLootInventory(title)) {
                 if (event.keyCode == 256 || client.options.inventoryKey.matchesKey(event.keyCode, event.scanCode)) {
                     val size = max(0, event.screen.screenHandler.slots.size - 36)
                     for (i in (0 until size)) {
@@ -72,7 +72,7 @@ object ItemProtector {
     }
 
     //prevent close via pouch slot click
-    object ClickListener: EventHandler<SlotClickEvent> {
+    object ClickListener : EventHandler<SlotClickEvent> {
         override fun handle(event: SlotClickEvent) {
             // no need to do the check if pouch lock already enabled
             if (Settings.getOption(Settings.SettingOption.LOCK_POUCH_IN_CHEST))
@@ -80,7 +80,7 @@ object ItemProtector {
             if (event.screen !is GenericContainerScreen)
                 return
             val title = event.screen.title.asString()
-            if (isLootInventory(title)){
+            if (isLootInventory(title)) {
                 if (45 + event.slot.id - event.screen.screenHandler.slots.size == 13) {
                     val size = max(0, event.screen.screenHandler.slots.size - 36)
                     for (i in (0 until size)) {
@@ -96,20 +96,22 @@ object ItemProtector {
         }
     }
 
-    object ProtectRender: EventHandler<DrawSlotEvent> {
+    object ProtectRender : EventHandler<DrawSlotEvent> {
         override fun handle(event: DrawSlotEvent) {
             if (event.screen !is GenericContainerScreen)
                 return
             val title = event.screen.title.asString()
-            if (isLootInventory(title)){
-                if (event.slot.id < event.screen.screenHandler.slots.size - 36){
+            if (isLootInventory(title)) {
+                if (event.slot.id < event.screen.screenHandler.slots.size - 36) {
                     if (isSlotProtected(event.slot)) {
                         val x = event.slot.x - 2
                         val y = event.slot.y - 2
                         RenderSystem.enableBlend()
                         RenderSystem.disableDepthTest()
-                        RenderKit.renderTexture(event.matrices, texture, x, y, 0, 0,
-                            20, 20, 20, 20)
+                        RenderKit.renderTexture(
+                            event.matrices, texture, x, y, 0, 0,
+                            20, 20, 20, 20
+                        )
 
                     }
                 }
@@ -126,9 +128,9 @@ object ItemProtector {
             val baseItem = matchItem.asBaseItem()
             if (type is ProtectableType && type.isProtected()) {
                 return true
-            }else if(baseItem is ProtectableItem && baseItem.isProtected()){
+            } else if (baseItem is ProtectableItem && baseItem.isProtected()) {
                 return true
-            }else if(Settings.getOption(Settings.SettingOption.STARRED_ITEM_PROTECT) && baseItem is ConfigurableItem){
+            } else if (Settings.getOption(Settings.SettingOption.STARRED_ITEM_PROTECT) && baseItem is ConfigurableItem) {
                 return ItemStarProperty.hasStar(baseItem)
             }
         }

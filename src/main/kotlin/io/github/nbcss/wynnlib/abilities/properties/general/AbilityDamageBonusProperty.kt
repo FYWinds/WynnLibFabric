@@ -10,21 +10,23 @@ import io.github.nbcss.wynnlib.abilities.properties.SetupProperty
 import io.github.nbcss.wynnlib.registry.AbilityRegistry
 import io.github.nbcss.wynnlib.utils.Symbol
 import io.github.nbcss.wynnlib.utils.signed
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 
-class AbilityDamageBonusProperty(ability: Ability,
-                                 bonus: Int,
-                                 private val target: String?):
+class AbilityDamageBonusProperty(
+    ability: Ability,
+    bonus: Int,
+    private val target: String?
+) :
     DamageBonusProperty(ability, bonus), SetupProperty, ModifiableProperty, OverviewProvider {
-    companion object: Type<AbilityDamageBonusProperty> {
+    companion object : Type<AbilityDamageBonusProperty> {
         override fun create(ability: Ability, data: JsonElement): AbilityDamageBonusProperty {
             val json = data.asJsonObject
             val target = if (json.has(TARGET_KEY)) json[TARGET_KEY].asString else null
             val bonus = if (json.has(BONUS_KEY)) json[BONUS_KEY].asInt else 0
             return AbilityDamageBonusProperty(ability, bonus, target)
         }
+
         override fun getKey(): String = "ability_damage_bonus"
         private const val TARGET_KEY = "ability"
         private const val BONUS_KEY = "bonus"
@@ -32,7 +34,7 @@ class AbilityDamageBonusProperty(ability: Ability,
 
     override fun getOverviewTip(): Text {
         return Symbol.DAMAGE.asText().append(" ").append(
-            LiteralText("${signed(bonus)}%").formatted(Formatting.WHITE)
+            Text.literal("${signed(bonus)}%").formatted(Formatting.WHITE)
         )
     }
 
@@ -47,8 +49,8 @@ class AbilityDamageBonusProperty(ability: Ability,
             return null
         val name = AbilityRegistry.get(target)?.translate()?.string
         return if (name != null) {
-            LiteralText(" ($name)").formatted(Formatting.DARK_GRAY)
-        }else{
+            Text.literal(" ($name)").formatted(Formatting.DARK_GRAY)
+        } else {
             null
         }
     }

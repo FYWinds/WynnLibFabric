@@ -9,14 +9,12 @@ import io.github.nbcss.wynnlib.items.equipments.EquipmentCategory
 import io.github.nbcss.wynnlib.items.equipments.Weapon
 import io.github.nbcss.wynnlib.utils.ItemFactory.ERROR_ITEM
 import io.github.nbcss.wynnlib.utils.ItemFactory.fromLegacyId
-import io.github.nbcss.wynnlib.utils.range.IRange
 import io.github.nbcss.wynnlib.utils.asRange
+import io.github.nbcss.wynnlib.utils.range.IRange
 import net.minecraft.item.ItemStack
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 
-class RegularWeapon(private val parent: RegularEquipment, json: JsonObject)
-    : Weapon, EquipmentCategory {
+class RegularWeapon(private val parent: RegularEquipment, json: JsonObject) : Weapon, EquipmentCategory {
     private val elemDamage: MutableMap<Element, IRange> = LinkedHashMap()
     private val type: EquipmentType
     private val damage: IRange
@@ -27,7 +25,7 @@ class RegularWeapon(private val parent: RegularEquipment, json: JsonObject)
         type = EquipmentType.getEquipmentType(json.get("type").asString)
         damage = asRange(json.get("damage").asString)
         atkSpeed = AttackSpeed.fromName(json.get("attackSpeed").asString)
-        Element.values().forEach{elemDamage[it] = asRange(json.get(it.damageName).asString)}
+        Element.values().forEach { elemDamage[it] = asRange(json.get(it.damageName).asString) }
         texture = if (json.has("material") && !json.get("material").isJsonNull) {
             val material: String = json.get("material").asString
             val materials = material.split(":").toTypedArray()
@@ -57,14 +55,14 @@ class RegularWeapon(private val parent: RegularEquipment, json: JsonObject)
         val tooltip: MutableList<Text> = ArrayList()
         tooltip.add(parent.getDisplayText())
         tooltip.addAll(getDamageTooltip())
-        tooltip.add(LiteralText.EMPTY)
+        tooltip.add(Text.empty())
         addRequirements(parent, tooltip)
-        tooltip.add(LiteralText.EMPTY)
+        tooltip.add(Text.empty())
         //append empty line if success add any id into the tooltip
         if (addIdentifications(parent, tooltip))
-            tooltip.add(LiteralText.EMPTY)
+            tooltip.add(Text.empty())
         if (addMajorIds(parent, tooltip))
-            tooltip.add(LiteralText.EMPTY)
+            tooltip.add(Text.empty())
         addPowderSlots(parent, tooltip)
         addItemSuffix(parent, tooltip)
         addRestriction(parent, tooltip)

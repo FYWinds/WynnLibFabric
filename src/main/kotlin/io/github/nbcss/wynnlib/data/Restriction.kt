@@ -4,8 +4,10 @@ import io.github.nbcss.wynnlib.i18n.Translatable
 import io.github.nbcss.wynnlib.utils.Keyed
 import java.util.*
 
-enum class Restriction(private val id: String,
-                       private val displayName: String): Keyed, Translatable {
+enum class Restriction(
+    private val id: String,
+    private val displayName: String
+) : Keyed, Translatable {
     QUEST_ITEM("QUEST ITEM", "Quest Item"),
     UNTRADABLE("UNTRADABLE", "Untradable Item"),
     SOULBOUND("SOULBOUND", "Soulbound Item");

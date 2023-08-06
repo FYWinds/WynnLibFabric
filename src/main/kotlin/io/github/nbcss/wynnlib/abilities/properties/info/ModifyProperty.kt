@@ -10,16 +10,18 @@ import io.github.nbcss.wynnlib.abilities.properties.ModifiableProperty
 import io.github.nbcss.wynnlib.data.SpellSlot
 import io.github.nbcss.wynnlib.registry.AbilityRegistry
 
-open class ModifyProperty(ability: Ability, data: JsonElement): AbilityProperty(ability) {
-    companion object: Type<ModifyProperty> {
+open class ModifyProperty(ability: Ability, data: JsonElement) : AbilityProperty(ability) {
+    companion object : Type<ModifyProperty> {
         override fun create(ability: Ability, data: JsonElement): ModifyProperty {
             return ModifyProperty(ability, data)
         }
+
         override fun getKey(): String = "modify"
         private const val SPELL_KEY = "spell"
         private const val ABILITY_KEY = "ability"
         private const val EXTEND_KEY = "extends"
     }
+
     private val spell: String?
     private val name: String?
     private val extends: List<String>
@@ -28,7 +30,7 @@ open class ModifyProperty(ability: Ability, data: JsonElement): AbilityProperty(
         val json = data.asJsonObject
         spell = if (json.has(SPELL_KEY)) json[SPELL_KEY].asString else null
         name = if (json.has(ABILITY_KEY)) json[ABILITY_KEY].asString else null
-        extends = if(json.has(EXTEND_KEY)) json[EXTEND_KEY].asJsonArray.map { it.asString } else emptyList()
+        extends = if (json.has(EXTEND_KEY)) json[EXTEND_KEY].asJsonArray.map { it.asString } else emptyList()
     }
 
     fun getModifyAbility(): String? = name
@@ -36,11 +38,11 @@ open class ModifyProperty(ability: Ability, data: JsonElement): AbilityProperty(
     fun getModifySpell(): String? = spell
 
     fun getUpgradingAbility(): Ability? {
-        if (name != null){
+        if (name != null) {
             return AbilityRegistry.get(name)
-        }else if(spell == MainAttackEntry.getKey()) {
+        } else if (spell == MainAttackEntry.getKey()) {
             return AbilityRegistry.fromCharacter(getAbility().getCharacter()).getMainAttackAbility()
-        }else if(spell != null) {
+        } else if (spell != null) {
             SpellSlot.fromName(spell)?.let { spellSlot ->
                 return AbilityRegistry.fromCharacter(getAbility().getCharacter()).getSpellAbility(spellSlot)
             }
@@ -50,19 +52,19 @@ open class ModifyProperty(ability: Ability, data: JsonElement): AbilityProperty(
 
     fun getModifyEntries(container: EntryContainer): List<PropertyEntry> {
         val entries: MutableList<PropertyEntry> = mutableListOf()
-        if (name != null){
+        if (name != null) {
             container.getEntry(name)?.let { entries.add(it) }
-        }else if (spell != null){
-            container.getSlotEntry(spell).forEach{ entries.add(it) }
-        }else if (extends.isNotEmpty()){
+        } else if (spell != null) {
+            container.getSlotEntry(spell).forEach { entries.add(it) }
+        } else if (extends.isNotEmpty()) {
             extends.mapNotNull { container.getEntry(it) }.forEach { entries.add(it) }
         }
         return entries
     }
 
-    fun modifyEntry(entry: PropertyEntry){
+    fun modifyEntry(entry: PropertyEntry) {
         for (property in getAbility().getProperties()) {
-            if (property is ModifiableProperty){
+            if (property is ModifiableProperty) {
                 property.modify(entry)
             }
         }

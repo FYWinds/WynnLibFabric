@@ -12,7 +12,7 @@ class CrafterScreen(parent: Screen?) : HandbookTabScreen(parent, TITLE) {
     companion object {
         val ICON: ItemStack = ItemFactory.fromEncoding("minecraft:crafting_table")
         val TITLE: Text = Translations.UI_CRAFTER.translate()
-        val FACTORY = object: TabFactory {
+        val FACTORY = object : TabFactory {
             override fun getTabIcon(): ItemStack = ICON
             override fun getTabTitle(): Text = TITLE
             override fun createScreen(parent: Screen?): HandbookTabScreen = CrafterScreen(parent)
@@ -20,6 +20,7 @@ class CrafterScreen(parent: Screen?) : HandbookTabScreen(parent, TITLE) {
             override fun shouldDisplay(): Boolean = Settings.isTester()
         }
     }
+
     override fun drawContents(matrices: MatrixStack?, mouseX: Int, mouseY: Int, delta: Float) {
         //todo
     }

@@ -4,18 +4,22 @@ import io.github.nbcss.wynnlib.data.Tier
 import io.github.nbcss.wynnlib.gui.TooltipScreen
 import io.github.nbcss.wynnlib.gui.widgets.scrollable.CheckboxWidget
 import io.github.nbcss.wynnlib.gui.widgets.scrollable.LabelWidget
-import io.github.nbcss.wynnlib.items.equipments.Equipment
 import io.github.nbcss.wynnlib.i18n.Translations.UI_FILTER_RARITY
+import io.github.nbcss.wynnlib.items.equipments.Equipment
 import net.minecraft.util.Formatting
 import java.util.function.Supplier
 
-class RarityFilter(memory: CriteriaState<Equipment>,
-                   private val screen: TooltipScreen): FilterGroup<Equipment>(memory) {
+class RarityFilter(
+    memory: CriteriaState<Equipment>,
+    private val screen: TooltipScreen
+) : FilterGroup<Equipment>(memory) {
     companion object {
         private const val FILTER_KEY = "ITEM_RARITY"
     }
+
     private val checkboxes: MutableMap<Tier, CheckboxWidget> = linkedMapOf()
     private val contentHeight: Int
+
     init {
         var index = 0
         val types = (memory.getFilter(FILTER_KEY) as? TierFilter)?.tiers
@@ -46,7 +50,9 @@ class RarityFilter(memory: CriteriaState<Equipment>,
     private fun updateFilter() {
         memory.putFilter(TierFilter(checkboxes.entries
             .filter { it.value.isChecked() }
-            .map { it.key }.toSet()))
+            .map { it.key }.toSet()
+        )
+        )
     }
 
     override fun getHeight(): Int {
@@ -98,7 +104,7 @@ class RarityFilter(memory: CriteriaState<Equipment>,
         return false
     }*/
 
-    class TierFilter(val tiers: Set<Tier>): CriteriaState.Filter<Equipment> {
+    class TierFilter(val tiers: Set<Tier>) : CriteriaState.Filter<Equipment> {
 
         override fun accept(item: Equipment): Boolean {
             return item.getTier() in tiers

@@ -1,14 +1,14 @@
 package io.github.nbcss.wynnlib.data
 
 import io.github.nbcss.wynnlib.i18n.Translatable
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import java.util.*
-import kotlin.collections.LinkedHashMap
 
-enum class Profession(private val type: Type,
-                      private val icon: String): Translatable {
+enum class Profession(
+    private val type: Type,
+    private val icon: String
+) : Translatable {
     ARMOURING(Type.CRAFTING, "\u24BD"),
     TAILORING(Type.CRAFTING, "\u24BB"),
     WOODWORKING(Type.CRAFTING, "\u24BE"),
@@ -39,12 +39,12 @@ enum class Profession(private val type: Type,
 
     fun getIconSymbol(): String = icon
 
-    fun getIconText(): Text = LiteralText(getIconSymbol()).formatted(Formatting.WHITE)
+    fun getIconText(): Text = Text.literal(getIconSymbol()).formatted(Formatting.WHITE)
 
     fun getType(): Type = type
 
     fun getDisplayText(): Text {
-        return LiteralText("")
+        return Text.literal("")
             .append(getIconText())
             .append(" ")
             .append(translate().formatted(Formatting.GRAY))

@@ -11,7 +11,7 @@ import net.minecraft.client.item.TooltipContext
 import net.minecraft.item.ItemStack
 import java.util.regex.Pattern
 
-object AbilityTreeHandler: EventHandler<InventoryUpdateEvent> {
+object AbilityTreeHandler : EventHandler<InventoryUpdateEvent> {
     private val titlePattern = Pattern.compile("(.+) Abilities")
     private val unlockPattern = Pattern.compile("Unlock (.+) ability")
     private var processor: Processor? = null
@@ -44,7 +44,7 @@ object AbilityTreeHandler: EventHandler<InventoryUpdateEvent> {
         this.lastPage = null
         val values: MutableList<Pair<ItemStack, List<Ability>>> = mutableListOf()
         stacks.take(54).forEachIndexed { index, stack ->
-            if (!stack.isEmpty && stack.name.asString() != " "){
+            if (!stack.isEmpty && stack.name.asString() != " ") {
                 var name = clearFormatting(stack.name.asString())
                 val unlockMatcher = unlockPattern.matcher(name)
                 if (unlockMatcher.find()) {
@@ -70,7 +70,7 @@ object AbilityTreeHandler: EventHandler<InventoryUpdateEvent> {
                     if (s == "You already unlocked this ability") {
                         abilityList.add(ability to 1)
                         break
-                    }else if(s == "Right Click to undo") {
+                    } else if (s == "Right Click to undo") {
                         abilityList.add(ability to 2)
                         break
                     }
@@ -99,7 +99,7 @@ object AbilityTreeHandler: EventHandler<InventoryUpdateEvent> {
     fun getMutableAbilities(): Set<Ability> = mutableAbilities
 
     fun setProcessor(processor: Processor) {
-        if (this.processor == null){
+        if (this.processor == null) {
             this.processor = processor
             processor.next()
         }

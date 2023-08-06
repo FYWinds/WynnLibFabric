@@ -4,7 +4,7 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import io.github.nbcss.wynnlib.items.equipments.regular.RegularEquipment
 
-object RegularEquipmentRegistry: Registry<RegularEquipment>() {
+object RegularEquipmentRegistry : Registry<RegularEquipment>() {
     private const val RESOURCE = "assets/wynnlib/data/Equipments.json"
     private val nameMap: MutableMap<String, RegularEquipment> = LinkedHashMap()
 
@@ -14,7 +14,7 @@ object RegularEquipmentRegistry: Registry<RegularEquipment>() {
 
     override fun getFilename(): String = RESOURCE
 
-    override fun reload(array: JsonArray){
+    override fun reload(array: JsonArray) {
         nameMap.clear()
         super.reload(array)
     }
@@ -26,7 +26,7 @@ object RegularEquipmentRegistry: Registry<RegularEquipment>() {
 
     override fun read(data: JsonObject): RegularEquipment? = try {
         RegularEquipment(data)
-    }catch (e: Exception){
+    } catch (e: Exception) {
         e.printStackTrace()
         null
     }

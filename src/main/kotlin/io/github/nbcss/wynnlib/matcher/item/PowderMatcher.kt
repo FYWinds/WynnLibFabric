@@ -20,7 +20,7 @@ object PowderMatcher : ItemMatcher {
         return null
     }
 
-    class SimpleAdaptor(private val item: Powder): MatchableItem {
+    class SimpleAdaptor(private val item: Powder) : MatchableItem {
         override fun getMatcherType(): MatcherType {
             return MatcherType.fromPowderTier(item.getTier())
         }

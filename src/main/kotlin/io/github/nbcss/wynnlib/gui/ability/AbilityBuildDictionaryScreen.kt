@@ -1,10 +1,10 @@
 package io.github.nbcss.wynnlib.gui.ability
 
-import io.github.nbcss.wynnlib.abilities.builder.TreeBuildData
 import io.github.nbcss.wynnlib.abilities.builder.TreeBuildContainer
+import io.github.nbcss.wynnlib.abilities.builder.TreeBuildData
 import io.github.nbcss.wynnlib.data.CharacterClass
 import io.github.nbcss.wynnlib.gui.DictionaryScreen
-import io.github.nbcss.wynnlib.gui.widgets.buttons.*
+import io.github.nbcss.wynnlib.gui.widgets.buttons.SideTabWidget
 import io.github.nbcss.wynnlib.i18n.Translations
 import io.github.nbcss.wynnlib.i18n.Translations.UI_CLIPBOARD_IMPORT
 import io.github.nbcss.wynnlib.registry.AbilityBuildStorage
@@ -16,11 +16,10 @@ import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.item.ItemStack
 import net.minecraft.sound.SoundEvent
 import net.minecraft.sound.SoundEvents
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 
-open class AbilityBuildDictionaryScreen(parent: Screen?): DictionaryScreen<TreeBuildData>(parent, TITLE) {
+open class AbilityBuildDictionaryScreen(parent: Screen?) : DictionaryScreen<TreeBuildData>(parent, TITLE) {
     companion object {
         val ICON: ItemStack = ItemFactory.fromEncoding("minecraft:book")
         val TITLE: Text = Translations.UI_TREE_BUILDS.translate()
@@ -32,6 +31,7 @@ open class AbilityBuildDictionaryScreen(parent: Screen?): DictionaryScreen<TreeB
                     || screen is AbilityTreeViewerScreen
         }*/
     }
+
     protected val buttons: MutableList<SideTabWidget> = mutableListOf()
 
     override fun init() {
@@ -43,55 +43,75 @@ open class AbilityBuildDictionaryScreen(parent: Screen?): DictionaryScreen<TreeB
                 override fun onClick(index: Int) {
                     client!!.setScreen(AbilityTreeViewerScreen(parent, characterClass))
                 }
+
                 override fun isSelected(index: Int): Boolean = false
                 override fun drawTooltip(matrices: MatrixStack, mouseX: Int, mouseY: Int, index: Int) {
                     drawTooltip(matrices, listOf(characterClass.translate()), mouseX, mouseY)
                 }
             }
-            buttons.add(SideTabWidget.fromWindowSide(index++, windowX, windowY, 34,
-                SideTabWidget.Side.LEFT, characterClass.getWeapon().getIcon(), handler))
+            buttons.add(
+                SideTabWidget.fromWindowSide(
+                    index++, windowX, windowY, 34,
+                    SideTabWidget.Side.LEFT, characterClass.getWeapon().getIcon(), handler
+                )
+            )
         }
-        buttons.add(SideTabWidget.fromWindowSide(index, windowX, windowY, 34,
-            SideTabWidget.Side.LEFT, ICON, object : SideTabWidget.Handler {
-                override fun onClick(index: Int) {
-                    val screen = AbilityBuildDictionaryScreen(parent)
-                    client!!.setScreen(screen)
-                }
-                override fun isSelected(index: Int): Boolean = true
-                override fun drawTooltip(matrices: MatrixStack, mouseX: Int, mouseY: Int, index: Int) {
-                    drawTooltip(matrices, listOf(TITLE), mouseX, mouseY)
-                }
-            }))
-        buttons.add(SideTabWidget.fromWindowSide(0, windowX, windowY, 45,
-            SideTabWidget.Side.RIGHT, AbilityTreeViewerScreen.CREATE_ICON, object : SideTabWidget.Handler {
-                override fun onClick(index: Int) {
-                    val clipboard = readClipboard()
-                    if (clipboard != null) {
-                        val build = TreeBuildData.fromEncoding(clipboard)
-                        if (build != null) {
-                            client!!.setScreen(AbilityTreeBuilderScreen(
-                                this@AbilityBuildDictionaryScreen, build.getTree(),
-                                build = TreeBuildContainer.fromBuild(build)))
-                            playSound(SoundEvents.ENTITY_ITEM_PICKUP)
-                            return
-                        }
+        buttons.add(
+            SideTabWidget.fromWindowSide(index, windowX, windowY, 34,
+                SideTabWidget.Side.LEFT, ICON, object : SideTabWidget.Handler {
+                    override fun onClick(index: Int) {
+                        val screen = AbilityBuildDictionaryScreen(parent)
+                        client!!.setScreen(screen)
                     }
-                    playSound(SoundEvents.ENTITY_VILLAGER_NO)
-                }
-                override fun isSelected(index: Int): Boolean = false
-                override fun getClickSound(): SoundEvent? = null
-                override fun drawTooltip(matrices: MatrixStack, mouseX: Int, mouseY: Int, index: Int) {
-                    val name = Translations.UI_TREE_BUILDS.translate().string
-                    drawTooltip(matrices, listOf(LiteralText("[+] $name").formatted(Formatting.GREEN),
-                        UI_CLIPBOARD_IMPORT.formatted(Formatting.GRAY)), mouseX, mouseY)
-                }
-            }))
+
+                    override fun isSelected(index: Int): Boolean = true
+                    override fun drawTooltip(matrices: MatrixStack, mouseX: Int, mouseY: Int, index: Int) {
+                        drawTooltip(matrices, listOf(TITLE), mouseX, mouseY)
+                    }
+                })
+        )
+        buttons.add(
+            SideTabWidget.fromWindowSide(0, windowX, windowY, 45,
+                SideTabWidget.Side.RIGHT, AbilityTreeViewerScreen.CREATE_ICON, object : SideTabWidget.Handler {
+                    override fun onClick(index: Int) {
+                        val clipboard = readClipboard()
+                        if (clipboard != null) {
+                            val build = TreeBuildData.fromEncoding(clipboard)
+                            if (build != null) {
+                                client!!.setScreen(
+                                    AbilityTreeBuilderScreen(
+                                        this@AbilityBuildDictionaryScreen, build.getTree(),
+                                        build = TreeBuildContainer.fromBuild(build)
+                                    )
+                                )
+                                playSound(SoundEvents.ENTITY_ITEM_PICKUP)
+                                return
+                            }
+                        }
+                        playSound(SoundEvents.ENTITY_VILLAGER_NO)
+                    }
+
+                    override fun isSelected(index: Int): Boolean = false
+                    override fun getClickSound(): SoundEvent? = null
+                    override fun drawTooltip(matrices: MatrixStack, mouseX: Int, mouseY: Int, index: Int) {
+                        val name = Translations.UI_TREE_BUILDS.translate().string
+                        drawTooltip(
+                            matrices, listOf(
+                                Text.literal("[+] $name").formatted(Formatting.GREEN),
+                                UI_CLIPBOARD_IMPORT.formatted(Formatting.GRAY)
+                            ), mouseX, mouseY
+                        )
+                    }
+                })
+        )
     }
 
     override fun onClickItem(item: TreeBuildData, button: Int) {
         playSound(SoundEvents.ENTITY_ITEM_PICKUP)
-        val screen = AbilityTreeBuilderScreen(this, item.getTree(),
-            build = TreeBuildContainer.fromBuild(item))
+        val screen = AbilityTreeBuilderScreen(
+            this, item.getTree(),
+            build = TreeBuildContainer.fromBuild(item)
+        )
         client!!.setScreen(screen)
     }
 

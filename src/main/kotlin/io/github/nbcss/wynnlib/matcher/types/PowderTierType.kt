@@ -9,10 +9,11 @@ import io.github.nbcss.wynnlib.utils.JsonGetter
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 
-class PowderTierType(private val tier: Powder.Tier): AbstractMatcherType(tier.color), ProtectableType {
+class PowderTierType(private val tier: Powder.Tier) : AbstractMatcherType(tier.color), ProtectableType {
     companion object {
         fun keyOf(tier: Powder.Tier): String = "POWDER_TIER_" + tier.name
     }
+
     private var protected: Boolean = false
 
     override fun getDisplayText(): Text {

@@ -1,8 +1,10 @@
 package io.github.nbcss.wynnlib.gui
 
 import io.github.nbcss.wynnlib.Settings
-import io.github.nbcss.wynnlib.gui.widgets.*
-import io.github.nbcss.wynnlib.gui.widgets.buttons.*
+import io.github.nbcss.wynnlib.gui.widgets.ElementsContainerScroll
+import io.github.nbcss.wynnlib.gui.widgets.ScrollPaneWidget
+import io.github.nbcss.wynnlib.gui.widgets.VerticalSliderWidget
+import io.github.nbcss.wynnlib.gui.widgets.buttons.SideTabWidget
 import io.github.nbcss.wynnlib.gui.widgets.scrollable.CheckboxWidget
 import io.github.nbcss.wynnlib.gui.widgets.scrollable.LabelWidget
 import io.github.nbcss.wynnlib.i18n.Translations
@@ -15,17 +17,15 @@ import io.github.nbcss.wynnlib.utils.formattingLines
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.item.ItemStack
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import java.util.function.Supplier
-import javax.swing.text.Element
 
 class ConfigurationScreen(parent: Screen?) : GenericScrollScreen(parent, TITLE) {
     companion object {
         val ICON: ItemStack = ItemFactory.fromEncoding("minecraft:repeater")
         val TITLE: Text = Translations.UI_CONFIGURATION.translate()
-        val FACTORY = object: TabFactory {
+        val FACTORY = object : TabFactory {
             override fun getTabIcon(): ItemStack = ICON
             override fun getTabTitle(): Text = TITLE
             override fun createScreen(parent: Screen?): HandbookTabScreen = ConfigurationScreen(parent)
@@ -33,6 +33,7 @@ class ConfigurationScreen(parent: Screen?) : GenericScrollScreen(parent, TITLE) 
             override fun shouldDisplay(): Boolean = true
         }
     }
+
     private val categories: MutableList<SettingCategory> = CategoryEnum.values().toMutableList()
     private val sideTabs: MutableList<SideTabWidget> = mutableListOf()
     private var category: SettingCategory = CategoryEnum.GENERAL
@@ -45,27 +46,29 @@ class ConfigurationScreen(parent: Screen?) : GenericScrollScreen(parent, TITLE) 
         scroll = category.createScroll(this)
         sideTabs.clear()
         for ((index, category) in categories.withIndex()) {
-            sideTabs.add(SideTabWidget.fromWindowSide(index, windowX, windowY, 40,
-                SideTabWidget.Side.LEFT, category.getIcon(), object : SideTabWidget.Handler {
-                    override fun onClick(index: Int) {
-                        this@ConfigurationScreen.category = categories[index]
-                        scroll = this@ConfigurationScreen.category.createScroll(this@ConfigurationScreen)
-                        slider?.setSlider(0.0)
-                    }
+            sideTabs.add(
+                SideTabWidget.fromWindowSide(index, windowX, windowY, 40,
+                    SideTabWidget.Side.LEFT, category.getIcon(), object : SideTabWidget.Handler {
+                        override fun onClick(index: Int) {
+                            this@ConfigurationScreen.category = categories[index]
+                            scroll = this@ConfigurationScreen.category.createScroll(this@ConfigurationScreen)
+                            slider?.setSlider(0.0)
+                        }
 
-                    override fun isSelected(index: Int): Boolean {
-                        return this@ConfigurationScreen.category == categories[index]
-                    }
+                        override fun isSelected(index: Int): Boolean {
+                            return this@ConfigurationScreen.category == categories[index]
+                        }
 
-                    override fun drawTooltip(matrices: MatrixStack, mouseX: Int, mouseY: Int, index: Int) {
-                        drawTooltip(matrices, listOf(categories[index].getDisplayText()), mouseX, mouseY)
-                    }
-                }))
+                        override fun drawTooltip(matrices: MatrixStack, mouseX: Int, mouseY: Int, index: Int) {
+                            drawTooltip(matrices, listOf(categories[index].getDisplayText()), mouseX, mouseY)
+                        }
+                    })
+            )
         }
     }
 
     override fun getTitle(): Text {
-        return super.getTitle().copy().append(LiteralText(" [").append(category.getDisplayText()).append("]"))
+        return super.getTitle().copy().append(Text.literal(" [").append(category.getDisplayText()).append("]"))
     }
 
     override fun drawBackgroundPre(matrices: MatrixStack?, mouseX: Int, mouseY: Int, delta: Float) {
@@ -84,8 +87,8 @@ class ConfigurationScreen(parent: Screen?) : GenericScrollScreen(parent, TITLE) 
         return super.mouseClicked(mouseX, mouseY, button)
     }
 
-    enum class CategoryEnum: SettingCategory {
-        GENERAL{
+    enum class CategoryEnum : SettingCategory {
+        GENERAL {
             private val icon: ItemStack = ItemFactory.fromEncoding("minecraft:oak_sign")
             override fun createScroll(screen: ConfigurationScreen): ScrollPaneWidget {
                 return screen.GeneralScroll()
@@ -97,7 +100,7 @@ class ConfigurationScreen(parent: Screen?) : GenericScrollScreen(parent, TITLE) 
 
             override fun getIcon(): ItemStack = icon
         },
-        MATCHERS{
+        MATCHERS {
             private val icon: ItemStack = ItemFactory.fromEncoding("minecraft:map")
             override fun createScroll(screen: ConfigurationScreen): ScrollPaneWidget {
                 return screen.MatcherScroll()
@@ -109,7 +112,7 @@ class ConfigurationScreen(parent: Screen?) : GenericScrollScreen(parent, TITLE) 
 
             override fun getIcon(): ItemStack = icon
         },
-        INDICATORS{
+        INDICATORS {
             private val icon: ItemStack = ItemFactory.fromEncoding("minecraft:clock")
             override fun createScroll(screen: ConfigurationScreen): ScrollPaneWidget {
                 return screen.IndicatorScroll()
@@ -129,14 +132,16 @@ class ConfigurationScreen(parent: Screen?) : GenericScrollScreen(parent, TITLE) 
         fun getIcon(): ItemStack
     }
 
-    inner class MatcherScroll: ElementsContainerScroll(null, this@ConfigurationScreen,
-        scrollX, scrollY, SCROLL_WIDTH, SCROLL_HEIGHT) {
+    inner class MatcherScroll : ElementsContainerScroll(
+        null, this@ConfigurationScreen,
+        scrollX, scrollY, SCROLL_WIDTH, SCROLL_HEIGHT
+    ) {
         //private val protects: MutableMap<MatcherType, CheckboxWidget> = linkedMapOf()
         //private val scrollHeight: Int
         init {
             val posX = 2
             var posY = 2
-            val desc = object: TooltipProvider {
+            val desc = object : TooltipProvider {
                 override fun getTooltip(): List<Text> {
                     return listOf(Translations.MATCHER_ITEM_PROTECTION.formatted(Formatting.GRAY))
                 }
@@ -145,8 +150,10 @@ class ConfigurationScreen(parent: Screen?) : GenericScrollScreen(parent, TITLE) 
                 if (type !is ProtectableType)
                     continue
                 val checked = type.isProtected()
-                val checkbox = CheckboxWidget(posX, posY, type.getDisplayText(),
-                    this@ConfigurationScreen, checked, desc)
+                val checkbox = CheckboxWidget(
+                    posX, posY, type.getDisplayText(),
+                    this@ConfigurationScreen, checked, desc
+                )
                 checkbox.setCallback {
                     type.setProtected(it.isChecked())
                 }
@@ -158,23 +165,30 @@ class ConfigurationScreen(parent: Screen?) : GenericScrollScreen(parent, TITLE) 
             }
             setContentHeight(posY + 2)
         }
+
         override fun getSlider(): VerticalSliderWidget? = slider
     }
 
-    inner class GeneralScroll: ElementsContainerScroll(null, this@ConfigurationScreen,
-        scrollX, scrollY, SCROLL_WIDTH, SCROLL_HEIGHT) {
+    inner class GeneralScroll : ElementsContainerScroll(
+        null, this@ConfigurationScreen,
+        scrollX, scrollY, SCROLL_WIDTH, SCROLL_HEIGHT
+    ) {
         init {
             val posX = 2
             var posY = 2
             for (option in Settings.SettingOption.values()) {
-                val description = object: TooltipProvider {
+                val description = object : TooltipProvider {
                     override fun getTooltip(): List<Text> {
-                        return formattingLines(option.translate("desc").string,
-                            Formatting.GRAY.toString(), 200)
+                        return formattingLines(
+                            option.translate("desc").string,
+                            Formatting.GRAY.toString(), 200
+                        )
                     }
                 }
-                val checkbox = CheckboxWidget(posX, posY, option.formatted(Formatting.GOLD),
-                    this@ConfigurationScreen, Settings.getOption(option), description)
+                val checkbox = CheckboxWidget(
+                    posX, posY, option.formatted(Formatting.GOLD),
+                    this@ConfigurationScreen, Settings.getOption(option), description
+                )
                 checkbox.setCallback {
                     Settings.setOption(option, it.isChecked())
                 }
@@ -186,19 +200,24 @@ class ConfigurationScreen(parent: Screen?) : GenericScrollScreen(parent, TITLE) 
             }
             setContentHeight(posY + 2)
         }
+
         override fun getSlider(): VerticalSliderWidget? = slider
     }
 
-    inner class IndicatorScroll: ElementsContainerScroll(null, this@ConfigurationScreen,
-        scrollX, scrollY, SCROLL_WIDTH, SCROLL_HEIGHT) {
+    inner class IndicatorScroll : ElementsContainerScroll(
+        null, this@ConfigurationScreen,
+        scrollX, scrollY, SCROLL_WIDTH, SCROLL_HEIGHT
+    ) {
         init {
             val posX = 2
             var posY = 2
             for (indicator in StatusType.getAll()) {
-                if (!indicator.isIconIndicator()) continue;
+                if (!indicator.isIconIndicator()) continue
                 val key = indicator.getKey()
-                val checkbox = CheckboxWidget(posX, posY, indicator.translate(),
-                    this@ConfigurationScreen, Settings.getIndicatorEnabled(key))
+                val checkbox = CheckboxWidget(
+                    posX, posY, indicator.translate(),
+                    this@ConfigurationScreen, Settings.getIndicatorEnabled(key)
+                )
                 checkbox.setCallback {
                     Settings.setIndicatorEnabled(key, it.isChecked())
                 }
@@ -210,6 +229,7 @@ class ConfigurationScreen(parent: Screen?) : GenericScrollScreen(parent, TITLE) 
             }
             setContentHeight(posY + 2)
         }
+
         override fun getSlider(): VerticalSliderWidget? = slider
     }
 }

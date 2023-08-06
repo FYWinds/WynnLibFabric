@@ -1,8 +1,8 @@
 package io.github.nbcss.wynnlib.items.equipments.regular
 
 import com.google.gson.JsonObject
-import io.github.nbcss.wynnlib.analysis.transformers.EquipmentTransformer
 import io.github.nbcss.wynnlib.analysis.TransformableItem
+import io.github.nbcss.wynnlib.analysis.transformers.EquipmentTransformer
 import io.github.nbcss.wynnlib.data.*
 import io.github.nbcss.wynnlib.items.BaseItem
 import io.github.nbcss.wynnlib.items.equipments.EquipmentCategory
@@ -15,11 +15,10 @@ import io.github.nbcss.wynnlib.matcher.MatcherType
 import io.github.nbcss.wynnlib.registry.AbilityRegistry
 import io.github.nbcss.wynnlib.utils.Color
 import io.github.nbcss.wynnlib.utils.ItemFactory.ERROR_ITEM
-import io.github.nbcss.wynnlib.utils.range.IRange
 import io.github.nbcss.wynnlib.utils.range.BaseIRange
+import io.github.nbcss.wynnlib.utils.range.IRange
 import io.github.nbcss.wynnlib.utils.range.SimpleIRange
 import net.minecraft.item.ItemStack
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 
 class RegularEquipment(json: JsonObject) : GearEquipment, TransformableItem, ConfigurableItem, MatchableItem {
@@ -36,6 +35,7 @@ class RegularEquipment(json: JsonObject) : GearEquipment, TransformableItem, Con
     private val category: EquipmentCategory?
     private val identified: Boolean
     private val majorIds: List<MajorId>
+
     init {
         name = json.get("name").asString
         displayName = if (json.has("displayName")) json.get("displayName").asString else name
@@ -48,30 +48,30 @@ class RegularEquipment(json: JsonObject) : GearEquipment, TransformableItem, Con
             Restriction.fromId(json.get("restrictions").asString) else null
         powderSlots = if (json.has("sockets")) json.get("sockets").asInt else 0
         identified = json.has("identified") && json.get("identified").asBoolean
-        majorIds = if (json.has("majorIds")){
+        majorIds = if (json.has("majorIds")) {
             json["majorIds"].asJsonArray.mapNotNull { MajorId.get(it.asString) }
-        }else{
+        } else {
             emptyList()
         }
-        Skill.values().forEach{
+        Skill.values().forEach {
             val value = if (json.has(it.getKey())) json.get(it.getKey()).asInt else 0
-            if(value != 0){
+            if (value != 0) {
                 spMap[it] = value
             }
         }
-        Identification.getAll().filter{json.has(it.apiId)}.forEach{
+        Identification.getAll().filter { json.has(it.apiId) }.forEach {
             val value = json.get(it.apiId).asInt
-            if(value != 0)
+            if (value != 0)
                 idMap[it] = BaseIRange(it, identified, value)
         }
         val category = json.get("category").asString
-        this.category = if(category.equals("weapon")){
+        this.category = if (category.equals("weapon")) {
             RegularWeapon(this, json)
-        }else if(category.equals("armor")){
+        } else if (category.equals("armor")) {
             RegularArmour(this, json)
-        }else if(category.equals("accessory")){
+        } else if (category.equals("accessory")) {
             RegularAccessory(this, json)
-        }else{
+        } else {
             null //hmm it should not happen right? ok it can happen if wynn updates...
         }
     }
@@ -93,7 +93,7 @@ class RegularEquipment(json: JsonObject) : GearEquipment, TransformableItem, Con
     override fun getLevel(): IRange = SimpleIRange(level, level)
 
     override fun getClassReq(): CharacterClass? {
-        return if(category is Weapon) CharacterClass.fromWeaponType(getType()) else classReq
+        return if (category is Weapon) CharacterClass.fromWeaponType(getType()) else classReq
     }
 
     override fun getQuestReq(): String? = questReq
@@ -111,7 +111,7 @@ class RegularEquipment(json: JsonObject) : GearEquipment, TransformableItem, Con
     override fun getDisplayName(): String = displayName
 
     override fun getDisplayText(): Text {
-        return LiteralText(displayName).formatted(getTier().formatting)
+        return Text.literal(displayName).formatted(getTier().formatting)
     }
 
     override fun getIcon(): ItemStack = category?.getIcon() ?: ERROR_ITEM
@@ -142,11 +142,11 @@ class RegularEquipment(json: JsonObject) : GearEquipment, TransformableItem, Con
     override fun isIdentifiable(): Boolean = getTier().canIdentify() && !identified && idMap.isNotEmpty()
 
     override fun asWeapon(): Weapon? {
-        return if(category is Weapon) category else null
+        return if (category is Weapon) category else null
     }
 
     override fun asWearable(): Wearable? {
-        return if(category is Wearable) category else null
+        return if (category is Wearable) category else null
     }
 
     override fun getTransformKey(): String {

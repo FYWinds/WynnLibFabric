@@ -2,10 +2,11 @@ package io.github.nbcss.wynnlib.analysis.properties
 
 import net.minecraft.text.Text
 
-class PriceProperty: AnalysisProperty {
+class PriceProperty : AnalysisProperty {
     companion object {
         const val KEY = "PRICE"
     }
+
     private var priceTooltip: MutableList<Text>? = null
 
     fun getPriceTooltip(): List<Text>? = priceTooltip
@@ -30,7 +31,7 @@ class PriceProperty: AnalysisProperty {
                 val text3 = text2.siblings[0]
                 if (text3.asString() == " - " && text3.style.color.toString() == "gold") {
                     priceTooltip.add(text1)
-                }else{
+                } else {
                     break
                 }
                 i++

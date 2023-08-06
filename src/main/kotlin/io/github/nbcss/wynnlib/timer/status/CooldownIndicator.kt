@@ -6,18 +6,17 @@ import io.github.nbcss.wynnlib.render.RenderKit
 import io.github.nbcss.wynnlib.utils.Color
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.text.LiteralText
-import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.MathHelper
 import kotlin.math.roundToInt
 
-class CooldownIndicator(data: JsonObject): StatusType(data) {
-    companion object: Factory {
+class CooldownIndicator(data: JsonObject) : StatusType(data) {
+    companion object : Factory {
         override fun create(data: JsonObject): StatusType {
             return CooldownIndicator(data)
         }
+
         override fun getKey(): String = "COOLDOWN"
     }
 
@@ -35,7 +34,7 @@ class CooldownIndicator(data: JsonObject): StatusType(data) {
         )
         val duration: Double? = timer.getDuration()
         val maxDuration: Double? = timer.getFullDuration()
-        if(duration != null && maxDuration != null) {
+        if (duration != null && maxDuration != null) {
             val pct = MathHelper.clamp(duration / maxDuration, 0.0, 1.0)
             val color = Color.AQUA
             val uv = pctToUv(1 - pct)

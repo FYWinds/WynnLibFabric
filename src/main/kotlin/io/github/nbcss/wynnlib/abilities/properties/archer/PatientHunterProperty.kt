@@ -8,10 +8,12 @@ import io.github.nbcss.wynnlib.abilities.properties.AbilityProperty
 import io.github.nbcss.wynnlib.abilities.properties.ModifiableProperty
 import io.github.nbcss.wynnlib.abilities.properties.SetupProperty
 
-class PatientHunterProperty(ability: Ability,
-                            private val info: Info):
+class PatientHunterProperty(
+    ability: Ability,
+    private val info: Info
+) :
     AbilityProperty(ability), SetupProperty {
-    companion object: Type<PatientHunterProperty> {
+    companion object : Type<PatientHunterProperty> {
         private const val SEC_BOOST_KEY = "sec_boost"
         private const val MAX_BOOST_KEY = "max_boost"
         override fun create(ability: Ability, data: JsonElement): PatientHunterProperty {
@@ -20,6 +22,7 @@ class PatientHunterProperty(ability: Ability,
             val maxBoost = if (json.has(MAX_BOOST_KEY)) json[MAX_BOOST_KEY].asInt else 0
             return PatientHunterProperty(ability, Info(secBoost, maxBoost))
         }
+
         override fun getKey(): String = "patient_hunter"
     }
 
@@ -32,16 +35,19 @@ class PatientHunterProperty(ability: Ability,
         entry.setProperty(getKey(), this)
     }
 
-    class Modifier(ability: Ability,
-                   private val modifier: Info):
+    class Modifier(
+        ability: Ability,
+        private val modifier: Info
+    ) :
         AbilityProperty(ability), ModifiableProperty {
-        companion object: Type<Modifier> {
+        companion object : Type<Modifier> {
             override fun create(ability: Ability, data: JsonElement): Modifier {
                 val json = data.asJsonObject
                 val secBoost = if (json.has(SEC_BOOST_KEY)) json[SEC_BOOST_KEY].asInt else 0
                 val maxBoost = if (json.has(MAX_BOOST_KEY)) json[MAX_BOOST_KEY].asInt else 0
                 return Modifier(ability, Info(secBoost, maxBoost))
             }
+
             override fun getKey(): String = "patient_hunter_modifier"
         }
 
@@ -60,8 +66,10 @@ class PatientHunterProperty(ability: Ability,
         }
     }
 
-    data class Info(val damageBonusSec: Int,
-                    val damageBonusMax: Int){
+    data class Info(
+        val damageBonusSec: Int,
+        val damageBonusMax: Int
+    ) {
         fun upgrade(modifier: Info): Info {
             val sec = damageBonusSec + modifier.damageBonusSec
             val max = damageBonusMax + modifier.damageBonusMax

@@ -9,10 +9,12 @@ import net.minecraft.text.Text
 import kotlin.math.min
 import kotlin.math.roundToInt
 
-class RollingTextWidget(val x: Int,
-                        val y: Int,
-                        val width: Int,
-                        private var text: Text? = null): DrawableHelper() {
+class RollingTextWidget(
+    val x: Int,
+    val y: Int,
+    val width: Int,
+    private var text: Text? = null
+) : DrawableHelper() {
     companion object {
         private val client: MinecraftClient = MinecraftClient.getInstance()
         private const val stayTime = 1200
@@ -37,12 +39,14 @@ class RollingTextWidget(val x: Int,
                 val index = time % duration
                 if (index > stayTime * 2 + rollingDuration) {
                     textX -= (length - width) - (index - stayTime * 2 - rollingDuration) * rollingSpeed
-                }else if(index > stayTime) {
+                } else if (index > stayTime) {
                     textX -= min((index - stayTime) * rollingSpeed, (length - width).toFloat())
                 }
             }
-            RenderSystem.enableScissor((x * scale).toInt(), ((client.window.scaledHeight - bottom) * scale).toInt(),
-                (width * scale).toInt(), (client.textRenderer.fontHeight * scale).toInt())
+            RenderSystem.enableScissor(
+                (x * scale).toInt(), ((client.window.scaledHeight - bottom) * scale).toInt(),
+                (width * scale).toInt(), (client.textRenderer.fontHeight * scale).toInt()
+            )
             client.textRenderer.draw(matrices, it, textX, y.toFloat(), color)
             RenderSystem.disableScissor()
         }

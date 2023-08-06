@@ -1,6 +1,5 @@
 package io.github.nbcss.wynnlib.function
 
-import io.github.nbcss.wynnlib.data.CharacterProfile
 import io.github.nbcss.wynnlib.events.EventHandler
 import io.github.nbcss.wynnlib.events.InventoryRenderEvent
 import io.github.nbcss.wynnlib.render.RenderKit
@@ -8,10 +7,10 @@ import io.github.nbcss.wynnlib.utils.Color
 import io.github.nbcss.wynnlib.utils.WynnValues
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.item.TooltipContext
-import net.minecraft.text.LiteralText
+import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 
-object CharacterInfoInventoryRender: EventHandler<InventoryRenderEvent> {
+object CharacterInfoInventoryRender : EventHandler<InventoryRenderEvent> {
     private val client: MinecraftClient = MinecraftClient.getInstance()
     override fun handle(event: InventoryRenderEvent) {
         if (event.phase != InventoryRenderEvent.Phase.POST)
@@ -49,8 +48,8 @@ object CharacterInfoInventoryRender: EventHandler<InventoryRenderEvent> {
         val maxSp = WynnValues.getMaxSP(level)
         val posX = event.screenX.toFloat()
         val posY = event.screenY.toFloat() + 2
-        val apText = LiteralText("✦ $ap/$maxAp").formatted(Formatting.DARK_AQUA)
-        val spText = LiteralText("$sp/$maxSp ✦").formatted(Formatting.GREEN)
+        val apText = Text.literal("✦ $ap/$maxAp").formatted(Formatting.DARK_AQUA)
+        val spText = Text.literal("$sp/$maxSp ✦").formatted(Formatting.GREEN)
         event.matrices.push()
         event.matrices.translate(0.0, 0.0, 200.0)
         //client.textRenderer.draw(event.matrices, text, posX, posY, 0xFFFFFF)

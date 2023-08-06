@@ -26,7 +26,8 @@ object FileUtils {
             val file = File(path)
             if (file.exists()) {
                 val json: JsonElement = JsonParser.parseReader(
-                    BufferedReader(InputStreamReader(FileInputStream(file), "UTF-8")))
+                    BufferedReader(InputStreamReader(FileInputStream(file), "UTF-8"))
+                )
                 return json.asJsonObject
             }
         } catch (e: Exception) {

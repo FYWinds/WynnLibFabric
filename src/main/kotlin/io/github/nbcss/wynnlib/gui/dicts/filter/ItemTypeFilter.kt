@@ -5,18 +5,22 @@ import io.github.nbcss.wynnlib.gui.TooltipScreen
 import io.github.nbcss.wynnlib.gui.widgets.scrollable.CheckboxWidget
 import io.github.nbcss.wynnlib.gui.widgets.scrollable.ItemIconWidget
 import io.github.nbcss.wynnlib.gui.widgets.scrollable.LabelWidget
-import io.github.nbcss.wynnlib.items.equipments.Equipment
 import io.github.nbcss.wynnlib.i18n.Translations.UI_FILTER_ITEM_TYPE
+import io.github.nbcss.wynnlib.items.equipments.Equipment
 import net.minecraft.util.Formatting
 import java.util.function.Supplier
 
-class ItemTypeFilter(memory: CriteriaState<Equipment>,
-                     private val screen: TooltipScreen): FilterGroup<Equipment>(memory) {
+class ItemTypeFilter(
+    memory: CriteriaState<Equipment>,
+    private val screen: TooltipScreen
+) : FilterGroup<Equipment>(memory) {
     companion object {
         private const val FILTER_KEY = "ITEM_TYPE"
     }
+
     private val checkboxes: MutableMap<EquipmentType, CheckboxWidget> = linkedMapOf()
     private val contentHeight: Int
+
     init {
         var index = 0
         val range = listOf(1, 42, 83)
@@ -42,7 +46,7 @@ class ItemTypeFilter(memory: CriteriaState<Equipment>,
         checkboxes.values.forEach { it.setGroup(group) }
         contentHeight = 10 + if (index % range.size == 0) {
             20 * (index / range.size)
-        }else{
+        } else {
             20 * (1 + index / range.size)
         }
     }
@@ -50,7 +54,9 @@ class ItemTypeFilter(memory: CriteriaState<Equipment>,
     private fun updateFilter() {
         memory.putFilter(TypeFilter(checkboxes.entries
             .filter { it.value.isChecked() }
-            .map { it.key }.toSet()))
+            .map { it.key }.toSet()
+        )
+        )
     }
 
     override fun getHeight(): Int {
@@ -90,7 +96,7 @@ class ItemTypeFilter(memory: CriteriaState<Equipment>,
 
     //override fun getContentHeight(): Int = contentHeight
 
-    class TypeFilter(val types: Set<EquipmentType>): CriteriaState.Filter<Equipment> {
+    class TypeFilter(val types: Set<EquipmentType>) : CriteriaState.Filter<Equipment> {
 
         override fun accept(item: Equipment): Boolean {
             return item.getType() in types

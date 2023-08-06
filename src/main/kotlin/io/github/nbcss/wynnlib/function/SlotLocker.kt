@@ -25,7 +25,7 @@ object SlotLocker {
             if (slot in 5..41 && slot != 13 && Settings.isSlotLocked(slot)) {
                 return true
             }
-        }else if(screen is GenericContainerScreen || screen is HorseScreen) {
+        } else if (screen is GenericContainerScreen || screen is HorseScreen) {
             val size = screen.screenHandler.slots.size
             //Those slots should not empty, otherwise not in usual game state
             if (!screen.screenHandler.slots[size - 1].hasStack()) {
@@ -43,14 +43,14 @@ object SlotLocker {
         return false
     }
 
-    object ClickListener: EventHandler<SlotClickEvent> {
+    object ClickListener : EventHandler<SlotClickEvent> {
         override fun handle(event: SlotClickEvent) {
             if (checkLock(event.screen, event.slot.id))
                 event.cancelled = true
         }
     }
 
-    object PressListener: EventHandler<SlotPressEvent> {
+    object PressListener : EventHandler<SlotPressEvent> {
         override fun handle(event: SlotPressEvent) {
             if (WynnLibKeybindings.getLockSlotKeybinding().matchesKey(event.keyCode, event.scanCode)) {
                 //modifiedSlot = 45 + event.slot.id - event.screen.screenHandler.slots.size
@@ -65,20 +65,23 @@ object SlotLocker {
                 }
             }
             if (client.options.dropKey.matchesKey(event.keyCode, event.scanCode)
-                && checkLock(event.screen, event.slot.id))
+                && checkLock(event.screen, event.slot.id)
+            )
                 event.cancelled = true
         }
     }
 
-    object LockRender: EventHandler<DrawSlotEvent> {
+    object LockRender : EventHandler<DrawSlotEvent> {
         override fun handle(event: DrawSlotEvent) {
             if (checkLock(event.screen, event.slot.id)) {
                 val x = event.slot.x - 2
                 val y = event.slot.y - 2
                 RenderSystem.enableBlend()
                 RenderSystem.disableDepthTest()
-                RenderKit.renderTexture(event.matrices, texture, x, y, 0, 0,
-                    20, 20, 20, 20)
+                RenderKit.renderTexture(
+                    event.matrices, texture, x, y, 0, 0,
+                    20, 20, 20, 20
+                )
             }
         }
     }

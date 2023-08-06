@@ -9,16 +9,16 @@ import io.github.nbcss.wynnlib.abilities.properties.OverviewProvider
 import io.github.nbcss.wynnlib.abilities.properties.SetupProperty
 import io.github.nbcss.wynnlib.i18n.Translations
 import io.github.nbcss.wynnlib.utils.Symbol
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 
-class ManaCostProperty(ability: Ability, private val cost: Int):
+class ManaCostProperty(ability: Ability, private val cost: Int) :
     AbilityProperty(ability), SetupProperty, OverviewProvider {
-    companion object: Type<ManaCostProperty> {
+    companion object : Type<ManaCostProperty> {
         override fun create(ability: Ability, data: JsonElement): ManaCostProperty {
             return ManaCostProperty(ability, data.asInt)
         }
+
         override fun getKey(): String = "mana_cost"
     }
 
@@ -26,7 +26,7 @@ class ManaCostProperty(ability: Ability, private val cost: Int):
 
     override fun getOverviewTip(): Text {
         return Symbol.MANA.asText().append(" ").append(
-            LiteralText("${getManaCost()}").formatted(Formatting.WHITE)
+            Text.literal("${getManaCost()}").formatted(Formatting.WHITE)
         )
     }
 
@@ -39,8 +39,10 @@ class ManaCostProperty(ability: Ability, private val cost: Int):
     }
 
     override fun getTooltip(provider: PropertyProvider): List<Text> {
-        return listOf(Symbol.MANA.asText().append(" ")
-            .append(Translations.TOOLTIP_ABILITY_MANA_COST.formatted(Formatting.GRAY).append(": "))
-            .append(LiteralText(cost.toString()).formatted(Formatting.WHITE)))
+        return listOf(
+            Symbol.MANA.asText().append(" ")
+                .append(Translations.TOOLTIP_ABILITY_MANA_COST.formatted(Formatting.GRAY).append(": "))
+                .append(Text.literal(cost.toString()).formatted(Formatting.WHITE))
+        )
     }
 }

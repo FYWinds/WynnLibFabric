@@ -1,13 +1,14 @@
 package io.github.nbcss.wynnlib.data
 
 import com.google.gson.JsonObject
-import io.github.nbcss.wynnlib.abilities.properties.general.DamageModifierProperty
 import io.github.nbcss.wynnlib.i18n.Translatable
 
-data class DamageMultiplier(private val hits: Int,
-                            private val damageLabel: Label?,
-                            private val neutralDamage: Int,
-                            private val elementalDamage: Map<Element, Int>) {
+data class DamageMultiplier(
+    private val hits: Int,
+    private val damageLabel: Label?,
+    private val neutralDamage: Int,
+    private val elementalDamage: Map<Element, Int>
+) {
     companion object {
         private const val HITS_KEY: String = "hits"
         private const val DAMAGE_LABEL_KEY: String = "label"
@@ -20,7 +21,7 @@ data class DamageMultiplier(private val hits: Int,
                 val key = it.getKey().lowercase()
                 it to if (data.has(key)) data[key].asInt else 0
             }.toTypedArray())
-            return DamageMultiplier(hits, label,neutral, elementalDamage)
+            return DamageMultiplier(hits, label, neutral, elementalDamage)
         }
     }
 
@@ -53,7 +54,7 @@ data class DamageMultiplier(private val hits: Int,
         return DamageMultiplier(hits, label ?: this.damageLabel, neutral, elementalDamage)
     }
 
-    enum class Label: Translatable {
+    enum class Label : Translatable {
         ATTACK,
         BASH,
         MANTLE_LOST,
@@ -65,9 +66,12 @@ data class DamageMultiplier(private val hits: Int,
         TETHER,
         SHURIKEN,
         WINDED;
+
         companion object {
             private val VALUE_MAP: Map<String, Label> = mapOf(
-                pairs = values().map { it.name.uppercase() to it }.toTypedArray())
+                pairs = values().map { it.name.uppercase() to it }.toTypedArray()
+            )
+
             fun fromName(name: String): Label? = VALUE_MAP[name.uppercase()]
         }
 

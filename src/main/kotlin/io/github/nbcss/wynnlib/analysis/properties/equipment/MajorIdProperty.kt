@@ -8,11 +8,12 @@ import net.minecraft.text.TextColor
 import net.minecraft.util.Formatting
 import java.util.regex.Pattern
 
-class MajorIdProperty: AnalysisProperty {
+class MajorIdProperty : AnalysisProperty {
     companion object {
         private val MAJOR_ID_PATTERN = Pattern.compile("^\\+(.+): $")
         const val KEY = "MAJOR_ID"
     }
+
     private val majorIds: MutableList<MajorId> = mutableListOf()
     private val containers: MutableList<MajorIdContainer> = mutableListOf()
 
@@ -32,12 +33,13 @@ class MajorIdProperty: AnalysisProperty {
                 MajorId.fromDisplayName(matcher.group(1))?.let {
                     majorIds.add(it)
                     val majorIdTooltip = mutableListOf(tooltip[line])
-                    for(i in (line + 1 until tooltip.size)) {
+                    for (i in (line + 1 until tooltip.size)) {
                         if (tooltip[i].asString() == ""
                             && tooltip[i].siblings.isNotEmpty()
-                            && tooltip[i].siblings[0].style.color == TextColor.fromFormatting(Formatting.DARK_AQUA)){
+                            && tooltip[i].siblings[0].style.color == TextColor.fromFormatting(Formatting.DARK_AQUA)
+                        ) {
                             majorIdTooltip.add(tooltip[i])
-                        }else{
+                        } else {
                             break
                         }
                     }
