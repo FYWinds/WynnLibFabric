@@ -9,8 +9,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(BasicBakedModel.class)
 public class ItemGuiLightingFixMixin {
-    @Inject(method = "isSideLit", at = @At("HEAD"), cancellable = true)
-    private void isSideLit(CallbackInfoReturnable<Boolean> cir){
-        cir.setReturnValue(false);
+    @Inject(method = "isSideLit", at = @At("HEAD"))
+    private void isSideLit(CallbackInfoReturnable<Boolean> cir) {
+        // cir.setReturnValue(false);
+        // The bug in texturepack was fixed, so this mixin is no longer needed.
     }
 }

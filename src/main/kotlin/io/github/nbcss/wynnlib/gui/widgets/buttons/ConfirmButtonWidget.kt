@@ -19,7 +19,7 @@ class ConfirmButtonWidget(
 ) :
     PressableWidget(x, y, 10, 10, Text.empty()) {
     private val texture: Identifier = Identifier("wynnlib", "textures/gui/check_button.png")
-    override fun appendNarrations(builder: NarrationMessageBuilder?) {
+    override fun appendClickableNarrations(builder: NarrationMessageBuilder?) {
         appendDefaultNarrations(builder)
     }
 

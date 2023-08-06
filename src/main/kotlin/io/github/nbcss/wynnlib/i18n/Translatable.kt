@@ -3,7 +3,6 @@ package io.github.nbcss.wynnlib.i18n
 import io.github.nbcss.wynnlib.utils.parseStyle
 import net.minecraft.text.MutableText
 import net.minecraft.text.Text
-import net.minecraft.text.TranslatableText
 import net.minecraft.util.Formatting
 
 interface Translatable {
@@ -19,7 +18,7 @@ interface Translatable {
      * Translate given label & var args to TranslatableText.
      */
     fun translate(label: String? = null, vararg args: Any): MutableText {
-        return TranslatableText(getTranslationKey(label), *args)
+        return Text.translatable(getTranslationKey(label), *args)
     }
 
     /**

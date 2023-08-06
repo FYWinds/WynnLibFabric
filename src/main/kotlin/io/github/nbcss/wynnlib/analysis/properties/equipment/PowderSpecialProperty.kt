@@ -41,7 +41,7 @@ class PowderSpecialProperty : AnalysisProperty {
             val base = text.siblings[0]
             if (base.siblings.size < 2)
                 return null
-            return base.siblings[1].asString()
+            return base.siblings[1].toString()
         }
 
         private fun readValue(text: Text, pattern: Pattern): Double {
@@ -65,7 +65,7 @@ class PowderSpecialProperty : AnalysisProperty {
         if (tooltip[line].siblings.isEmpty())
             return 0
         val base = tooltip[line].siblings[0]
-        val matcher = SPEC_NAME_PATTERN.matcher(base.asString())
+        val matcher = SPEC_NAME_PATTERN.matcher(base.toString())
         if (matcher.find()) {
             FACTORY_MAP[matcher.group(1)]?.let { factory ->
                 val result = factory.read(tooltip, line + 1)

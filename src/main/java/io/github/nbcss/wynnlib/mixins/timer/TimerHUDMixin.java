@@ -3,9 +3,8 @@ package io.github.nbcss.wynnlib.mixins.timer;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.nbcss.wynnlib.Settings;
 import io.github.nbcss.wynnlib.timer.IconIndicator;
-import io.github.nbcss.wynnlib.timer.SideIndicator;
 import io.github.nbcss.wynnlib.timer.IndicatorManager;
-import io.github.nbcss.wynnlib.utils.Keyed;
+import io.github.nbcss.wynnlib.timer.SideIndicator;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.hud.InGameHud;
@@ -15,6 +14,7 @@ import org.lwjgl.opengl.GL11;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -40,6 +40,7 @@ public abstract class TimerHUDMixin {
         }
     }
 
+    @Unique
     private void renderSideTimers(MatrixStack matrices) {
         if (!Settings.INSTANCE.getOption(Settings.SettingOption.SIDE_INDICATOR))
             return;
@@ -53,6 +54,7 @@ public abstract class TimerHUDMixin {
         }
     }
 
+    @Unique
     private void renderIconTimers(MatrixStack matrices, float delta) {
         if (!Settings.INSTANCE.getOption(Settings.SettingOption.ICON_INDICATOR))
             return;

@@ -7,6 +7,7 @@ abstract class BaseScrollableWidget(
     private var interactable: Boolean = true
     private var x: Int = -99999
     private var y: Int = -99999
+    private var focused: Boolean = false
 
     override fun updateState(x: Int, y: Int, active: Boolean) {
         this.x = posX + x
@@ -17,4 +18,10 @@ abstract class BaseScrollableWidget(
     fun getX(): Int = x
     fun getY(): Int = y
     fun isInteractable(): Boolean = interactable
+
+    override fun setFocused(focused: Boolean) {
+        this.focused = focused
+    }
+
+    override fun isFocused(): Boolean = focused
 }

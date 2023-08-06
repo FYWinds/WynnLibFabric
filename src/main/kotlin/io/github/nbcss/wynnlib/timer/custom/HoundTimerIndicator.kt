@@ -37,7 +37,7 @@ class HoundTimerIndicator(
         private val client = MinecraftClient.getInstance()
         override fun handle(event: ArmourStandUpdateEvent) {
             event.entity.customName?.let { name ->
-                val matcher = HOUND_PATTERN.matcher(name.asString())
+                val matcher = HOUND_PATTERN.matcher(name.toString())
                 if (matcher.find()) {
                     if (MinecraftClient.getInstance().player?.entityName == matcher.group(1)) {
                         val indicator = HoundTimerIndicator(event.entity, IndicatorManager.getWorldTime())
@@ -57,7 +57,7 @@ class HoundTimerIndicator(
         val timer = client.world!!.getEntityById(entity.id + 1)
         if (timer != null) {
             timer.customName?.let { name ->
-                val matcher = TIMER_PATTERN.matcher(name.asString())
+                val matcher = TIMER_PATTERN.matcher(name.toString())
                 if (matcher.find()) {
                     val duration = max(0, matcher.group(1).toInt() - 1)
                     timeTracker.updateRemainTime(duration)

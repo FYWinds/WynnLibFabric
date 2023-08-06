@@ -67,6 +67,10 @@ class CheckboxWidget(
         return super.isHovered() && interactable
     }
 
+    override fun appendClickableNarrations(builder: NarrationMessageBuilder?) {
+        appendDefaultNarrations(builder)
+    }
+
     override fun renderButton(matrices: MatrixStack?, mouseX: Int, mouseY: Int, delta: Float) {
         var v = if (isChecked()) 0 else 36
         if (isHovered) v += 18
@@ -105,10 +109,6 @@ class CheckboxWidget(
             }
         }
         return false
-    }
-
-    override fun appendNarrations(builder: NarrationMessageBuilder?) {
-        appendDefaultNarrations(builder)
     }
 
     class Group(

@@ -20,7 +20,7 @@ object EquipmentItemMatcher : ItemMatcher {
                 if (tooltip.asSequence()
                         .filter { it.siblings.isNotEmpty() }
                         .map { it.siblings[0] }
-                        .any { it.asString().contains(eq.getTier().displayName) }
+                        .any { it.toString().contains(eq.getTier().displayName) }
                 ) return eq
             }
         }
@@ -34,7 +34,7 @@ object EquipmentItemMatcher : ItemMatcher {
                     innerIt = it.siblings[0]
                 }
                 val tier = tierMap[innerIt.style.color] ?: return@next
-                if ("${tier.name.lowercase()} " in innerIt.asString().lowercase()) {
+                if ("${tier.name.lowercase()} " in innerIt.toString().lowercase()) {
                     return UnknownItem(tier)
                 }
             }

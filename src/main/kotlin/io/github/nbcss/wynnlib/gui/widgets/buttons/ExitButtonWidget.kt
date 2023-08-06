@@ -12,7 +12,8 @@ class ExitButtonWidget(x: Int, y: Int, private val handler: ExitHandler) :
     PressableWidget(x, y, 10, 10, Text.empty()) {
 
     private val texture: Identifier = Identifier("wynnlib", "textures/gui/exit_button.png")
-    override fun appendNarrations(builder: NarrationMessageBuilder?) {
+
+    override fun appendClickableNarrations(builder: NarrationMessageBuilder?) {
         appendDefaultNarrations(builder)
     }
 

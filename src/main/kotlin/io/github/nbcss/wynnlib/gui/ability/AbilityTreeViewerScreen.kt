@@ -6,7 +6,7 @@ import io.github.nbcss.wynnlib.data.CharacterClass
 import io.github.nbcss.wynnlib.gui.HandbookTabScreen
 import io.github.nbcss.wynnlib.gui.TabFactory
 import io.github.nbcss.wynnlib.gui.widgets.ATreeScrollWidget
-import io.github.nbcss.wynnlib.gui.widgets.buttons.*
+import io.github.nbcss.wynnlib.gui.widgets.buttons.SideTabWidget
 import io.github.nbcss.wynnlib.i18n.Translations
 import io.github.nbcss.wynnlib.registry.AbilityRegistry
 import io.github.nbcss.wynnlib.utils.ItemFactory
@@ -21,7 +21,7 @@ import net.minecraft.util.Formatting
 
 class AbilityTreeViewerScreen(
     parent: Screen?,
-    character: CharacterClass = CharacterClass.values()[0]
+    character: CharacterClass = CharacterClass.entries[0]
 ) : AbstractAbilityTreeScreen(parent) {
     companion object {
         val CREATE_ICON = ItemFactory.fromEncoding("minecraft:writable_book")
@@ -45,7 +45,7 @@ class AbilityTreeViewerScreen(
         viewer = ViewerWindow(viewerX, viewerY, viewerX + 223, viewerY)
         buttons.clear()
         var index = 0
-        for (characterClass in CharacterClass.values()) {
+        for (characterClass in CharacterClass.entries) {
             val handler = object : SideTabWidget.Handler {
                 override fun onClick(index: Int) {
                     tree = AbilityRegistry.fromCharacter(characterClass)
@@ -182,7 +182,7 @@ class AbilityTreeViewerScreen(
                 } else {
                     it.getTier().getUnlockedTexture()
                 }
-                itemRenderer.renderInGuiWithOverrides(item, node.x - 8, node.y - 8)
+                itemRenderer.renderInGuiWithOverrides(matrices, item, node.x - 8, node.y - 8)
             }
         }
 

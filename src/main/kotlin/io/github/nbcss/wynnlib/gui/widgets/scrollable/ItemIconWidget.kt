@@ -19,7 +19,7 @@ class ItemIconWidget(
 
     override fun render(matrices: MatrixStack, mouseX: Int, mouseY: Int, delta: Float) {
         itemProvider.get().let {
-            renderer.renderInGui(it, getX(), getY())
+            renderer.renderInGui(matrices, it, getX(), getY())
         }
     }
 }

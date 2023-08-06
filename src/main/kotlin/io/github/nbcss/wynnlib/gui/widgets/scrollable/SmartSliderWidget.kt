@@ -20,7 +20,7 @@ open class SmartSliderWidget(
     width: Int,
     private val format: String?
 ) :
-    ButtonWidget(-1000, -1000, width, 20, Text.empty(), null), ScrollElement {
+    ButtonWidget(-1000, -1000, width, 20, Text.empty(), null, DEFAULT_NARRATION_SUPPLIER), ScrollElement {
     protected var gap = if (minValue == maxValue) 1 else abs(maxValue - minValue)
     private var handler: Consumer<Int>? = null
     private var interactable: Boolean = true
@@ -54,13 +54,13 @@ open class SmartSliderWidget(
 
     override fun renderButton(matrices: MatrixStack?, mouseX: Int, mouseY: Int, delta: Float) {
         if (this.visible) {
-            RenderSystem.setShader { GameRenderer.getPositionTexShader() }
+            RenderSystem.setShader { GameRenderer.getPositionTexProgram() }
             RenderSystem.setShaderTexture(0, WIDGETS_TEXTURE)
             RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, alpha)
             RenderSystem.enableBlend()
             RenderSystem.defaultBlendFunc()
-            this.drawTexture(matrices, this.x, this.y, 0, 46, this.width / 2, this.height)
-            this.drawTexture(
+            DrawableHelper.drawTexture(matrices, this.x, this.y, 0, 46, this.width / 2, this.height)
+            DrawableHelper.drawTexture(
                 matrices,
                 this.x + this.width / 2,
                 this.y,
@@ -71,7 +71,7 @@ open class SmartSliderWidget(
             )
             RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, alpha)
             val slider = abs(pos - minValue) / gap.toFloat()
-            this.drawTexture(
+            DrawableHelper.drawTexture(
                 matrices,
                 this.x + (slider * (this.width - 8).toFloat()).toInt(),
                 this.y,
@@ -80,7 +80,7 @@ open class SmartSliderWidget(
                 4,
                 20
             )
-            this.drawTexture(
+            DrawableHelper.drawTexture(
                 matrices,
                 this.x + (slider * (this.width - 8).toFloat()).toInt() + 4,
                 this.y,
@@ -97,7 +97,7 @@ open class SmartSliderWidget(
                 14737632
             }
             val s = format!!.replace("%value%", if (buffer == null) pos.toString() + "" else buffer + "_")
-            DrawableHelper.drawCenteredText(
+            DrawableHelper.drawCenteredTextWithShadow(
                 matrices,
                 MinecraftClient.getInstance().textRenderer,
                 s,

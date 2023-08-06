@@ -42,6 +42,8 @@ abstract class ATreeScrollWidget(
         setScrollPosition(getMaxPosition() * it)
     }
 
+    private var focused: Boolean = false
+
     abstract fun getAbilityTree(): AbilityTree
 
     fun toScreenPosition(height: Int, position: Int): IntPos {
@@ -164,4 +166,10 @@ abstract class ATreeScrollWidget(
     override fun getContentHeight(): Int {
         return max(0, 6 + (1 + getAbilityTree().getMaxHeight()) * NODE_SIZE)
     }
+
+    override fun setFocused(focused: Boolean) {
+        this.focused = focused;
+    }
+
+    override fun isFocused(): Boolean = focused
 }

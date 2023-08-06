@@ -154,7 +154,7 @@ abstract class DictionaryScreen<T : BaseItem>(parent: Screen?, title: Text) : Ha
                 val posX = windowX + 242
                 val posY = windowY + 45
                 RenderKit.renderTexture(matrices, TEXTURE, posX, posY, 0, 182, 32, 28)
-                itemRenderer.renderInGuiWithOverrides(FILTER_ICON, posX + 7, posY + 6)
+                itemRenderer.renderInGuiWithOverrides(matrices, FILTER_ICON, posX + 7, posY + 6)
                 if (inFilterTab(mouseX, mouseY)) {
                     drawTooltip(matrices!!, listOf(UI_ADVANCE_SEARCH.translate()), mouseX, mouseY)
                 }

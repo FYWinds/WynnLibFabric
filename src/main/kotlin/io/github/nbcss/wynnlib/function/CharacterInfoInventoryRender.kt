@@ -15,7 +15,7 @@ object CharacterInfoInventoryRender : EventHandler<InventoryRenderEvent> {
     override fun handle(event: InventoryRenderEvent) {
         if (event.phase != InventoryRenderEvent.Phase.POST)
             return
-        val title = event.screen.title.asString()
+        val title = event.screen.title.toString()
         if (title != "Character Info")
             return
         val handler = event.screen.screenHandler
@@ -23,27 +23,27 @@ object CharacterInfoInventoryRender : EventHandler<InventoryRenderEvent> {
             return
         val abilityTreeItem = handler.getSlot(9).stack
         val ap = if (abilityTreeItem.isEmpty) "-" else
-            abilityTreeItem.getTooltip(client.player, TooltipContext.Default.NORMAL)
+            abilityTreeItem.getTooltip(client.player, TooltipContext.Default.BASIC)
                 .asSequence()
                 .filter { it.siblings.isNotEmpty() }
                 .map { it.siblings[0] }
                 .filter { it.siblings.size >= 2 }
-                .filter { it.siblings[0].asString().contains("Unused Points: ") }
-                .filter { it.siblings[1].asString().matches("\\d+".toRegex()) }
-                .map { it.siblings[1].asString().toInt() }
+                .filter { it.siblings[0].toString().contains("Unused Points: ") }
+                .filter { it.siblings[1].toString().matches("\\d+".toRegex()) }
+                .map { it.siblings[1].toString().toInt() }
                 .firstOrNull() ?: "-"
         val level = client.player?.experienceLevel ?: 0
         val maxAp = WynnValues.getMaxAP(level)
         val skillPointItem = handler.getSlot(4).stack
         val sp = if (skillPointItem.isEmpty) "-" else
-            skillPointItem.getTooltip(client.player, TooltipContext.Default.NORMAL)
+            skillPointItem.getTooltip(client.player, TooltipContext.Default.BASIC)
                 .asSequence()
                 .filter { it.siblings.isNotEmpty() }
                 .map { it.siblings[0] }
                 .filter { it.siblings.size >= 2 }
-                .filter { it.siblings[0].asString() == "You have " }
-                .filter { it.siblings[1].asString().matches("\\d+".toRegex()) }
-                .map { it.siblings[1].asString().toInt() }
+                .filter { it.siblings[0].toString() == "You have " }
+                .filter { it.siblings[1].toString().matches("\\d+".toRegex()) }
+                .map { it.siblings[1].toString().toInt() }
                 .firstOrNull() ?: "-"
         val maxSp = WynnValues.getMaxSP(level)
         val posX = event.screenX.toFloat()

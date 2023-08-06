@@ -19,10 +19,10 @@ class SquareButton(
     private val size: Int,
     private val screen: TooltipScreen? = null,
     private val tooltipProvider: TooltipProvider? = null,
-    private val pressSound: SoundEvent? = SoundEvents.UI_BUTTON_CLICK,
+    private val pressSound: SoundEvent? = SoundEvents.UI_BUTTON_CLICK.value(),
     onPress: PressAction
 ) :
-    ButtonWidget(x, y, size, size, Text.empty(), onPress) {
+    ButtonWidget(x, y, size, size, Text.empty(), onPress, DEFAULT_NARRATION_SUPPLIER) {
 
     override fun playDownSound(soundManager: SoundManager?) {
         pressSound?.let {

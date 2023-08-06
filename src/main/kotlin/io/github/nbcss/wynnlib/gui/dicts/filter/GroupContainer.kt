@@ -6,6 +6,7 @@ import net.minecraft.client.util.math.MatrixStack
 
 class GroupContainer<T : BaseItem>(val group: CriteriaGroup<T>) : ScrollListEntry {
     private var top: Int = 0
+    private var focused: Boolean = false
 
     override fun updateTop(entryTop: Int) {
         this.top = entryTop
@@ -50,4 +51,10 @@ class GroupContainer<T : BaseItem>(val group: CriteriaGroup<T>) : ScrollListEntr
             element.updateState(x, y + top, active)
         }
     }
+
+    override fun setFocused(focused: Boolean) {
+        this.focused = focused
+    }
+
+    override fun isFocused(): Boolean = focused
 }

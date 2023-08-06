@@ -29,6 +29,7 @@ abstract class ScrollPaneWidget(
     private var position: Double = 0.0
     private var dragging: Pair<Double, Double>? = null
     private var scrolling: ScrollChange? = null
+    private var focused: Boolean = false
 
     abstract fun renderContents(
         matrices: MatrixStack,
@@ -179,6 +180,12 @@ abstract class ScrollPaneWidget(
             return true
         return super.mouseReleased(mouseX, mouseY, button)
     }
+
+    override fun setFocused(focused: Boolean) {
+        this.focused = focused
+    }
+
+    override fun isFocused(): Boolean = focused
 
     data class ScrollChange(
         val from: Double,

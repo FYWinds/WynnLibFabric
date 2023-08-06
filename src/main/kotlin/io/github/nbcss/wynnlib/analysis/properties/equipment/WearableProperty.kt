@@ -70,10 +70,10 @@ class WearableProperty(private val equipment: RolledEquipment) :
     }
 
     override fun set(tooltip: List<Text>, line: Int): Int {
-        if (tooltip[line].asString() != "" || tooltip[line].siblings.isEmpty())
+        if (tooltip[line].toString() != "" || tooltip[line].siblings.isEmpty())
             return 0
         val base = tooltip[line].siblings[0]
-        val baseString = base.asString()
+        val baseString = base.toString()
         if (baseString != "") {
             val matcher = HEALTH_PATTERN.matcher(baseString)
             if (matcher.find()) {
@@ -81,8 +81,8 @@ class WearableProperty(private val equipment: RolledEquipment) :
                 return 1
             }
         } else if (base.siblings.size == 2) {
-            Element.fromDisplayName(base.siblings[0].asString())?.let {
-                val matcher = DEFENCE_PATTERN.matcher(base.siblings[1].asString())
+            Element.fromDisplayName(base.siblings[0].toString())?.let {
+                val matcher = DEFENCE_PATTERN.matcher(base.siblings[1].toString())
                 if (matcher.find()) {
                     elemDefence[it] = matcher.group(1).toInt()
                 }

@@ -17,7 +17,7 @@ class ATreeEditButtonWidget(
     private val parent: Screen,
     private val character: CharacterClass, x: Int, y: Int
 ) :
-    ButtonWidget(x, y, 20, 20, Text.literal("#"), PressAction { handlePress(it) }) {
+    ButtonWidget(x, y, 20, 20, Text.literal("#"), PressAction { handlePress(it) }, DEFAULT_NARRATION_SUPPLIER) {
     companion object {
         private fun handlePress(button: ButtonWidget) {
             if (button is ATreeEditButtonWidget) {

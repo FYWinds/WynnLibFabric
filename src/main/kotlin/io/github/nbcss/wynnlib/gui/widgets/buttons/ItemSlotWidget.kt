@@ -17,7 +17,7 @@ class ItemSlotWidget<T : BaseItem>(
     private val screen: TooltipScreen
 ) : PressableWidget(x, y, size, size, null) {
     private val client: MinecraftClient = MinecraftClient.getInstance()
-    override fun appendNarrations(builder: NarrationMessageBuilder?) {
+    override fun appendClickableNarrations(builder: NarrationMessageBuilder?) {
         appendDefaultNarrations(builder)
     }
 
@@ -45,8 +45,8 @@ class ItemSlotWidget<T : BaseItem>(
         val itemY: Int = y + height / 2 - 8
         val icon = item!!.getIcon()
         val text = item!!.getIconText()
-        client.itemRenderer.renderInGuiWithOverrides(icon, itemX, itemY)
-        client.itemRenderer.renderGuiItemOverlay(client.textRenderer, icon, itemX, itemY, text)
+        client.itemRenderer.renderInGuiWithOverrides(matrices, icon, itemX, itemY)
+        client.itemRenderer.renderGuiItemOverlay(matrices, client.textRenderer, icon, itemX, itemY, text)
         if (isHovered) {
             screen.drawTooltip(matrices, item!!.getTooltip(), mouseX, mouseY)
         }

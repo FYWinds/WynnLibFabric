@@ -54,6 +54,12 @@ open class VerticalSliderWidget(
         }
     }
 
+    /**
+     * @see AdvanceSearchPaneWidget.renderButton
+     */
+    override fun renderButton(matrices: MatrixStack?, mouseX: Int, mouseY: Int, delta: Float) {
+    }
+
     override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, deltaX: Double, deltaY: Double): Boolean {
         val dragging = dragging
         if (this.active && this.visible && button == 0 && dragging != null) {
@@ -90,7 +96,7 @@ open class VerticalSliderWidget(
         return false
     }
 
-    override fun appendNarrations(builder: NarrationMessageBuilder?) {
+    override fun appendClickableNarrations(builder: NarrationMessageBuilder?) {
         appendDefaultNarrations(builder)
     }
 }

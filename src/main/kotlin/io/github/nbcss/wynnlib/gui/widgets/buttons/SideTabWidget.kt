@@ -48,7 +48,7 @@ class SideTabWidget(
                 matrices, TEXTURE, posX, tabY,
                 side.u, 0, TAB_WIDTH, TAB_HEIGHT
             )
-            itemRenderer.renderInGuiWithOverrides(icon, posX + side.iconOffset, tabY + 6)
+            itemRenderer.renderInGuiWithOverrides(matrices, icon, posX + side.iconOffset, tabY + 6)
             if (isOverTab(mouseX, mouseY)) {
                 handler.drawTooltip(matrices!!, mouseX, mouseY, index)
             }
@@ -62,7 +62,7 @@ class SideTabWidget(
                 matrices, TEXTURE, posX, tabY,
                 side.u, 28, TAB_WIDTH, TAB_HEIGHT
             )
-            itemRenderer.renderInGuiWithOverrides(icon, posX + side.iconOffset, tabY + 6)
+            itemRenderer.renderInGuiWithOverrides(matrices, icon, posX + side.iconOffset, tabY + 6)
             if (isOverTab(mouseX, mouseY)) {
                 handler.drawTooltip(matrices!!, mouseX, mouseY, index)
             }

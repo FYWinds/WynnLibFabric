@@ -9,7 +9,9 @@ import io.github.nbcss.wynnlib.gui.HandbookTabScreen
 import io.github.nbcss.wynnlib.gui.widgets.ATreeScrollWidget
 import io.github.nbcss.wynnlib.i18n.Translations
 import io.github.nbcss.wynnlib.render.RenderKit
-import io.github.nbcss.wynnlib.utils.*
+import io.github.nbcss.wynnlib.utils.AlphaColor
+import io.github.nbcss.wynnlib.utils.Color
+import io.github.nbcss.wynnlib.utils.ItemFactory
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.gui.tooltip.TooltipComponent
 import net.minecraft.client.util.math.MatrixStack
@@ -109,7 +111,7 @@ abstract class AbstractAbilityTreeScreen(parent: Screen?) : HandbookTabScreen(pa
         val icon = archetype.getTexture()
         val iconText = Text.literal(archetype.getIconText())
             .formatted(Formatting.BOLD).formatted(archetype.getFormatting())
-        itemRenderer.renderInGuiWithOverrides(icon, x, y)
+        itemRenderer.renderInGuiWithOverrides(matrices, icon, x, y)
         matrices.push()
         matrices.translate(0.0, 0.0, 200.0)
         RenderKit.renderOutlineText(matrices, iconText, x.toFloat() + 10, y.toFloat() + 9)

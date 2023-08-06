@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
@@ -23,6 +24,7 @@ import java.util.regex.Pattern;
 
 @Mixin(ScreenHandler.class)
 public class InventoryUpdateMixin {
+    @Unique
     private static final Pattern SPELL_PATTERN = Pattern.compile("§7(.+) spell cast! §3\\[§b(-?\\d+) ✺§3]");
     @Inject(method = "updateSlotStacks", at = @At("TAIL"))
     public void onUpdateItems(int revision, List<ItemStack> stacks, ItemStack cursorStack, CallbackInfo ci){
@@ -63,7 +65,7 @@ public class InventoryUpdateMixin {
             return stack;
         ItemLoadEvent event = new ItemLoadEvent(stack);
         ItemLoadEvent.Companion.handleEvent(event);
-        String name = stack.getName().asString();
+        String name = stack.getName().toString();
         Matcher matcher = SPELL_PATTERN.matcher(name);
         if (matcher.find()) {
             Collection<Ability> abilities = AbilityRegistry.INSTANCE.fromDisplayName(matcher.group(1));

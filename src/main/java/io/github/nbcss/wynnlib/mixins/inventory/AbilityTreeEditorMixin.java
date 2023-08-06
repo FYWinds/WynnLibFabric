@@ -7,6 +7,7 @@ import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -16,6 +17,7 @@ import java.util.regex.Pattern;
 
 @Mixin(HandledScreen.class)
 public class AbilityTreeEditorMixin extends Screen {
+    @Unique
     private static final Pattern TITLE_PATTERN = Pattern.compile("(.+) Abilities");
     protected AbilityTreeEditorMixin(Text title) {
         super(title);
@@ -30,7 +32,7 @@ public class AbilityTreeEditorMixin extends Screen {
     @Inject(method = "init", at = @At("TAIL"))
     public void init(CallbackInfo ci){
         getTitle();
-        Matcher matcher = TITLE_PATTERN.matcher(getTitle().asString());
+        Matcher matcher = TITLE_PATTERN.matcher(getTitle().toString());
         if (matcher.find()) {
             CharacterClass character = CharacterClass.Companion.fromId(matcher.group(1));
             if (character != null) {

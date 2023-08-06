@@ -57,7 +57,7 @@ class AdvanceSearchPaneWidget<T : BaseItem>(
 
     fun getCriteriaList(): List<CriteriaGroup<T>> = criteriaList
 
-    override fun appendNarrations(builder: NarrationMessageBuilder?) {
+    override fun appendClickableNarrations(builder: NarrationMessageBuilder?) {
         appendDefaultNarrations(builder)
     }
 
@@ -103,6 +103,11 @@ class AdvanceSearchPaneWidget<T : BaseItem>(
         close.render(matrices, mouseX, mouseY, delta)
         slider.render(matrices, mouseX, mouseY, delta)
         scroll.render(matrices, mouseX, mouseY, delta)
+    }
+
+    override fun renderButton(matrices: MatrixStack?, mouseX: Int, mouseY: Int, delta: Float) {
+        // TODO figure out what this does
+        // This seems to be useless since all the rendering is done in render()
     }
 
     inner class Scroll : ListContainerScroll(

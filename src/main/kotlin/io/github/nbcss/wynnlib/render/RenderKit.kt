@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem
 import io.github.nbcss.wynnlib.utils.AlphaColor
 import io.github.nbcss.wynnlib.utils.Color
 import net.minecraft.client.MinecraftClient
+import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.DrawableHelper
 import net.minecraft.client.render.*
 import net.minecraft.client.util.math.MatrixStack
@@ -40,7 +41,7 @@ object RenderKit {
         texWidth: Int,
         texHeight: Int
     ) {
-        RenderSystem.setShader { GameRenderer.getPositionTexShader() }
+        RenderSystem.setShader { GameRenderer.getPositionTexProgram() }
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
         RenderSystem.setShaderTexture(0, texture)
         matrices.push()
@@ -61,7 +62,7 @@ object RenderKit {
         texWidth: Int,
         texHeight: Int
     ) {
-        RenderSystem.setShader { GameRenderer.getPositionTexShader() }
+        RenderSystem.setShader { GameRenderer.getPositionTexProgram() }
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
         RenderSystem.setShaderTexture(0, texture)
         DrawableHelper.drawTexture(matrices, x, y, u.toFloat(), v.toFloat(), width, height, texWidth, texHeight)
@@ -82,7 +83,7 @@ object RenderKit {
         val time = System.currentTimeMillis() % duration
         val index = min((time / intervalTime).toInt(), frames - 1)
         val v = (index * height).toFloat()
-        RenderSystem.setShader { GameRenderer.getPositionTexShader() }
+        RenderSystem.setShader { GameRenderer.getPositionTexProgram() }
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
         RenderSystem.setShaderTexture(0, texture)
         DrawableHelper.drawTexture(matrices, x, y, 0.0f, v, width, height, width, frames * height)
@@ -106,7 +107,7 @@ object RenderKit {
         RenderSystem.enableBlend()
         RenderSystem.setShaderColor(color.floatRed(), color.floatGreen(), color.floatBlue(), color.floatAlpha())
         RenderSystem.setShaderTexture(0, texture)
-        RenderSystem.setShader { GameRenderer.getPositionTexShader() }
+        RenderSystem.setShader { GameRenderer.getPositionTexProgram() }
         DrawableHelper.drawTexture(matrices, x, y, u.toFloat(), v.toFloat(), width, height, texWidth, texHeight)
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
     }
@@ -139,7 +140,7 @@ object RenderKit {
 
     fun renderItemBar(progress: Double, color: Int, x: Int, y: Int) {
         RenderSystem.disableDepthTest()
-        RenderSystem.disableTexture()
+//        RenderSystem.disableTexture()
         RenderSystem.disableBlend()
         val tessellator = Tessellator.getInstance()
         val bufferBuilder = tessellator.buffer
@@ -147,7 +148,7 @@ object RenderKit {
         renderGuiQuad(bufferBuilder, x + 2, y + 13, 13, 2, 0)
         renderGuiQuad(bufferBuilder, x + 2, y + 13, steps, 1, color)
         RenderSystem.enableBlend()
-        RenderSystem.enableTexture()
+//        RenderSystem.enableTexture()
         RenderSystem.enableDepthTest()
     }
 
@@ -163,14 +164,13 @@ object RenderKit {
         val green = color shr 8 and 255
         val blue = color and 255
         val alpha = 255
-        RenderSystem.setShader { GameRenderer.getPositionColorShader() }
+        RenderSystem.setShader { GameRenderer.getPositionTexProgram() }
         buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR)
         buffer.vertex((x + 0).toDouble(), (y + 0).toDouble(), 0.0).color(red, green, blue, alpha).next()
         buffer.vertex((x + 0).toDouble(), (y + height).toDouble(), 0.0).color(red, green, blue, alpha).next()
         buffer.vertex((x + width).toDouble(), (y + height).toDouble(), 0.0).color(red, green, blue, alpha).next()
         buffer.vertex((x + width).toDouble(), (y + 0).toDouble(), 0.0).color(red, green, blue, alpha).next()
-        buffer.end()
-        BufferRenderer.draw(buffer)
+        BufferRenderer.draw(buffer.end())
     }
 
     fun renderWayPointText(
@@ -216,7 +216,7 @@ object RenderKit {
         for (text in texts) {
             textRender.draw(
                 text, textX, textY, 0xFFFFFF, false,
-                matrix4f, consumerProvider, true, 0, 255
+                matrix4f, consumerProvider, TextRenderer.TextLayerType.SEE_THROUGH, 0, 255
             )
             textY += 10.0f
         }
@@ -228,7 +228,7 @@ object RenderKit {
                     matrix4f, consumerProvider, 255)*/
             textRender.draw(
                 distText, distX, textY, 0xFFFFFF, false,
-                matrix4f, consumerProvider, true, 0, 255
+                matrix4f, consumerProvider, TextRenderer.TextLayerType.SEE_THROUGH, 0, 255
             )
         }
         consumerProvider.draw()

@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientPlayerEntity.class)
 public class PlayerSendChatMixin {
-    @Inject(method = "sendChatMessage", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "sendMessage*", at = @At("HEAD"), cancellable = true)
     public void sendChatMessage(String message, CallbackInfo ci) {
         PlayerSendChatEvent event = new PlayerSendChatEvent((ClientPlayerEntity) (Object) this, message);
         PlayerSendChatEvent.Companion.handleEvent(event);

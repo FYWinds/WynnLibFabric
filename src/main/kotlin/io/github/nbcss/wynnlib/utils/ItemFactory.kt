@@ -5,7 +5,7 @@ import io.github.nbcss.wynnlib.data.LegacyItemMap
 import io.github.nbcss.wynnlib.mixins.datafixer.ItemInstanceSpawnEggFixAccessor
 import io.github.nbcss.wynnlib.mixins.datafixer.ItemPotionFixAccessor
 import io.github.nbcss.wynnlib.mixins.datafixer.RecipeFixAccessor
-import net.minecraft.datafixer.fix.EntityTheRenameningBlock
+import net.minecraft.datafixer.fix.EntityTheRenameningBlockFix
 import net.minecraft.datafixer.fix.ItemIdFix
 import net.minecraft.datafixer.fix.ItemInstanceTheFlatteningFix
 import net.minecraft.item.Item
@@ -14,12 +14,12 @@ import net.minecraft.item.Items
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.nbt.NbtList
 import net.minecraft.nbt.StringNbtReader
+import net.minecraft.registry.Registries
 import net.minecraft.util.Identifier
-import net.minecraft.util.registry.Registry
 import java.util.*
 
 object ItemFactory {
-    val ERROR_ITEM: ItemStack = ItemStack(Registry.ITEM.get(Identifier("barrier")))
+    val ERROR_ITEM: ItemStack = Items.BARRIER.defaultStack
 
     /**
      * Get skull item from given skin string.
@@ -55,7 +55,7 @@ object ItemFactory {
      */
     fun fromEncoding(encoding: String): ItemStack {
         val array = encoding.split("#").toTypedArray()
-        val item: Item = Registry.ITEM.get(Identifier(array[0]))
+        val item: Item = Registries.ITEM.get(Identifier(array[0]))
         try {
             if (item != Items.AIR) {
                 val meta = if (array.size > 1) array[1].toInt() else 0
@@ -88,7 +88,7 @@ object ItemFactory {
         var damage: Int = -1
         var potionType: String? = null
 
-        itemName = EntityTheRenameningBlock.ITEMS[itemName]
+        itemName = EntityTheRenameningBlockFix.ITEMS[itemName]
             ?: itemName // I don't know why mojang likes to rename items so much
         val flattenedItemString = ItemInstanceTheFlatteningFix.getItem(itemName, meta)
         if (flattenedItemString != null) {
