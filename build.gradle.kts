@@ -1,19 +1,26 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.net.URI
 
 plugins {
     id("fabric-loom")
     val kotlinVersion: String by System.getProperties()
     kotlin("jvm").version(kotlinVersion)
 }
+
 base {
     val archivesBaseName: String by project
     archivesName.set(archivesBaseName)
 }
+
 val modVersion: String by project
 version = modVersion
 val mavenGroup: String by project
 group = mavenGroup
-repositories {}
+
+repositories {
+    maven { url = URI("https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1") }
+}
+
 dependencies {
     val minecraftVersion: String by project
     minecraft("com.mojang", "minecraft", minecraftVersion)
@@ -25,6 +32,10 @@ dependencies {
     modImplementation("net.fabricmc.fabric-api", "fabric-api", fabricVersion)
     val fabricKotlinVersion: String by project
     modImplementation("net.fabricmc", "fabric-language-kotlin", fabricKotlinVersion)
+
+    val devAuthVersion: String by project
+    modRuntimeOnly("me.djtheredstoner:DevAuth-fabric:${devAuthVersion}")
+
 }
 
 tasks {
@@ -45,7 +56,20 @@ tasks {
 
     processResources {
         inputs.property("version", project.version)
-        filesMatching("fabric.mod.json") { expand(mutableMapOf("version" to project.version)) }
+        val minecraftVersion: String by project
+        val loaderVersion: String by project
+        val fabricKotlinVersion: String by project
+
+        filesMatching("fabric.mod.json") {
+            expand(
+                mutableMapOf(
+                    "version" to project.version,
+                    "minecraftVersion" to minecraftVersion,
+                    "loaderVersion" to loaderVersion,
+                    "fabricKotlinVersion" to fabricKotlinVersion,
+                )
+            )
+        }
     }
 
     java {

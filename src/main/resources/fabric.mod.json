@@ -12,7 +12,7 @@
   "contact": {
     "sources": "https://github.com/nbcss/WynnLibFabric"
   },
-  "license": "The Unlicense",
+  "license": "AGPL-3.0-or-later",
   "icon": "assets/wynnlib/icon.png",
   "environment": "*",
   "entrypoints": {
@@ -27,10 +27,10 @@
     "wynnlib.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.13.3",
+    "fabricloader": ">=${loaderVersion}",
     "fabric": "*",
-    "fabric-language-kotlin": ">=1.7.4+kotlin.1.6.21",
-    "minecraft": "1.18.x",
+    "fabric-language-kotlin": ">=${fabricKotlinVersion}",
+    "minecraft": "${minecraftVersion}",
     "java": ">=17"
   }
 }
