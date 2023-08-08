@@ -1,10 +1,13 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.io.ByteArrayOutputStream
 import java.net.URI
+import java.util.*
 
 plugins {
     id("fabric-loom")
     val kotlinVersion: String by System.getProperties()
     kotlin("jvm").version(kotlinVersion)
+    id("pl.allegro.tech.build.axion-release").version("1.15.4")
 }
 
 base {
@@ -12,8 +15,84 @@ base {
     archivesName.set(archivesBaseName)
 }
 
-val modVersion: String by project
-version = modVersion
+/*
+    * calculating revision number for the version
+ */
+fun isWindows() = System.getProperty("os.name").lowercase(Locale.getDefault()).contains("win")
+fun getCommitsSinceLastTag(): String {
+    val result = ByteArrayOutputStream()
+
+    // 获取最后的tag
+    val lastTag = ByteArrayOutputStream()
+    val errorResult = ByteArrayOutputStream()
+    exec {
+        if (isWindows()) {
+            commandLine("powershell", " –noprofile", "/c", "git describe --tags --abbrev=0")
+        } else {
+            commandLine("sh", "-c", "git describe --tags --abbrev=0")
+        }
+        standardOutput = lastTag
+        errorOutput = errorResult
+        isIgnoreExitValue = true
+    }
+
+    val lastTagName = lastTag.toString().trim()
+    if (lastTagName.isEmpty()) {
+        return "0"
+    }
+
+    // 计算commits
+    exec {
+        if (isWindows()) {
+            commandLine(
+                "powershell",
+                " –noprofile",
+                "/c",
+                "git rev-list --count HEAD ^$(git describe --tags --abbrev=0)"
+            )
+        } else {
+            commandLine("sh", "-c", "git rev-list --count HEAD ^$(git describe --tags --abbrev=0)")
+        }
+        standardOutput = result
+    }
+
+    return result.toString().trim()
+}
+
+scmVersion {
+
+    repository {
+        type.set("git")
+    }
+
+    localOnly.set(true)
+    ignoreUncommittedChanges.set(false)
+    useHighestVersion.set(true)
+    sanitizeVersion.set(true)
+
+    tag {
+        prefix.set("v")
+        versionSeparator.set("")
+    }
+
+    nextVersion {
+        suffix.set("alpha")
+        separator.set("-")
+    }
+
+    versionCreator { version, position ->
+        "${version}-b${position.branch}-r${getCommitsSinceLastTag()}"
+    }
+
+    versionIncrementer("incrementPatch")
+
+    checks {
+        uncommittedChanges.set(true)
+        aheadOfRemote.set(false)
+    }
+}
+
+project.version = scmVersion.version
 val mavenGroup: String by project
 group = mavenGroup
 
@@ -38,6 +117,7 @@ dependencies {
 
 }
 
+
 tasks {
 
     val javaVersion = JavaVersion.VERSION_17
@@ -52,10 +132,9 @@ tasks {
         kotlinOptions { jvmTarget = javaVersion.toString() }
     }
 
-    jar { from("LICENSE") { rename { "${it}_${base.archivesName}" } } }
+    jar { from("LICENSE") }
 
     processResources {
-        inputs.property("version", project.version)
         val minecraftVersion: String by project
         val loaderVersion: String by project
         val fabricKotlinVersion: String by project
