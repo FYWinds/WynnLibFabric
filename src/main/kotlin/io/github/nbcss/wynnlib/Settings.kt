@@ -86,7 +86,7 @@ object Settings {
             saving = true
             thread(isDaemon = true) {
                 val data = JsonObject()
-                for (option in SettingOption.values()) {
+                for (option in SettingOption.entries) {
                     data.addProperty(option.id, getOption(option))
                 }
                 data.add("matchers", MatcherType.getData())

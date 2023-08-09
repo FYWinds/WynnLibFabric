@@ -1,5 +1,6 @@
 package io.github.nbcss.wynnlib.mixins.render;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.nbcss.wynnlib.Settings;
 import io.github.nbcss.wynnlib.events.DrawSlotEvent;
 import io.github.nbcss.wynnlib.events.RenderItemOverrideEvent;
@@ -39,17 +40,18 @@ public class ItemBackgroundMixin extends Screen {
         drawColorSlot(matrices, stack, x, y);
     }
 
-    @Inject(method = "drawSlot", at = @At("HEAD"))
-    private void drawSlot(MatrixStack matrices, Slot slot, CallbackInfo ci) {
-        DrawSlotEvent event = new DrawSlotEvent((HandledScreen<?>) (Object) this, matrices, slot);
-        DrawSlotEvent.Companion.handleEvent(event);
-    }
 
     @Redirect(method = "drawItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/item/ItemRenderer;renderGuiItemOverlay(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V"))
     public void drawItemInvoke(ItemRenderer instance, MatrixStack matrices, TextRenderer textRenderer, ItemStack stack, int x, int y, String countLabel) {
         if (drawOverrides(matrices, textRenderer, stack, x, y))
             return;
         instance.renderGuiItemOverlay(matrices, textRenderer, stack, x, y, countLabel);
+    }
+
+    @Inject(method = "drawSlot", at = @At("HEAD"))
+    private void drawSlot(MatrixStack matrices, Slot slot, CallbackInfo ci) {
+        DrawSlotEvent event = new DrawSlotEvent((HandledScreen<?>) (Object) this, matrices, slot);
+        DrawSlotEvent.Companion.handleEvent(event);
     }
 
     @Redirect(method = "drawSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/item/ItemRenderer;renderInGuiWithOverrides(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/item/ItemStack;III)V"))
@@ -78,6 +80,8 @@ public class ItemBackgroundMixin extends Screen {
             return;
         MatchableItem item = ItemMatcher.Companion.toItem(stack);
         if (item != null) {
+            RenderSystem.enableBlend();
+            RenderSystem.disableDepthTest();
             matrices.push();
             matrices.translate(0.0, 0.0, 200.0);
             Color color = item.getMatcherType().getColor();
