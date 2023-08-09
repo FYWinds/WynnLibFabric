@@ -80,11 +80,21 @@ scmVersion {
         separator.set("-")
     }
 
-    versionCreator { version, position ->
-        "${version}-b${position.branch}-r${getCommitsSinceLastTag()}"
+    versionIncrementer { version ->
+        version.currentVersion
+        // Don't increment the version, just use the current version
     }
 
-    versionIncrementer("incrementPatch")
+    versionCreator { version, position ->
+        val revision = getCommitsSinceLastTag()
+        if (revision == "0") {
+            return@versionCreator "${version}-b${position.branch}"
+        } else {
+            return@versionCreator "${version}-b${position.branch}-r${revision}"
+        }
+    }
+
+    snapshotCreator { _, _ -> "" }
 
     checks {
         uncommittedChanges.set(true)
