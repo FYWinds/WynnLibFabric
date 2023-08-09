@@ -1,0 +1,50 @@
+name: Release Drafter
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  changelog:
+    name: Generate changelog
+    runs-on: ubuntu-latest
+    outputs:
+      release_body: ${{ steps.git-cliff.outputs.content }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Generate a changelog
+        uses: orhun/git-cliff-action@v2
+        id: git-cliff
+        with:
+          config: cliff.toml
+          args: -vv --latest --strip header
+        env:
+          OUTPUT: CHANGES.md # This won't affect anything since it will not be pushed.
+
+  build:
+    needs: changelog
+    uses: ./.github/workflows/build-ci.yml
+
+  release:
+    name: Create Pre-Release
+    needs: [ build, changelog ]
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download build
+        uses: actions/download-artifact@v3
+        with:
+          name: build
+          path: build
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          prerelease: true
+          body: ${{ needs.changelog.outputs.release_body }}
+          files: "build/*all.jar"

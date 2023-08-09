@@ -12,9 +12,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-
-      - name: Get Branch
-        run: echo "BRANCH=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+        with:
+          fetch-depth: 0
+          ref: ${{ github.ref }}
 
       - name: Setup JAVA
         uses: actions/setup-java@v3
@@ -31,7 +31,13 @@ jobs:
       - name: Build Jar
         run: ./gradlew build
 
+      - name: Generate sha_short
+        id: vars
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
       - name: Upload build jar
         uses: actions/upload-artifact@v3
         with:
+          name: ${{ steps.vars.outputs.sha_short }}
           path: build/libs/*.jar
+          if-no-files-found: error
