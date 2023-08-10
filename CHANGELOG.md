@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### 🐛Bug Fixes
+
+- 🐛 Fix the version behave weird. ([e5c2fce](e5c2fce7f8eeeb6a8b59c2b623b7986d80638745))
+- 🐛 Fix the misplaced background due to Raise mod ([9217f4f](9217f4f7137c62e0f3ddde360e3b5be8f04dbfdc))
+
 ### 👷CI
 
 - 👷 Add automatic pre-release ([6594a6b](6594a6b16960677591ee28d55507b990cdbfbea1))
