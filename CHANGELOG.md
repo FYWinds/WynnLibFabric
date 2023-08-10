@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### 👷CI
+
+- 👷 Add automatic pre-release ([6594a6b](6594a6b16960677591ee28d55507b990cdbfbea1))
+
 ### 🔧Miscellaneous Tasks
 
 - 🔧 Add git-cliff to generate changelogs ([4b33a92](4b33a922226decad6216b7f36ec308d3c5e2d03e))
