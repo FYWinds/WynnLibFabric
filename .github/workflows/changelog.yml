@@ -31,5 +31,5 @@ jobs:
       - name: Commit the changelog
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: "chore(release): update changelog [skip ci]"
+          commit_message: "chore(release): Update changelog [skip ci]"
           file_pattern: 'CHANGELOG.md'

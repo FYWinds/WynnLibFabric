@@ -76,6 +76,7 @@ public class ItemBackgroundMixin extends Screen {
 
     @Unique
     private void drawColorSlot(MatrixStack matrices, ItemStack stack, int x, int y) {
+        // TODO add config to fix conflict with wynntils
         if (!Settings.INSTANCE.getOption(Settings.SettingOption.ITEM_BACKGROUND_COLOR))
             return;
         MatchableItem item = ItemMatcher.Companion.toItem(stack);

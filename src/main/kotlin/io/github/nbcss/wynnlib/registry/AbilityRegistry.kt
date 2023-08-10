@@ -13,7 +13,7 @@ object AbilityRegistry : Registry<Ability>() {
     private val nameMap: MutableMap<String, MutableSet<Ability>> = mutableMapOf()
 
     init {
-        CharacterClass.values().forEach { treeMap[it] = AbilityTree(it) }
+        CharacterClass.entries.forEach { treeMap[it] = AbilityTree(it) }
     }
 
     override fun getFilename(): String = RESOURCE

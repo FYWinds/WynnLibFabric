@@ -27,7 +27,7 @@ object SlotLocker {
             }
         } else if (screen is GenericContainerScreen || screen is HorseScreen) {
             val size = screen.screenHandler.slots.size
-            //Those slots should not empty, otherwise not in usual game state
+            //Those slots should not be empty, otherwise not in usual game state.
             if (!screen.screenHandler.slots[size - 1].hasStack()) {
                 if (!screen.screenHandler.slots[size - 2].hasStack()) {
                     if (!screen.screenHandler.slots[size - 3].hasStack()) {
