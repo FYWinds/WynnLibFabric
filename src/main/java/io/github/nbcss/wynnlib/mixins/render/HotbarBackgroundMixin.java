@@ -8,6 +8,7 @@ import io.github.nbcss.wynnlib.matcher.MatchableItem;
 import io.github.nbcss.wynnlib.matcher.item.ItemMatcher;
 import io.github.nbcss.wynnlib.render.RenderKit;
 import io.github.nbcss.wynnlib.utils.Color;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.hud.InGameHud;
@@ -33,14 +34,13 @@ public class HotbarBackgroundMixin {
     private int scaledWidth;
     @Shadow
     private int scaledHeight;
+    @Unique
+    private boolean flag = false;
 
     @Shadow
     private PlayerEntity getCameraPlayer() {
         return null;
     }
-
-    @Unique
-    private boolean flag = false;
 
     @Inject(method = "renderHotbar", at = @At("HEAD"))
     public void renderHotbarHead(float tickDelta, MatrixStack matrices, CallbackInfo ci) {
@@ -53,7 +53,7 @@ public class HotbarBackgroundMixin {
     public void renderHotbar(float tickDelta, MatrixStack matrices, CallbackInfo ci) {
         if (flag) {
             flag = false;
-            drawSlots(matrices);
+            drawSlots(matrices); // Fixme Get rendered twice and one with some z-axis offset
         }
     }
 
@@ -76,9 +76,15 @@ public class HotbarBackgroundMixin {
         PlayerEntity playerEntity = this.getCameraPlayer();
         if (playerEntity != null) {
             int y = this.scaledHeight - 19;
+            // Patch for Raised Hud
+            // https://github.com/yurisuika/Raised
+            if (FabricLoader.getInstance().getObjectShare().get("raised:hud") instanceof Integer h) {
+                y = y - h;
+            }
             for (int i = 0; i < 6; i++) {
                 int x = this.scaledWidth / 2 - 90 + i * 20 + 2;
                 ItemStack stack = playerEntity.getInventory().main.get(i);
+                // TODO add config to fix conflict with wynntils
                 if (Settings.INSTANCE.getOption(Settings.SettingOption.ITEM_BACKGROUND_COLOR)) {
                     MatchableItem item = ItemMatcher.Companion.toItem(stack);
                     if (item != null) {
