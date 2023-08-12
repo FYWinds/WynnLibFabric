@@ -5,6 +5,7 @@ import java.util.*
 
 plugins {
     id("fabric-loom")
+    id("io.github.juuxel.loom-vineflower").version("1.11.0")
     val kotlinVersion: String by System.getProperties()
     kotlin("jvm").version(kotlinVersion)
     id("pl.allegro.tech.build.axion-release").version("1.15.4")
