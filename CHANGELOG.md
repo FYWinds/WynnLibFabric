@@ -2,12 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
-## [unreleased]
+## [0.2.10] - 2023-08-12
+
+[357663a](357663a7182ec1575fe189e46a956971d5ddab6f)...[4477299](4477299560204c4eb9464072c953373fc7218a7f)
+
+### ✨Features
+
+- ✨ Add per profile slot lock ([95fa296](95fa29675344f53ddd2fdcb30fc57fc39206db85))
 
 ### 🐛Bug Fixes
 
 - 🐛 Fix the version behave weird. ([e5c2fce](e5c2fce7f8eeeb6a8b59c2b623b7986d80638745))
 - 🐛 Fix the misplaced background due to Raise mod ([9217f4f](9217f4f7137c62e0f3ddde360e3b5be8f04dbfdc))
+- 🐛 Fix axion-release cannot add Tag ([4477299](4477299560204c4eb9464072c953373fc7218a7f))
 
 ### 👷CI
 
@@ -16,6 +23,7 @@ All notable changes to this project will be documented in this file.
 ### 🔧Miscellaneous Tasks
 
 - 🔧 Add git-cliff to generate changelogs ([4b33a92](4b33a922226decad6216b7f36ec308d3c5e2d03e))
+- 🔗 Add Vineflower to genSoruce [skip ci] ([6630478](6630478cc7a0f919399466faaa2308a39b882d90))
 
 ## [0.2.9] - 2023-08-09
 
