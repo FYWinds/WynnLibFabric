@@ -168,4 +168,10 @@ tasks {
         targetCompatibility = javaVersion
         withSourcesJar()
     }
+
+    release {
+        scmVersion {
+            versionIncrementer("incrementPatch")
+        }
+    }
 }

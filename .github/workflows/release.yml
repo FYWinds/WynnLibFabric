@@ -27,7 +27,35 @@ jobs:
 
   build:
     needs: changelog
-    uses: ./.github/workflows/build-ci.yml
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.ref }}
+
+      - name: Setup JAVA
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Run chmod to make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+
+      - name: Build Jar
+        run: ./gradlew build
+
+      - name: Upload build jar
+        uses: actions/upload-artifact@v3
+        with:
+          name: build
+          path: build/libs/*.jar
+          if-no-files-found: error
 
   release:
     name: Create Pre-Release
@@ -47,4 +75,4 @@ jobs:
         with:
           prerelease: true
           body: ${{ needs.changelog.outputs.release_body }}
-          files: "build/*all.jar"
+          files: "build/*.jar"
