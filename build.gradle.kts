@@ -23,7 +23,6 @@ fun isWindows() = System.getProperty("os.name").lowercase(Locale.getDefault()).c
 fun getCommitsSinceLastTag(): String {
     val result = ByteArrayOutputStream()
 
-    // 获取最后的tag
     val lastTag = ByteArrayOutputStream()
     val errorResult = ByteArrayOutputStream()
     exec {
@@ -42,7 +41,6 @@ fun getCommitsSinceLastTag(): String {
         return "0"
     }
 
-    // 计算commits
     exec {
         if (isWindows()) {
             commandLine(
@@ -57,6 +55,20 @@ fun getCommitsSinceLastTag(): String {
         standardOutput = result
     }
 
+    return result.toString().trim()
+}
+
+fun getCurrentGitBranch(): String {
+    val envBranch = System.getenv("GIT_BRANCH")
+    if (!envBranch.isNullOrEmpty()) {
+        return envBranch
+    }
+    
+    val result = ByteArrayOutputStream()
+    project.exec {
+        commandLine = listOf("git", "rev-parse", "--abbrev-ref", "HEAD")
+        standardOutput = result
+    }
     return result.toString().trim()
 }
 
@@ -86,12 +98,13 @@ scmVersion {
         // Don't increment the version, just use the current version
     }
 
-    versionCreator { version, position ->
+    versionCreator { version, _ ->
         val revision = getCommitsSinceLastTag()
+        val branch = getCurrentGitBranch()
         if (revision == "0") {
-            return@versionCreator "${version}-b${position.branch}"
+            return@versionCreator "$version-b$branch"
         } else {
-            return@versionCreator "${version}-b${position.branch}-r${revision}"
+            return@versionCreator "$version-b$branch-r$revision"
         }
     }
 
