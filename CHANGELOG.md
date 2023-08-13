@@ -2,9 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.2.10] - 2023-08-12
+## [0.2.10] - 2023-08-13
 
-[357663a](357663a7182ec1575fe189e46a956971d5ddab6f)...[4477299](4477299560204c4eb9464072c953373fc7218a7f)
+[357663a](357663a7182ec1575fe189e46a956971d5ddab6f)...[ab98429](ab98429f0543592d818782a8eb7e6110f535b9db)
 
 ### ✨Features
 
@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
 - 🐛 Fix the version behave weird. ([e5c2fce](e5c2fce7f8eeeb6a8b59c2b623b7986d80638745))
 - 🐛 Fix the misplaced background due to Raise mod ([9217f4f](9217f4f7137c62e0f3ddde360e3b5be8f04dbfdc))
 - 🐛 Fix axion-release cannot add Tag ([4477299](4477299560204c4eb9464072c953373fc7218a7f))
+- 🐛 Fix release action branch ([ab98429](ab98429f0543592d818782a8eb7e6110f535b9db))
 
 ### 👷CI
 
